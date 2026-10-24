@@ -103,6 +103,10 @@ nav.tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2
 .overall{display:flex;gap:16px;align-items:center}
 .big{font-size:26px;font-weight:800;line-height:1.15}
 .tiers{display:flex;flex-wrap:wrap;gap:6px 12px}
+.bodymap{display:flex;justify-content:center;gap:8px;margin-bottom:14px}
+.bodymap>div{flex:1;max-width:170px;text-align:center}
+.body{width:100%;height:auto;display:block}
+.bodymap span{font-size:12px;color:var(--muted)}
 .tierchip{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:700}
 </style>
 </head>
@@ -424,6 +428,41 @@ function vRecovery(){
   return`<h1>Recovery</h1><p class="muted small">Estimated from your logged sets. Muscles typically recover over 2–3 days, and the generator favors the freshest ones.</p><div class="card">${rows}</div>`;
 }
 
+// ---------- body map (original front/back figure) ----------
+const MIR='transform="translate(100 0) scale(-1 1)"';
+const BODY_BASE='<ellipse cx="50" cy="14" rx="8.5" ry="10.5"/><rect x="45" y="22" width="10" height="9" rx="2"/><path d="M35 31 Q50 27 65 31 L67 48 L63 98 L37 98 L33 48Z"/>';
+const BODY_BASE_M=['<path d="M31 33 C24 36 22 46 22.5 58 L20 92 L27.5 93 L31 72 C33.5 62 35 50 35 40Z"/>','<ellipse cx="23.5" cy="99" rx="3.6" ry="6"/>','<path d="M37 95 L50 97 L49.5 152 L46.5 194 L38.5 194 L36 152 C33.5 132 34 110 37 95Z"/>','<ellipse cx="42.5" cy="198" rx="5.5" ry="3.5"/>'];
+const FOREARM='<path d="M27 68 C22 70 20.5 80 21.5 91 L26 91 C28 82 30 74 29.5 68Z"/>';
+let ABS='';for(let r=0;r<4;r++)ABS+=`<rect x="44" y="${55+r*9}" width="5.6" height="8" rx="1.8"/><rect x="50.4" y="${55+r*9}" width="5.6" height="8" rx="1.8"/>`;
+const FRONT=[
+  ['shoulders','<ellipse cx="31" cy="40" rx="6.5" ry="7.5"/>',1],
+  ['chest','<path d="M49.5 35 C43 33.5 37.5 35.5 36.5 41 C36 48 41 52.5 49.5 51.5Z"/>',1],
+  ['traps','<path d="M45 26 L37 33 L46 33Z"/>',1],
+  ['biceps','<ellipse cx="28.5" cy="57" rx="4.6" ry="9"/>',1],
+  ['forearms',FOREARM,1],
+  ['abs',ABS,0],
+  ['abs','<path d="M42.5 55 C38.5 62 38.5 80 40.5 91 L43 91 L43 55Z"/>',1],
+  ['quads','<path d="M48.5 101 C41 99 36.5 106 36.5 121 C36.5 136 39 147 44 151 C47.5 146 49 130 49 113Z"/>',1],
+  ['calves','<path d="M41 160 C37 166 37 182 40 191 L43 191 C45 182 45 168 43 160Z"/>',1]
+];
+const BACK=[
+  ['shoulders','<ellipse cx="31" cy="40" rx="6.5" ry="7.5"/>',1],
+  ['lats','<path d="M44 42 C38 46 35.5 54 36.5 64 C38.5 74 43.5 81 49 84 L49.5 68 L45 44Z"/>',1],
+  ['traps','<path d="M50 25 L38 34 L44 40 L50 66 L56 40 L62 34Z"/>',0],
+  ['triceps','<ellipse cx="28.5" cy="57" rx="4.6" ry="9"/>',1],
+  ['forearms',FOREARM,1],
+  ['lowerback','<path d="M49.5 70 L44 84 L44.5 95 L49.5 95Z"/>',1],
+  ['glutes','<ellipse cx="43" cy="106" rx="7.5" ry="9.5"/>',1],
+  ['hamstrings','<path d="M48.5 117 C42 115 37 121 37.5 133 C38 143 41 150 44.5 152 C47.5 146 49 134 49 124Z"/>',1],
+  ['calves','<path d="M41 158 C36.5 163 36.5 176 39.5 184 C41.5 186 44 184 44.5 178 C45.5 170 45 162 43 158Z"/>',1]
+];
+function bodySVG(list,col){
+  const base=BODY_BASE+BODY_BASE_M.map(x=>x+`<g ${MIR}>${x}</g>`).join('');
+  const ms=list.map(([m,sh,mir])=>`<g fill="${col(m)}">${sh}${mir?`<g ${MIR}>${sh}</g>`:''}</g>`).join('');
+  return`<svg viewBox="0 0 100 205" class="body"><defs><linearGradient id="glg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2d55"/><stop offset="1" stop-color="#9b30ff"/></linearGradient></defs><g fill="#262a33">${base}</g><g stroke="#0d0e11" stroke-width=".8" stroke-linejoin="round">${ms}</g></svg>`;
+}
+function bodyMap(col){return`<div class="bodymap"><div>${bodySVG(FRONT,col)}<span>Front</span></div><div>${bodySVG(BACK,col)}<span>Back</span></div></div>`;}
+
 function vRanks(){
   const R=muscleRanks(),bw=bodyW(),ranked=Object.keys(R).filter(m=>R[m]);
   const avg=ranked.length?ranked.reduce((a,m)=>a+Math.min(R[m].s,1),0)/ranked.length:0;
@@ -438,7 +477,7 @@ function vRanks(){
   return`<h1>Ranks</h1>
   ${bw?'':`<div class="card"><h3>Add your body weight</h3><p class="muted small">Weighted lifts are ranked relative to body weight. Until you add it, only bodyweight exercises count.</p><input type="text" inputmode="decimal" data-s="bw" placeholder="Body weight (${U()})"></div>`}
   <div class="card overall">${badge(oi,72)}<div><div class="muted small">Overall</div><div class="big" style="color:${rankColor(oi)}">${rankName(oi)}</div><div class="muted small">${ranked.length} of ${Object.keys(MUSCLES).length} muscles ranked</div></div></div>
-  <div class="card"><div class="tiers">${legend}</div></div>
+  <div class="card">${bodyMap(m=>R[m]?TIERS[Math.floor(R[m].i/3)].f:'#2e323c')}<div class="tiers">${legend}</div></div>
   <div class="card">${rows}</div>
   <p class="muted small">Each muscle is ranked by your best lift for it: estimated 1-rep max relative to body weight (dumbbells: weight per hand). Bodyweight moves rank by reps, holds by time.</p>`;
 }
