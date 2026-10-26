@@ -118,6 +118,14 @@ nav.tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2
 .toast{position:fixed;left:50%;top:16px;transform:translate(-50%,-80px);background:#2a2d36;color:var(--text);padding:10px 16px;border-radius:12px;z-index:99;transition:transform .25s;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.4);max-width:90vw}
 .toast.show{transform:translate(-50%,0)}
 .hidden{display:none!important}
+.hdr{display:flex;justify-content:space-between;align-items:center}
+.bell{position:relative;width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--line);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.bell svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bell .dot{position:absolute;top:8px;right:9px;width:10px;height:10px;border-radius:50%;background:var(--acc);border:2px solid var(--card)}
+.back{background:none;border:0;color:var(--acc);font-size:16px;font-family:inherit;padding:10px 0 0;cursor:pointer}
+.news h3{font-size:18px}
+.news ul{margin:6px 0 0;padding-left:20px}.news li{margin:4px 0}.news p{margin:6px 0}
+.newtag{display:inline-block;font-size:11px;font-weight:700;color:var(--acc);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
 textarea{width:100%;min-height:160px;padding:12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);color:var(--text);font-size:13px;font-family:ui-monospace,Menlo,monospace;resize:vertical}
 .rk{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
 .rk:last-child{border-bottom:0}
@@ -260,7 +268,7 @@ const BUILTIN=RAW.map(([id,name,eq,p,s,c,inc])=>({id,name,eq:sp(eq),p:sp(p),s:sp
 
 // ---------- storage ----------
 const KEY='forge-v1';
-const APP_VERSION='Oct 26 (copy backup)';
+const APP_VERSION='Oct 26 (updates)';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,equip:['barbell','rack','bench','dumbbell','cable','machine','pullup'],onboarded:false},workouts:[],custom:[],active:null});
 function merge(d){const b=DEF();return Object.assign(b,d,{settings:Object.assign(b.settings,d.settings||{}),workouts:d.workouts||[],custom:d.custom||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -435,14 +443,14 @@ const ICONS={
   settings:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>'
 };
 function renderTabs(){$('#tabs').innerHTML=Object.keys(ICONS).map(t=>`<button class="${t===tab?'on':''}" data-a="tab" data-t="${t}"><svg viewBox="0 0 24 24">${ICONS[t]}</svg>${t[0].toUpperCase()+t.slice(1)}</button>`).join('');}
-function render(){$('#view').innerHTML={workout:vWorkout,recovery:vRecovery,ranks:vRanks,history:vHistory,progress:vProgress,settings:vSettings}[tab]();renderTabs();}
+function render(){$('#view').innerHTML={workout:vWorkout,recovery:vRecovery,ranks:vRanks,history:vHistory,progress:vProgress,updates:vUpdates,settings:vSettings}[tab]();renderTabs();}
 
 function vWorkout(){
   if(S.active)return vActive();
   const rec=recovery(),auto=pickAuto(rec);
   const tired=Object.keys(MUSCLES).filter(m=>rec[m]<85).sort((a,b)=>rec[a]-rec[b]).slice(0,5);
   const lw=S.workouts[S.workouts.length-1];
-  return`<h1>Workout</h1>
+  return`<div class="hdr"><h1>Workout</h1><button class="bell" data-a="tab" data-t="updates" aria-label="Updates"><svg viewBox="0 0 24 24">${BELL}</svg>${hasNewNews()?'<i class="dot"></i>':''}</button></div>
   <div class="card"><label class="lbl">Focus</label><select id="focus">${Object.entries(FOCUS).map(([k,l])=>`<option value="${k}" ${k===focusSel?'selected':''}>${l}</option>`).join('')}</select>
   <p class="muted small">Auto picks <b>${FOCUS[auto]}</b> today — those muscles are the most recovered.</p>
   <button class="btn primary big" data-a="gen">Generate workout</button>
@@ -508,6 +516,27 @@ function vRanks(){
   <div class="card">${bodyMap(m=>R[m]?TIERS[Math.floor(R[m].i/3)].f:'#3a3e48')}<div class="tiers">${legend}</div></div>
   <div class="card">${rows}</div>
   <p class="muted small">Each muscle is ranked by your best lift for it: estimated 1-rep max relative to body weight (dumbbells: weight per hand). Bodyweight moves rank by reps, holds by time.</p>`;
+}
+
+// ---------- updates (posts come from updates.txt in the GitHub repo) ----------
+let NEWS=null,newsErr=false;
+try{NEWS=JSON.parse(localStorage.getItem('forge-news'))||null;}catch(e){}
+function parseNews(t){const posts=[];let cur=null;for(const raw of t.split(/\r?\n/)){const l=raw.trim();if(l.startsWith('## ')){cur={title:l.slice(3).trim(),lines:[]};posts.push(cur);}else if(cur&&l)cur.lines.push(l);}return posts;}
+const BELL='<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/>';
+const hasNewNews=()=>!!(NEWS&&NEWS.length&&NEWS[0].title!==S.settings.seenNews);
+async function loadNews(){
+  try{const r=await fetch('updates.txt?'+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;
+    const posts=parseNews(await r.text());const fresh=!hasNewNews()&&posts.length&&posts[0].title!==S.settings.seenNews;
+    NEWS=posts;newsErr=false;try{localStorage.setItem('forge-news',JSON.stringify(posts));}catch(e){}
+    if(fresh&&S.settings.onboarded&&tab!=='updates')toast('New update: '+posts[0].title);
+  }catch(e){newsErr=true;}
+  if(tab==='updates'||(tab==='workout'&&!S.active))render();
+}
+function newsBody(lines){let out='',ul=false;for(const l of lines){if(l.startsWith('- ')){if(!ul){out+='<ul>';ul=true;}out+='<li>'+esc(l.slice(2))+'</li>';}else{if(ul){out+='</ul>';ul=false;}out+='<p>'+esc(l)+'</p>';}}return out+(ul?'</ul>':'');}
+function vUpdates(){
+  if(NEWS&&NEWS.length&&S.settings.seenNews!==NEWS[0].title){S.settings.seenNews=NEWS[0].title;save();}
+  const posts=NEWS&&NEWS.length?NEWS.map((p,i)=>`<div class="card news">${i===0?'<span class="newtag">Latest</span>':''}<h3>${esc(p.title)}</h3>${newsBody(p.lines)}</div>`).join(''):`<div class="card"><p class="muted" style="margin:0">${newsErr?'Couldn\'t load updates. Check your connection and try again.':'No updates yet.'}</p></div>`;
+  return`<button class="back" data-a="tab" data-t="workout">‹ Back</button><h1>Updates</h1><p class="muted small">What's new in Forge. You're on version ${APP_VERSION}.</p>${posts}`;
 }
 
 function vHistory(){
@@ -711,6 +740,8 @@ document.addEventListener('change',e=>{
 
 render();
 if(!S.settings.onboarded)onboarding();
+loadNews();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadNews();});
 setInterval(tick,250);
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().catch(()=>{});}catch(e){}
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));

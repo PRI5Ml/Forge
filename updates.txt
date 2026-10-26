@@ -1,0 +1,16 @@
+HOW TO POST AN UPDATE (this note is not shown in the app)
+Put each new update at the TOP, right below this note.
+Start an update with ## and a title. Use - at the start of a line for a bullet point.
+Plain lines show as normal text.
+
+## Oct 26 — Core workouts & phone backups
+- 21 new ab and oblique exercises
+- New Core focus on the Workout tab
+- Obliques now have their own rank and recovery
+- Copy backup / Paste backup in Settings, to move your history to a new phone
+- New Updates button: tap the bell on the Workout screen (you're looking at it!)
+
+## Oct 26 — Strength ranks & body map
+- New Ranks tab: Bronze 3 up to Godlike 1 for every muscle
+- Body map colored by your rank
+- Added seated & lying leg curl, hip abduction & hip adduction
