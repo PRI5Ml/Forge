@@ -1,6 +1,6 @@
 // Forge service worker: always tries the network first so updates show right away,
 // and falls back to the saved copy when offline.
-const CACHE = 'forge-v18';
+const CACHE = 'forge-v19';
 const ASSETS = ['./', 'index.html', 'manifest.json', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {

@@ -118,6 +118,7 @@ nav.tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2
 .toast{position:fixed;left:50%;top:16px;transform:translate(-50%,-80px);background:#2a2d36;color:var(--text);padding:10px 16px;border-radius:12px;z-index:99;transition:transform .25s;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.4);max-width:90vw}
 .toast.show{transform:translate(-50%,0)}
 .hidden{display:none!important}
+textarea{width:100%;min-height:160px;padding:12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);color:var(--text);font-size:13px;font-family:ui-monospace,Menlo,monospace;resize:vertical}
 .rk{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
 .rk:last-child{border-bottom:0}
 .rk svg{flex-shrink:0}
@@ -259,7 +260,7 @@ const BUILTIN=RAW.map(([id,name,eq,p,s,c,inc])=>({id,name,eq:sp(eq),p:sp(p),s:sp
 
 // ---------- storage ----------
 const KEY='forge-v1';
-const APP_VERSION='Oct 26 (core update)';
+const APP_VERSION='Oct 26 (copy backup)';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,equip:['barbell','rack','bench','dumbbell','cable','machine','pullup'],onboarded:false},workouts:[],custom:[],active:null});
 function merge(d){const b=DEF();return Object.assign(b,d,{settings:Object.assign(b.settings,d.settings||{}),workouts:d.workouts||[],custom:d.custom||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -559,7 +560,7 @@ function vSettings(){
   const cust=S.custom.map(c=>`<div class="hrow" style="flex-direction:row;justify-content:space-between;align-items:center"><span>${esc(c.name)}<br><span class="muted small">${c.p.map(m=>MUSCLES[m]).join(', ')}</span></span><button class="icon" data-a="delcustom" data-id="${esc(c.id)}" aria-label="Delete">✕</button></div>`).join('');
   return`<h1>Settings</h1><div class="card">${prefsForm()}</div>
   <div class="card"><h3>Custom exercises</h3>${cust||'<p class="muted small">Add exercises the built-in list is missing.</p>'}<button class="btn ghost" data-a="newcustom">+ Add custom exercise</button></div>
-  <div class="card"><h3>Backup</h3><p class="muted small">Your data lives only on this phone. Removing the app from your Home Screen deletes it, so export a backup now and then (save it to Files or iCloud Drive).</p><button class="btn ghost" data-a="export">Export backup</button><button class="btn ghost" data-a="import">Import backup</button><input type="file" id="importfile" accept="application/json,.json" hidden></div>
+  <div class="card"><h3>Backup</h3><p class="muted small">Your data lives only on this phone. Removing the app from your Home Screen deletes it. To move to a new phone, tap Copy backup, paste the text somewhere safe (Notes, a text or email to yourself), then use Paste backup on the new phone.</p><button class="btn primary" data-a="copybk">Copy backup</button><button class="btn ghost" data-a="pastebk">Paste backup</button><p class="muted small" style="margin:14px 0 0">Or save it as a file:</p><button class="btn ghost" data-a="export">Export backup</button><button class="btn ghost" data-a="import">Import backup</button><input type="file" id="importfile" accept="application/json,.json" hidden></div>
   <div class="card"><button class="btn danger-ghost" style="margin-top:0" data-a="reset">Erase all data</button></div>
   <p class="muted small" style="text-align:center">Forge version ${APP_VERSION}</p>`;
 }
@@ -627,6 +628,18 @@ async function exportData(){
   if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:'Forge backup'});return;}catch(e){if(e.name==='AbortError')return;}}
   const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
 }
+function toCode(){const b=new TextEncoder().encode(JSON.stringify(S));let s='';for(let i=0;i<b.length;i+=8192)s+=String.fromCharCode.apply(null,b.subarray(i,i+8192));return'FORGE1:'+btoa(s);}
+function fromCode(t){t=(t||'').replace(/\s+/g,'');const i=t.indexOf('FORGE1:');if(i<0)throw 0;const s=atob(t.slice(i+7)),b=new Uint8Array(s.length);for(let k=0;k<s.length;k++)b[k]=s.charCodeAt(k);return JSON.parse(new TextDecoder().decode(b));}
+function restore(d){if(!d||!d.settings||!Array.isArray(d.workouts))throw 0;
+  if(!confirm('Replace the data on this phone with this backup ('+d.workouts.length+' workouts)?'))return false;
+  S=merge(d);rebuild();save();render();toast('Backup restored');return true;}
+async function copyBackup(){
+  const code=toCode();
+  try{await navigator.clipboard.writeText(code);toast('Backup copied — paste it in Notes or a message to yourself');return;}catch(e){}
+  showModal(`<div class="sheethead"><h3>Copy backup</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div><p class="muted small">Tap in the box, Select All, then Copy.</p><textarea id="bkout" readonly>${esc(code)}</textarea>`);
+  const t=$('#bkout');t.focus();t.select();
+}
+function pasteBackup(){showModal(`<div class="sheethead"><h3>Paste backup</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div><p class="muted small">Paste the backup text you copied from your old phone. It starts with FORGE1:</p><textarea id="bkin" placeholder="FORGE1:..."></textarea><button class="btn primary" data-a="dorestore">Restore</button>`);}
 function importFile(f){
   if(!f)return;const rd=new FileReader();
   rd.onload=()=>{try{const d=JSON.parse(rd.result);if(!d||!d.settings||!Array.isArray(d.workouts))throw 0;
@@ -661,6 +674,10 @@ document.addEventListener('click',e=>{
     case'delw':if(confirm('Delete this workout from your history?')){S.workouts=S.workouts.filter(w=>w.id!==b.dataset.id);save();render();}break;
     case'export':exportData();break;
     case'import':$('#importfile').click();break;
+    case'copybk':copyBackup();break;
+    case'pastebk':pasteBackup();break;
+    case'dorestore':{let d;try{d=fromCode($('#bkin').value);}catch(e){toast("That doesn't look like a Forge backup");break;}
+      try{if(restore(d))closeModal();}catch(e){toast("That doesn't look like a Forge backup");}break;}
     case'reset':if(confirm('Erase ALL workouts and settings? This cannot be undone.')){S=DEF();rebuild();save();stopRest();tab='workout';render();onboarding();}break;
     case'newcustom':customForm();break;
     case'savecustom':{const name=$('#cname').value.trim();if(!name){toast('Give it a name');break;}
