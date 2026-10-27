@@ -127,6 +127,8 @@ nav.tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2
 .nutsum{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
 .bcreader{width:100%;min-height:220px;border-radius:14px;overflow:hidden;background:#000}
 .bcreader video{width:100%!important;display:block}
+.ebrow{display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}.ebrow>span{flex:1;display:flex;flex-direction:column;gap:2px}
+.tog{flex:none;width:50px;height:30px;border-radius:15px;border:0;background:var(--line);position:relative;cursor:pointer;padding:0}.tog i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .15s}.tog.on{background:var(--acc)}.tog.on i{left:23px}
 .w8chip{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:14px;padding:11px 14px;margin:0 0 12px;font-family:inherit;font-size:15px;cursor:pointer}
 .htimgs{display:flex;gap:8px;margin:0 0 12px}.htimgs figure{flex:1;margin:0;min-width:0}
 .htimgs img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:12px;background:var(--card2);display:block}
@@ -400,9 +402,9 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.10.27i';
-const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup'],onboarded:false},workouts:[],custom:[],food:[],weights:[],injuries:[],active:null});
-function merge(d){const b=DEF();return Object.assign(b,d,{settings:Object.assign(b.settings,d.settings||{}),workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[]});}
+const APP_VERSION='2026.10.27j';
+const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup'],onboarded:false},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},active:null});
+function merge(d){const b=DEF();return Object.assign(b,d,{settings:Object.assign(b.settings,d.settings||{}),workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{}});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
 let S=load();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){toast('Could not save — storage may be full');}}
@@ -619,7 +621,7 @@ const ES_BASE={
 "Log a few workouts and your charts will appear here.":"Registra algunos entrenamientos y tus gráficas aparecerán aquí.","Lifts":"Levantamientos","Estimated 1-rep max per session":"1RM estimado por sesión","Longest hold per session":"Aguante más largo por sesión",
 "Best set per session (added weight counts as extra reps)":"Mejor serie por sesión (el peso añadido cuenta como reps extra)","Longest hold per session (added weight counts extra)":"Aguante más largo por sesión (el peso añadido suma)","best":"mejor","heaviest set":"serie más pesada","sessions":"sesiones","since first":"desde el inicio","Recent sessions":"Sesiones recientes",
 "Body weight":"Peso corporal","Today":"Hoy","Yesterday":"Ayer","trend":"tendencia","over the last week":"en la última semana","Log a few more days to see your weekly trend.":"Registra algunos días más para ver tu tendencia semanal.",
-"Log today's weight":"Registrar el peso de hoy","Update today's weight":"Actualizar el peso de hoy","Recent entries":"Registros recientes","Today's weight":"Peso de hoy","Today's weight:":"Peso de hoy:","⚖️ Today's weight:":"⚖️ Peso de hoy:","⚖️ Log today's weight":"⚖️ Registrar el peso de hoy",
+"Log today's weight":"Registrar el peso de hoy","Burned today:":"Quemadas hoy:","Burned:":"Quemadas:","Add calories burned today":"Agregar calorías quemadas hoy","Add calories burned":"Agregar calorías quemadas","🔥 Add calories burned today":"🔥 Agregar calorías quemadas hoy","🔥 Add calories burned":"🔥 Agregar calorías quemadas","Calories burned today":"Calorías quemadas hoy","Calories burned":"Calorías quemadas","Walking, running, hiking, sports and workouts. Use the active calories from your watch or fitness app.":"Caminar, correr, senderismo, deportes y entrenamientos. Usa las calorías activas de tu reloj o app de ejercicio.","Clear":"Borrar","Calories burned saved":"Calorías quemadas guardadas","Enter calories burned":"Ingresa las calorías quemadas","Add calories burned to my goal":"Sumar calorías quemadas a mi meta","On: burn 400 and you get 400 more to eat that day. Off: it's just shown.":"Activado: si quemas 400, puedes comer 400 más ese día. Desactivado: solo se muestra.","Update today's weight":"Actualizar el peso de hoy","Recent entries":"Registros recientes","Today's weight":"Peso de hoy","Today's weight:":"Peso de hoy:","⚖️ Today's weight:":"⚖️ Peso de hoy:","⚖️ Log today's weight":"⚖️ Registrar el peso de hoy",
 "Weigh yourself each morning, after the bathroom and before eating, and log it here. Your ranks and food targets use it too.":"Pésate cada mañana, después de ir al baño y antes de comer, y regístralo aquí. Tus rangos y metas de comida también lo usan.",
 "✓ On track for losing fat":"✓ Vas bien para perder grasa","Not losing yet. If this lasts 2–3 weeks, lower calories by about 150–200.":"Aún no bajas. Si sigue así 2–3 semanas, reduce unas 150–200 calorías.",
 "✓ On track for building muscle":"✓ Vas bien para ganar músculo","Not gaining yet. If this lasts 2–3 weeks, add about 150–200 calories.":"Aún no subes. Si sigue así 2–3 semanas, agrega unas 150–200 calorías.","✓ Holding steady":"✓ Te mantienes estable",
@@ -679,6 +681,8 @@ const ES_BASE={
 };
 // Text with numbers or names in it
 const ES_RX=[
+[/^([\d,.]+) \+ ([\d,.]+) burned$/,'$1 + $2 quemadas'],
+[/^Net after exercise: ([\d,.]+) kcal$/,'Neto después del ejercicio: $1 kcal'],
 [/^“(.+)”$/,(m,a)=>'“'+tr(a)+'”'],
 [/^(\d+) of (\d+) muscles ranked$/,'$1 de $2 músculos con rango'],
 [/^(\d+) per workout$/,'$1 por entrenamiento'],
@@ -1149,15 +1153,17 @@ function dayLabel(day){const today=dk(Date.now()),[y,m,d]=day.split('-').map(Num
 function macroBar(lbl,v,g,unit,col){const pct=g?Math.min(100,v/g*100):0;return`<div class="mac"><div class="machead"><span>${lbl}</span><span><b>${Math.round(v)}</b><span class="muted"> / ${g}${unit}</span></span></div><div class="track"><div class="fill" style="width:${pct}%;background:${col}"></div></div></div>`;}
 function recentFoods(){const seen=new Set(),out=[];for(let i=S.food.length-1;i>=0&&out.length<6;i--){const e=S.food[i];const k=(e.name||'').toLowerCase();if(!k||seen.has(k))continue;seen.add(k);out.push(e);}return out;}
 function vFood(){
-  const g=goals(),t=dayTotals(foodDay),list=S.food.filter(e=>e.d===foodDay),left=g.cal-t.cal,isToday=foodDay===dk(Date.now());
+  const g0=goals(),burned=+(S.burn||{})[foodDay]||0,eb=!!S.settings.eatBack,g=Object.assign({},g0,{cal:g0.cal+(eb?burned:0)}),t=dayTotals(foodDay),list=S.food.filter(e=>e.d===foodDay),left=g.cal-t.cal,isToday=foodDay===dk(Date.now());
   const calPct=g.cal?Math.min(100,t.cal/g.cal*100):0;
   const rows=list.map(e=>{const s=+e.sv||0;return`<div class="fe" data-a="editfood" data-id="${esc(e.id)}"><div class="fem"><b>${esc(e.name||'Food')}</b><span class="muted small">${s!==1?r1(s)+' servings · ':''}P ${r1(s*e.p)}g · C ${r1(s*e.c)}g · F ${r1(s*e.f)}g</span></div><span class="fek">${Math.round(s*e.cal)}<span class="muted small"> kcal</span></span><button class="icon" data-a="delfood" data-id="${esc(e.id)}" aria-label="Delete">✕</button></div>`;}).join('');
   const rec=recentFoods().map(e=>`<button class="chip qa" data-a="readd" data-id="${esc(e.id)}">+ ${esc(e.name)} <span class="muted">${Math.round(e.cal)}</span></button>`).join('');
   return`<h1>Food</h1>
   <div class="daynav"><button class="icon" data-a="day-">‹</button><b>${dayLabel(foodDay)}</b><button class="icon" data-a="day+" ${isToday?'disabled style="opacity:.3"':''}>›</button></div>
   ${isToday?(()=>{const w=S.weights.find(x=>x.d===foodDay);return`<button class="w8chip" data-a="logw">⚖️ ${w?`Today's weight: <b>${r1(+conv(w.w,w.u))} ${U()}</b>`:"Log today's weight"}</button>`;})():''}
-  <div class="card"><div class="calrow"><div><div class="big">${Math.round(t.cal).toLocaleString()}</div><div class="muted small">of ${g.cal.toLocaleString()} kcal</div></div><div style="text-align:right"><div class="big" style="color:${left<0?'var(--bad)':'var(--good)'}">${Math.abs(Math.round(left)).toLocaleString()}</div><div class="muted small">${left<0?'over':'left'}</div></div></div>
+  <button class="w8chip" data-a="burnform">🔥 ${burned?`<span>${isToday?'Burned today:':'Burned:'}</span> <b>${Math.round(burned).toLocaleString()} kcal</b>`:(isToday?'Add calories burned today':'Add calories burned')}</button>
+  <div class="card"><div class="calrow"><div><div class="big">${Math.round(t.cal).toLocaleString()}</div><div class="muted small">of ${g.cal.toLocaleString()} kcal</div>${burned&&eb?`<div class="muted small">${g0.cal.toLocaleString()} + ${Math.round(burned).toLocaleString()} burned</div>`:''}</div><div style="text-align:right"><div class="big" style="color:${left<0?'var(--bad)':'var(--good)'}">${Math.abs(Math.round(left)).toLocaleString()}</div><div class="muted small">${left<0?'over':'left'}</div></div></div>
   <div class="track" style="height:10px;margin:12px 0 16px"><div class="fill" style="width:${calPct}%;background:var(--acc)"></div></div>
+  ${burned&&!eb?`<p class="muted small" style="margin:-6px 0 14px">Net after exercise: ${Math.round(t.cal-burned).toLocaleString()} kcal</p>`:''}
   ${macroBar('Protein',t.p,g.p,'g','#5b9dff')}${macroBar('Carbs',t.c,g.c,'g','#f5c04a')}${macroBar('Fat',t.f,g.f,'g','#ff5ea8')}</div>
   <div class="row" style="margin-top:0"><button class="btn primary big" style="margin:0" data-a="scanbc">▥ Scan barcode</button><button class="btn primary big" style="margin:0" data-a="scanfood">📷 Scan label</button></div>
   <button class="btn ghost" data-a="addfood">+ Add manually</button>
@@ -1168,7 +1174,16 @@ function vFood(){
     if(!n)return`<p class="muted small" style="margin-top:0">Get targets for your goal: lose fat, maintain or build muscle.</p><button class="btn primary" style="margin:0 0 14px" data-a="nutform">Calculate my targets</button>`;
     return`<div class="nutsum"><div><b>${NGOAL[n.goal]}</b><div class="muted small">${n.auto&&calcTargets(n)?'Targets update with your body weight':'Using your own numbers'}</div></div><button class="btn ghost sm" style="width:auto" data-a="nutform">Edit</button></div>${!n.auto?'<button class="btn ghost sm" style="margin:0 0 12px" data-a="nutauto">Recalculate from my goal</button>':''}`;})()}
   <div class="grid2">
-  ${[['cal','Calories','kcal'],['p','Protein','g'],['c','Carbs','g'],['f','Fat','g']].map(([k,l,u])=>`<div class="field"><label class="lbl">${l} (${u})</label><input type="text" inputmode="numeric" data-goal="${k}" value="${g[k]}"></div>`).join('')}</div><p class="muted small" style="margin:0">Change any number to set it yourself.</p></div>`;
+  ${[['cal','Calories','kcal'],['p','Protein','g'],['c','Carbs','g'],['f','Fat','g']].map(([k,l,u])=>`<div class="field"><label class="lbl">${l} (${u})</label><input type="text" inputmode="numeric" data-goal="${k}" value="${g0[k]}"></div>`).join('')}</div><p class="muted small" style="margin:0">Change any number to set it yourself.</p>
+  <label class="ebrow"><span><b>Add calories burned to my goal</b><span class="muted small">On: burn 400 and you get 400 more to eat that day. Off: it's just shown.</span></span><button class="tog ${S.settings.eatBack?'on':''}" data-a="eatback" aria-label="Add calories burned to my goal"><i></i></button></label></div>`;
+}
+function burnForm(){
+  const cur=+(S.burn||{})[foodDay]||0,isToday=foodDay===dk(Date.now());
+  showModal(`<div class="sheethead"><h3>${isToday?'Calories burned today':'Calories burned'}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
+  <p class="muted small" style="margin-top:0">Walking, running, hiking, sports and workouts. Use the active calories from your watch or fitness app.</p>
+  <div class="svrow"><button class="icon" data-a="burn-">−</button><input type="text" inputmode="numeric" id="burnin" value="${cur||''}" placeholder="kcal" style="font-size:24px;font-weight:700"><button class="icon" data-a="burn+">+</button><span class="muted">kcal</span></div>
+  <button class="btn primary" data-a="saveburn">Save</button>${cur?'<button class="btn ghost" data-a="clearburn">Clear</button>':''}`);
+  const i=$('#burnin');if(i){i.focus();i.select();}
 }
 function foodForm(e,msg){
   foodEdit=e;
@@ -1760,6 +1775,11 @@ document.addEventListener('click',e=>{
     case'delfood':{const it=S.food.find(f=>f.id===b.dataset.id);if(it&&ask('Remove '+(it.name||'this food')+'?')){S.food=S.food.filter(f=>f!==it);save();render();}break;}
     case'readd':{const it=S.food.find(f=>f.id===b.dataset.id);if(it){S.food.push({id:uid(),d:foodDay,t:Date.now(),name:it.name,sv:it.sv,cal:it.cal,p:it.p,c:it.c,f:it.f});save();render();toast('Added '+it.name);}break;}
     case'logw':weightForm();break;
+    case'burnform':burnForm();break;
+    case'burn-':case'burn+':{const i=$('#burnin');const v=parseInt(i.value||'0')||0;i.value=Math.max(0,v+(b.dataset.a==='burn+'?50:-50));break;}
+    case'saveburn':{const v=Math.round(parseFloat(($('#burnin').value||'').replace(',','.')));if(!(v>=0)||v>10000){toast('Enter calories burned');break;}S.burn=S.burn||{};if(v>0)S.burn[foodDay]=v;else delete S.burn[foodDay];save();closeModal();render();toast('Calories burned saved');break;}
+    case'clearburn':{if(S.burn)delete S.burn[foodDay];save();closeModal();render();break;}
+    case'eatback':{S.settings.eatBack=!S.settings.eatBack;save();render();break;}
     case'w8-':case'w8+':{const i=$('#w8in');const v=parseFloat((i.value||'0').replace(',','.'))||bodyW()||0;i.value=r1(v+(b.dataset.a==='w8+'?1:-1)*(U()==='lb'?.2:.1));break;}
     case'savew8':{const v=parseFloat(($('#w8in').value||'').replace(',','.'));if(!(v>0)){toast('Enter your weight');break;}logWeight(v);save();closeModal();render();toast('Weight logged');break;}
     case'delw8':if(ask('Delete this weight entry?')){S.weights=S.weights.filter(x=>x.d!==b.dataset.d);const l=S.weights[S.weights.length-1];if(l){S.settings.bw=+conv(l.w,l.u);S.settings.bwUnit=U();}save();render();}break;
