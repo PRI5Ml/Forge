@@ -118,6 +118,22 @@ nav.tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2
 .toast{position:fixed;left:50%;top:16px;transform:translate(-50%,-80px);background:#2a2d36;color:var(--text);padding:10px 16px;border-radius:12px;z-index:99;transition:transform .25s;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.4);max-width:90vw}
 .toast.show{transform:translate(-50%,0)}
 .hidden{display:none!important}
+.seg{display:flex;gap:6px}.seg label{flex:1}.seg input{display:none}
+.seg span{display:block;text-align:center;padding:11px 4px;border-radius:12px;border:1px solid var(--line);background:var(--card2);font-size:14px;font-weight:600;cursor:pointer}
+.seg input:checked+span{background:var(--acc);border-color:var(--acc);color:#fff}
+.nutres{background:var(--card2);margin:4px 0 8px}.nutmac{display:flex;justify-content:space-between;font-size:14px}
+.nutsum{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.daynav{display:flex;align-items:center;justify-content:space-between;margin:-4px 0 12px}
+.daynav b{font-size:17px}
+.calrow{display:flex;justify-content:space-between;align-items:flex-end}
+.mac{margin-top:10px}.machead{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px}
+.fe{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
+.fe:first-of-type{border-top:0}
+.fem{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.fem b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fek{font-weight:700;white-space:nowrap}
+.qa{background:var(--card2);color:var(--text);font-family:inherit;cursor:pointer}
+.svrow{display:flex;gap:8px;align-items:center}.svrow input{text-align:center}
+.scanthumb{display:block;max-width:100%;max-height:180px;margin:0 auto 12px;border-radius:12px}
 .hdr{display:flex;justify-content:space-between;align-items:center}
 .bell{position:relative;width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--line);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer}
 .bell svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -200,6 +216,9 @@ const RAW=[
 ['db_shrug','Dumbbell Shrug','dumbbell','traps','forearms',0,'std'],
 ['band_row','Band Row','bands','lats','biceps',0,'bw'],
 ['back_ext','Back Extension','machine','lowerback','glutes hamstrings',0,'bw'],
+['good_morning','Good Morning','barbell rack','lowerback hamstrings','glutes',1,'std'],
+['weighted_back_ext','Weighted Back Extension','machine','lowerback','glutes hamstrings',0,'std'],
+['bird_dog','Bird Dog','','lowerback','abs glutes',0,'bw'],
 ['superman','Superman Hold','','lowerback','glutes',0,'sec'],
 ['bb_curl','Barbell Curl','barbell','biceps','forearms',0,'std'],
 ['db_curl','Dumbbell Curl','dumbbell','biceps','forearms',0,'std'],
@@ -214,6 +233,12 @@ const RAW=[
 ['bench_dip','Bench Dip','bench','triceps','chest shoulders',0,'bw'],
 ['band_pushdown','Band Pushdown','bands','triceps','',0,'bw'],
 ['wrist_curl','Dumbbell Wrist Curl','dumbbell','forearms','',0,'std'],
+['rev_wrist_curl','Reverse Wrist Curl','dumbbell','forearms','',0,'std'],
+['btb_wrist_curl','Behind-the-Back Wrist Curl','barbell','forearms','',0,'std'],
+['rev_curl','Reverse Barbell Curl','barbell','forearms biceps','',0,'std'],
+['cable_wrist_curl','Cable Wrist Curl','cable','forearms','',0,'std'],
+['dead_hang','Dead Hang','pullup','forearms','lats',0,'sec'],
+['plate_pinch','Plate Pinch Hold','','forearms','',0,'sec'],
 ['squat','Barbell Back Squat','barbell rack','quads glutes','hamstrings lowerback abs',1,'big'],
 ['front_squat','Front Squat','barbell rack','quads','glutes abs',1,'big'],
 ['goblet','Goblet Squat','dumbbell','quads glutes','abs',1,'std'],
@@ -224,6 +249,13 @@ const RAW=[
 ['lying_leg_curl','Lying Leg Curl','machine','hamstrings','calves glutes',0,'std'],
 ['hip_abduction','Hip Abduction Machine','machine','abductors','glutes',0,'std'],
 ['hip_adduction','Hip Adduction Machine','machine','adductors','',0,'std'],
+['cable_adduction','Cable Hip Adduction','cable','adductors','',0,'std'],
+['copenhagen','Copenhagen Plank','bench','adductors','obliques',0,'sec'],
+['sumo_squat','Dumbbell Sumo Squat','dumbbell','adductors quads glutes','',1,'std'],
+['cable_abduction','Cable Hip Abduction','cable','abductors','glutes',0,'std'],
+['side_leg_raise','Side-Lying Leg Raise','','abductors','',0,'bw'],
+['band_walk','Banded Lateral Walk','bands','abductors','glutes',0,'bw'],
+['fire_hydrant','Fire Hydrant','','abductors','glutes',0,'bw'],
 ['rdl','Romanian Deadlift','barbell','hamstrings glutes','lowerback',1,'big'],
 ['db_rdl','Dumbbell Romanian Deadlift','dumbbell','hamstrings glutes','lowerback',1,'std'],
 ['lunge','Dumbbell Lunge','dumbbell','quads glutes','hamstrings',1,'std'],
@@ -236,6 +268,9 @@ const RAW=[
 ['bw_lunge','Walking Lunge','','quads glutes','hamstrings',1,'bw'],
 ['calf_raise','Standing Calf Raise','','calves','',0,'bw'],
 ['seated_calf','Seated Calf Raise','machine','calves','',0,'std'],
+['lp_calf','Leg Press Calf Raise','machine','calves','',0,'std'],
+['db_calf','Dumbbell Calf Raise','dumbbell','calves','',0,'std'],
+['sl_calf','Single-Leg Calf Raise','','calves','',0,'bw'],
 ['plank','Plank','','abs','',0,'sec'],
 ['crunch','Crunch','','abs','',0,'bw'],
 ['dead_bug','Dead Bug','','abs','',0,'bw'],
@@ -268,9 +303,9 @@ const BUILTIN=RAW.map(([id,name,eq,p,s,c,inc])=>({id,name,eq:sp(eq),p:sp(p),s:sp
 
 // ---------- storage ----------
 const KEY='forge-v1';
-const APP_VERSION='Oct 26 (updates)';
-const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,equip:['barbell','rack','bench','dumbbell','cable','machine','pullup'],onboarded:false},workouts:[],custom:[],active:null});
-function merge(d){const b=DEF();return Object.assign(b,d,{settings:Object.assign(b.settings,d.settings||{}),workouts:d.workouts||[],custom:d.custom||[]});}
+const APP_VERSION='Oct 26 (goal calculator)';
+const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,equip:['barbell','rack','bench','dumbbell','cable','machine','pullup'],onboarded:false},workouts:[],custom:[],food:[],active:null});
+function merge(d){const b=DEF();return Object.assign(b,d,{settings:Object.assign(b.settings,d.settings||{}),workouts:d.workouts||[],custom:d.custom||[],food:d.food||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
 let S=load();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){toast('Could not save — storage may be full');}}
@@ -309,23 +344,25 @@ function metric(ex,w,r){if(!isLoad(ex))return r;return w?w*(1+r/30):0;}
 const ELITE={bench:1.9,incline_bb:1.6,db_bench:0.75,incline_db:0.65,db_fly:0.45,cable_fly:0.6,pec_deck:1.4,chest_press:1.8,pushup:60,dip:35,
 ohp:1.25,db_ohp:0.55,arnold:0.5,shoulder_press_m:1.3,lat_raise:0.3,cable_lat_raise:0.25,rear_fly:0.3,face_pull:0.7,pike_pushup:30,band_pull_apart:50,
 deadlift:3,bb_row:1.6,db_row:0.85,pullup:25,chinup:25,lat_pulldown:1.4,cable_row:1.5,machine_row:1.6,db_shrug:0.9,band_row:50,back_ext:40,superman:180,
-bb_curl:0.9,db_curl:0.45,hammer_curl:0.5,cable_curl:0.8,preacher:0.8,band_curl:50,skull:0.9,pushdown:0.9,oh_ext:0.5,cg_bench:1.6,bench_dip:50,band_pushdown:50,wrist_curl:0.4,
+bb_curl:0.9,db_curl:0.45,hammer_curl:0.5,cable_curl:0.8,preacher:0.8,band_curl:50,skull:0.9,pushdown:0.9,oh_ext:0.5,cg_bench:1.6,bench_dip:50,band_pushdown:50,wrist_curl:0.4,rev_wrist_curl:0.25,btb_wrist_curl:0.9,rev_curl:0.75,cable_wrist_curl:0.6,dead_hang:150,plate_pinch:90,lp_calf:3,db_calf:0.6,sl_calf:40,cable_adduction:0.5,copenhagen:90,sumo_squat:0.9,cable_abduction:0.4,side_leg_raise:50,band_walk:60,fire_hydrant:50,good_morning:1.3,weighted_back_ext:0.6,bird_dog:40,
 squat:2.5,front_squat:2,goblet:0.8,kb_goblet:0.8,leg_press:4.5,leg_ext:1.6,leg_curl:1.2,lying_leg_curl:1.1,hip_abduction:1.6,hip_adduction:1.6,rdl:2.2,db_rdl:0.9,lunge:0.6,bss:0.6,step_up:0.6,hip_thrust:3,kb_swing:0.8,
 glute_bridge:60,bw_squat:100,bw_lunge:60,calf_raise:80,sit_up:60,decline_situp:40,reverse_crunch:40,leg_raise:30,v_up:40,flutter_kick:80,mountain_climber:80,hollow_hold:120,knee_raise:30,toes_to_bar:20,ab_wheel:25,machine_crunch:1.2,weighted_crunch:0.4,side_plank:180,bicycle_crunch:80,heel_taps:80,oblique_raise:25,woodchop:0.7,pallof:0.5,side_bend:0.6,weighted_twist:0.3,seated_calf:1.5,plank:300,crunch:80,dead_bug:60,russian_twist:80,hanging_raise:30,cable_crunch:1.2};
 const TIERS=[{n:'Bronze',f:'#cd7f32',t:'#2a1608',c:'#e0975a'},{n:'Silver',f:'#c3cad6',t:'#1b1e24',c:'#d3d9e3'},{n:'Diamond',f:'#6fd3ff',t:'#04212d',c:'#7fdcff'},
 {n:'Ultra',f:'#ffd400',t:'#2a2300',c:'#ffd400'},{n:'Titan',f:'#1f3fb8',t:'#e8eeff',c:'#5b84ff'},{n:'Godlike',f:'url(#glg)',t:'#fff',c:'#ff4d7a'}];
-const TH=[0,.2,.27,.33,.39,.45,.5,.55,.6,.65,.7,.75,.8,.85,.89,.93,.97,1];
+// Godlike 1 = 1.15 x the ELITE numbers below; Godlike is only the top 5%.
+const ELITE_SCALE=1.15;
+const TH=[0,.15,.22,.28,.34,.40,.46,.52,.58,.64,.70,.76,.82,.87,.91,.95,.98,1];
 const rankName=i=>i<0?'Unranked':TIERS[Math.floor(i/3)].n+' '+(3-i%3);
 const rankColor=i=>i<0?'var(--muted)':TIERS[Math.floor(i/3)].c;
 const rankFill=i=>i>=15?'linear-gradient(90deg,#ff2d55,#9b30ff)':rankColor(i);
 const rankIdx=s=>{let i=-1;for(let k=0;k<TH.length;k++)if(s>=TH[k])i=k;return i;};
 function bodyW(){const b=+S.settings.bw;return b>0?conv(b,S.settings.bwUnit||U()):0;}
 function exScore(ex){
-  const el=ELITE[ex.id];if(!el)return null;
+  const el=ELITE[ex.id]*ELITE_SCALE;if(!el)return null;
   const h=history(ex.id);if(!h.length)return null;
   if(isLoad(ex)){
     const bw=bodyW();if(!bw)return null;let best=0,br=8;
-    for(const x of h)for(const s of x.sets){const e=metric(ex,+conv(s.w,x.unit)||0,+s.r||0);if(e>best){best=e;br=+s.r||8;}}
+    for(const x of h)for(const s of x.sets){const rr=Math.min(12,+s.r||0),e=metric(ex,+conv(s.w,x.unit)||0,rr);if(e>best){best=e;br=rr||8;}}
     if(!best)return null;
     return{s:best/bw/el,ex,el,bw,reps:Math.min(12,Math.max(1,br))};
   }
@@ -436,6 +473,7 @@ let tab='workout',focusSel='auto',progEx=null,restEnd=0,restTotal=0,audio=null,m
 
 const ICONS={
   workout:'<path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/>',
+  food:'<path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 21V3c-2 1-3 4-3 8h3"/>',
   recovery:'<path d="M3 12h4l2-5 4 10 2-5h6"/>',
   ranks:'<path d="M12 2 20 6.5v9L12 20 4 15.5v-9z"/><path d="M12 7v6"/>',
   history:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
@@ -443,7 +481,7 @@ const ICONS={
   settings:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>'
 };
 function renderTabs(){$('#tabs').innerHTML=Object.keys(ICONS).map(t=>`<button class="${t===tab?'on':''}" data-a="tab" data-t="${t}"><svg viewBox="0 0 24 24">${ICONS[t]}</svg>${t[0].toUpperCase()+t.slice(1)}</button>`).join('');}
-function render(){$('#view').innerHTML={workout:vWorkout,recovery:vRecovery,ranks:vRanks,history:vHistory,progress:vProgress,updates:vUpdates,settings:vSettings}[tab]();renderTabs();}
+function render(){$('#view').innerHTML={workout:vWorkout,food:vFood,recovery:vRecovery,ranks:vRanks,history:vHistory,progress:vProgress,updates:vUpdates,settings:vSettings}[tab]();renderTabs();}
 
 function vWorkout(){
   if(S.active)return vActive();
@@ -479,6 +517,176 @@ function vActive(){
 }
 
 function lastTrained(m){for(let k=S.workouts.length-1;k>=0;k--){const w=S.workouts[k];if(w.exercises.some(e=>{const ex=EX(e.exId);return ex&&ex.p.includes(m);}))return w.end;}return 0;}
+// ---------- food tracker ----------
+const GOALS_DEF={cal:2000,p:150,c:200,f:65};
+const NGOAL={lose:'Lose fat',maintain:'Maintain weight',gain:'Build muscle'};
+const ACT=[[1.2,'Mostly sitting','Desk job, little exercise'],[1.375,'Lightly active','Training 1–3 days a week'],[1.55,'Active','Training 3–5 days a week'],[1.725,'Very active','Hard training 6–7 days a week'],[1.9,'Athlete','Hard training plus a physical job']];
+// Mifflin-St Jeor BMR x activity = maintenance calories; goal adjusts it.
+function calcTargets(n,bwOverride){
+  if(!n)return null;const bw=bwOverride!=null?bwOverride:bodyW();
+  const kg=U()==='lb'?bw*0.45359237:bw,cm=+n.cm,age=+n.age;
+  if(!(kg>25&&cm>100&&age>=13))return null;
+  const bmr=10*kg+6.25*cm-5*age+(n.sex==='f'?-161:5),tdee=bmr*(+n.act||1.375);
+  const mult={lose:.8,maintain:1,gain:1.1}[n.goal]||1;
+  let cal=Math.max(tdee*mult,n.sex==='f'?1200:1500);cal=Math.round(cal/10)*10;
+  const lbs=kg/0.45359237,p=Math.round(lbs*({lose:1,maintain:.8,gain:.9}[n.goal]||.8));
+  const f=Math.round(cal*(n.goal==='maintain'?.3:.25)/9),c=Math.max(50,Math.round((cal-4*p-9*f)/4));
+  return{cal,p,c,f,tdee:Math.round(tdee/10)*10};
+}
+const goals=()=>{const n=S.settings.nut;if(n&&n.auto){const t=calcTargets(n);if(t)return t;}return Object.assign({},GOALS_DEF,S.settings.goals||{});};
+function nutForm(){
+  const n=Object.assign({goal:'maintain',sex:'m',age:'',cm:'',act:1.55},S.settings.nut||{}),lb=U()==='lb';
+  const ti=n.cm?Math.round(n.cm/2.54):'',ft=ti!==''?Math.floor(ti/12):'',inch=ti!==''?ti%12:'';
+  const opt=(v,l,cur)=>`<option value="${v}" ${String(v)===String(cur)?'selected':''}>${l}</option>`;
+  showModal(`<div class="sheethead"><h3>Your daily targets</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
+  <div class="field"><label class="lbl">Your goal</label><div class="seg">${Object.entries(NGOAL).map(([k,l])=>`<label><input type="radio" name="n_goal" id="n_goal_${k}" value="${k}" ${n.goal===k?'checked':''}><span>${l}</span></label>`).join('')}</div></div>
+  <div class="grid2"><div class="field"><label class="lbl">Sex</label><select id="n_sex">${opt('m','Male',n.sex)}${opt('f','Female',n.sex)}</select></div>
+  <div class="field"><label class="lbl">Age</label><input type="text" inputmode="numeric" id="n_age" value="${n.age}" placeholder="years"></div></div>
+  <div class="grid2">${lb?`<div class="field"><label class="lbl">Height</label><div class="svrow"><input type="text" inputmode="numeric" id="n_ft" value="${ft}" placeholder="5"><span class="muted">ft</span><input type="text" inputmode="numeric" id="n_in" value="${inch}" placeholder="10"><span class="muted">in</span></div></div>`:`<div class="field"><label class="lbl">Height (cm)</label><input type="text" inputmode="numeric" id="n_cm" value="${n.cm?Math.round(n.cm):''}" placeholder="cm"></div>`}
+  <div class="field"><label class="lbl">Body weight (${U()})</label><input type="text" inputmode="decimal" id="n_bw" value="${bodyW()||''}" placeholder="${U()}"></div></div>
+  <div class="field"><label class="lbl">Activity level</label><select id="n_act">${ACT.map(([v,l,d])=>opt(v,l+' — '+d,n.act)).join('')}</select></div>
+  <div class="card nutres" id="n_res"></div>
+  <p class="muted small">Estimates using the Mifflin-St Jeor formula, the standard used by dietitians. A starting point, not medical advice: adjust after a few weeks based on how your weight changes. If you have a health condition, check with your doctor.</p>
+  <button class="btn primary" data-a="savenut">Use these targets</button>`);
+  nutPreview();
+}
+function readNut(){
+  const num=id=>{const el=$('#'+id);const v=el?parseFloat((el.value||'').replace(',','.')):NaN;return isFinite(v)?v:0;};
+  const g=document.querySelector('input[name="n_goal"]:checked');
+  const cm=U()==='lb'?(num('n_ft')*12+num('n_in'))*2.54:num('n_cm');
+  return{goal:g?g.value:'maintain',sex:$('#n_sex').value,age:num('n_age'),cm:Math.round(cm),act:+$('#n_act').value,bw:num('n_bw')};
+}
+function nutPreview(){const el=$('#n_res');if(!el)return;const x=readNut(),t=calcTargets(x,x.bw);
+  el.innerHTML=t?`<div class="muted small">Maintenance ≈ ${t.tdee.toLocaleString()} kcal/day</div><div class="big" style="margin:4px 0 8px">${t.cal.toLocaleString()} <span class="muted small" style="font-weight:400">kcal/day</span></div><div class="nutmac"><span><b>${t.p}g</b> protein</span><span><b>${t.c}g</b> carbs</span><span><b>${t.f}g</b> fat</span></div>`:'<p class="muted small" style="margin:0">Fill in your age, height and body weight to see your targets.</p>';}
+const dk=t=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+let foodDay=dk(Date.now()),foodEdit=null,scanThumb='';
+const r1=v=>Math.round(v*10)/10;
+function dayTotals(day){const t={cal:0,p:0,c:0,f:0};for(const e of S.food)if(e.d===day){const s=+e.sv||0;t.cal+=s*(+e.cal||0);t.p+=s*(+e.p||0);t.c+=s*(+e.c||0);t.f+=s*(+e.f||0);}return t;}
+function shiftDay(n){const[y,m,d]=foodDay.split('-').map(Number);const t=new Date(y,m-1,d+n).getTime();if(n>0&&dk(t)>dk(Date.now()))return;foodDay=dk(t);}
+function dayLabel(day){const today=dk(Date.now()),[y,m,d]=day.split('-').map(Number),yest=dk(new Date(y,m-1,d+1).getTime())===today;
+  return day===today?'Today':yest?'Yesterday':new Date(y,m-1,d).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});}
+function macroBar(lbl,v,g,unit,col){const pct=g?Math.min(100,v/g*100):0;return`<div class="mac"><div class="machead"><span>${lbl}</span><span><b>${Math.round(v)}</b><span class="muted"> / ${g}${unit}</span></span></div><div class="track"><div class="fill" style="width:${pct}%;background:${col}"></div></div></div>`;}
+function recentFoods(){const seen=new Set(),out=[];for(let i=S.food.length-1;i>=0&&out.length<6;i--){const e=S.food[i];const k=(e.name||'').toLowerCase();if(!k||seen.has(k))continue;seen.add(k);out.push(e);}return out;}
+function vFood(){
+  const g=goals(),t=dayTotals(foodDay),list=S.food.filter(e=>e.d===foodDay),left=g.cal-t.cal,isToday=foodDay===dk(Date.now());
+  const calPct=g.cal?Math.min(100,t.cal/g.cal*100):0;
+  const rows=list.map(e=>{const s=+e.sv||0;return`<div class="fe" data-a="editfood" data-id="${esc(e.id)}"><div class="fem"><b>${esc(e.name||'Food')}</b><span class="muted small">${s!==1?r1(s)+' servings · ':''}P ${r1(s*e.p)}g · C ${r1(s*e.c)}g · F ${r1(s*e.f)}g</span></div><span class="fek">${Math.round(s*e.cal)}<span class="muted small"> kcal</span></span><button class="icon" data-a="delfood" data-id="${esc(e.id)}" aria-label="Delete">✕</button></div>`;}).join('');
+  const rec=recentFoods().map(e=>`<button class="chip qa" data-a="readd" data-id="${esc(e.id)}">+ ${esc(e.name)} <span class="muted">${Math.round(e.cal)}</span></button>`).join('');
+  return`<h1>Food</h1>
+  <div class="daynav"><button class="icon" data-a="day-">‹</button><b>${dayLabel(foodDay)}</b><button class="icon" data-a="day+" ${isToday?'disabled style="opacity:.3"':''}>›</button></div>
+  <div class="card"><div class="calrow"><div><div class="big">${Math.round(t.cal).toLocaleString()}</div><div class="muted small">of ${g.cal.toLocaleString()} kcal</div></div><div style="text-align:right"><div class="big" style="color:${left<0?'var(--bad)':'var(--good)'}">${Math.abs(Math.round(left)).toLocaleString()}</div><div class="muted small">${left<0?'over':'left'}</div></div></div>
+  <div class="track" style="height:10px;margin:12px 0 16px"><div class="fill" style="width:${calPct}%;background:var(--acc)"></div></div>
+  ${macroBar('Protein',t.p,g.p,'g','#5b9dff')}${macroBar('Carbs',t.c,g.c,'g','#f5c04a')}${macroBar('Fat',t.f,g.f,'g','#ff5ea8')}</div>
+  <button class="btn primary big" data-a="scanfood">📷 Scan nutrition label</button>
+  <button class="btn ghost" data-a="addfood">+ Add manually</button>
+  <input type="file" id="scanfile" accept="image/*" capture="environment" hidden>
+  ${rec?`<div class="card" style="margin-top:12px"><h3>Add again</h3><div>${rec}</div></div>`:''}
+  <div class="card" style="margin-top:12px"><h3>${isToday?"Today's food":'Food'}</h3>${rows||'<p class="muted small" style="margin:0">Nothing logged yet. Scan the nutrition label on the package, or add it manually.</p>'}</div>
+  <div class="card"><h3>Daily goals</h3>${(()=>{const n=S.settings.nut;
+    if(!n)return`<p class="muted small" style="margin-top:0">Get targets for your goal: lose fat, maintain or build muscle.</p><button class="btn primary" style="margin:0 0 14px" data-a="nutform">Calculate my targets</button>`;
+    return`<div class="nutsum"><div><b>${NGOAL[n.goal]}</b><div class="muted small">${n.auto&&calcTargets(n)?'Targets update with your body weight':'Using your own numbers'}</div></div><button class="btn ghost sm" style="width:auto" data-a="nutform">Edit</button></div>${!n.auto?'<button class="btn ghost sm" style="margin:0 0 12px" data-a="nutauto">Recalculate from my goal</button>':''}`;})()}
+  <div class="grid2">
+  ${[['cal','Calories','kcal'],['p','Protein','g'],['c','Carbs','g'],['f','Fat','g']].map(([k,l,u])=>`<div class="field"><label class="lbl">${l} (${u})</label><input type="text" inputmode="numeric" data-goal="${k}" value="${g[k]}"></div>`).join('')}</div><p class="muted small" style="margin:0">Change any number to set it yourself.</p></div>`;
+}
+function foodForm(e,msg){
+  foodEdit=e;
+  const v=k=>e&&e[k]!==''&&e[k]!=null?e[k]:'';
+  showModal(`<div class="sheethead"><h3>${e&&e.id?'Edit food':'Add food'}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
+  ${msg?`<p class="small" style="margin:0 0 10px;color:${msg.ok?'var(--good)':'var(--warn)'}">${esc(msg.t)}</p>`:''}
+  ${scanThumb&&!(e&&e.id)?`<img src="${scanThumb}" class="scanthumb" alt="Label photo">`:''}
+  <div class="field"><label class="lbl">Food name</label><input type="text" id="fname" value="${esc(v('name'))}" placeholder="e.g. Granola"></div>
+  <div class="field"><label class="lbl">Servings eaten</label><div class="svrow"><button class="icon" data-a="sv-">−</button><input type="text" inputmode="decimal" id="fsv" value="${v('sv')||1}"><button class="icon" data-a="sv+">+</button></div></div>
+  <div class="lbl" style="margin-top:4px">Per serving (from the label)</div>
+  <div class="grid2">${[['cal','Calories'],['p','Protein (g)'],['c','Carbs (g)'],['f','Fat (g)']].map(([k,l])=>`<div class="field"><label class="lbl">${l}</label><input type="text" inputmode="decimal" id="f_${k}" value="${v(k)}" placeholder="0"></div>`).join('')}</div>
+  <p class="muted small" id="ftotal"></p>
+  <button class="btn primary" data-a="savefood">${e&&e.id?'Save changes':'Add to '+(foodDay===dk(Date.now())?'today':dayLabel(foodDay))}</button>`);
+  foodTotal();
+}
+function readFoodForm(){const n=id=>{const x=parseFloat(($('#'+id).value||'').replace(',','.'));return isFinite(x)&&x>=0?x:0;};return{name:$('#fname').value.trim(),sv:n('fsv')||1,cal:n('f_cal'),p:n('f_p'),c:n('f_c'),f:n('f_f')};}
+function foodTotal(){const el=$('#ftotal');if(!el)return;const x=readFoodForm(),s=x.sv;el.textContent=`Total: ${Math.round(s*x.cal)} kcal · P ${r1(s*x.p)}g · C ${r1(s*x.c)}g · F ${r1(s*x.f)}g`;}
+
+// --- label reading (Tesseract.js runs on the phone; nothing is uploaded) ---
+let TESS=null,tessWorker=null;
+function loadTess(){if(window.Tesseract)return Promise.resolve();if(TESS)return TESS;
+  TESS=new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';s.onload=res;s.onerror=()=>{TESS=null;rej(new Error('load'));};document.head.appendChild(s);});return TESS;}
+function scanStatus(t,p){const a=$('#scanmsg'),b=$('#scanbar');if(a)a.textContent=t;if(b&&p!=null)b.style.width=Math.round(p*100)+'%';}
+function fileToCanvas(file){return new Promise((res,rej)=>{const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{
+  const M=1800,k=Math.min(1,M/Math.max(img.width,img.height)),w=Math.round(img.width*k),h=Math.round(img.height*k);
+  const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.drawImage(img,0,0,w,h);URL.revokeObjectURL(url);
+  const th=document.createElement('canvas'),tk=Math.min(1,360/Math.max(w,h));th.width=Math.round(w*tk);th.height=Math.round(h*tk);th.getContext('2d').drawImage(c,0,0,th.width,th.height);scanThumb=th.toDataURL('image/jpeg',.7);
+  x.putImageData(cleanLight(x.getImageData(0,0,w,h)),0,0);res(c);};
+  img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('img'));};img.src=url;});}
+// Even out shadows/uneven light, then boost contrast (helps text recognition a lot).
+function cleanLight(d){
+  const w=d.width,h=d.height,p=d.data,g=new Float32Array(w*h);
+  for(let i=0,j=0;j<w*h;i+=4,j++)g[j]=.299*p[i]+.587*p[i+1]+.114*p[i+2];
+  const W=w+1,I=new Float64Array(W*(h+1));
+  for(let y=0;y<h;y++){let row=0;for(let x=0;x<w;x++){row+=g[y*w+x];I[(y+1)*W+x+1]=I[y*W+x+1]+row;}}
+  const r=Math.max(8,Math.round(Math.max(w,h)/40));
+  for(let y=0;y<h;y++){const y0=Math.max(0,y-r),y1=Math.min(h,y+r+1);
+    for(let x=0;x<w;x++){const x0=Math.max(0,x-r),x1=Math.min(w,x+r+1);
+      const bg=(I[y1*W+x1]-I[y0*W+x1]-I[y1*W+x0]+I[y0*W+x0])/((y1-y0)*(x1-x0));
+      let v=g[y*w+x]/(bg+1)*235;v=(v-150)*2.2+150;v=v<0?0:v>255?255:v;const k=(y*w+x)*4;p[k]=p[k+1]=p[k+2]=v;}}
+  return d;
+}
+async function scanLabel(file){
+  scanThumb='';
+  showModal(`<div class="sheethead"><h3>Reading label…</h3></div><p class="muted small" id="scanmsg">Preparing photo</p><div class="track" style="height:10px"><div class="fill" id="scanbar" style="width:3%;background:var(--acc);transition:width .3s"></div></div><p class="muted small" style="margin-top:12px">The first scan downloads the label reader (about 10 MB), so it takes longer. After that it's quicker.</p>`);
+  modalLocked=true;
+  let canvas;try{canvas=await fileToCanvas(file);}catch(e){modalLocked=false;foodForm(null,{t:"Couldn't open that photo. Enter the numbers manually."});return;}
+  try{
+    scanStatus('Loading label reader…',.08);await loadTess();
+    if(!tessWorker)tessWorker=await Tesseract.createWorker('eng',1,{logger:m=>{if(m.status==='recognizing text')scanStatus('Reading the numbers…',.3+.7*m.progress);else if(/load|init/.test(m.status||''))scanStatus('Loading label reader…',.08+.2*(m.progress||0));}});
+    scanStatus('Reading the numbers…',.3);
+    const {data}=await tessWorker.recognize(canvas);
+    const r=parseLabel(data.text||'');modalLocked=false;
+    let est=false;if(r.cal===''&&r.p!==''&&r.c!==''&&r.f!==''){r.cal=Math.round(9*r.f+4*r.c+4*r.p);est=true;}
+    const n=['cal','p','c','f'].filter(k=>r[k]!=='').length;
+    if(n===4&&!est){const m=9*r.f+4*r.c+4*r.p;if(Math.abs(m-r.cal)>Math.max(40,.3*m)){foodForm({name:'',sv:1,cal:r.cal,p:r.p,c:r.c,f:r.f},{t:`Check the calories: the label reader found ${r.cal}, but the protein, carbs and fat add up to about ${Math.round(m)}. Fix whichever number is wrong.`});const c=$('#f_cal');if(c)c.style.borderColor='var(--warn)';return;}}
+    foodForm({name:'',sv:1,cal:r.cal,p:r.p,c:r.c,f:r.f},n===4?{ok:1,t:est?'Found protein, carbs and fat. Calories were estimated from them, so check against the label.':'Found all 4 values. Check them against the label, then add.'}:n?{t:`Found ${n} of 4 values. Fill in the rest from the label.`}:{t:"Couldn't read the label. Try a closer, straight-on photo in good light, or type the numbers in."});
+  }catch(e){modalLocked=false;foodForm(null,{t:"Couldn't load the label reader. Check your internet connection, or type the numbers in."});}
+}
+// Parse OCR text from a nutrition label -> {cal,p,c,f} (per serving). Values '' if not found.
+function parseLabel(text){
+  const lines=String(text).split(/\r?\n/).map(l=>l.trim()).filter(Boolean),low=lines.map(l=>l.toLowerCase());
+  const tokOf=rest=>{
+    const toks=rest.replace(/[()]/g,' ').split(/\s+/).filter(Boolean);let val=null,pct=null;
+    for(const t of toks){
+      if(/%$/.test(t)){if(val&&pct==null){const q=parseFloat(t.replace(/[oO]/g,'0'));if(isFinite(q))pct=q;}continue;}
+      if(val)continue;
+      const m=t.match(/^([\dOoIl][\dOoIl.,]*)(mg|g|kcal|cal)?[.,:;]?$/);
+      if(!m||!(/\d/.test(m[1])||m[2]))continue;
+      const raw=m[1].replace(/[oO]/g,'0').replace(/[lI]/g,'1').replace(',','.');if(!/^\d+(\.\d+)?$/.test(raw))continue;
+      val={raw,unit:(m[2]||'').toLowerCase()};
+    }
+    return val?Object.assign(val,{pct}):null;
+  };
+  const find=(prefer,fallback,bad)=>{
+    for(const re of [prefer,fallback]){if(!re)continue;
+      for(let i=0;i<low.length;i++){const m=low[i].match(re);if(!m||(bad&&bad.test(low[i])))continue;
+        const t=tokOf(lines[i].slice(m.index+m[0].length));if(t)return t;}}
+    return null;
+  };
+  const cands=(t,dv)=>{if(!t)return[];let v=+t.raw;if(t.unit==='mg')v=v/1000;const out=[];
+    if(!t.unit&&/9$/.test(t.raw)&&t.raw.length>1&&!t.raw.includes('.'))out.push(+t.raw.slice(0,-1));
+    out.push(v);
+    if(t.pct!=null&&dv)out.sort((a,b)=>Math.abs(a-t.pct*dv/100)-Math.abs(b-t.pct*dv/100));
+    return out;};
+  // calories
+  let cal='';
+  for(const l of low){const m=l.match(/(\d[\d.,]*)\s*kcal/);if(m){cal=parseFloat(m[1].replace(',','.'));break;}}
+  if(cal===''){for(let i=0;i<low.length;i++){if(!/calories|calorie/.test(low[i])||/from fat/.test(low[i]))continue;
+    const t=tokOf(lines[i].slice(low[i].search(/calorie/)).replace(/^\S+/,''))||(lines[i+1]?tokOf(lines[i+1]):null);if(t){cal=+t.raw;break;}}}
+  const F=find(/total\s*fat/,/\bfat\b/,/saturat|trans|poly|mono|from fat|sat\./);
+  const C=find(/total\s*carb[a-z]*/,/carbohydrates?|\bcarbs?\b/,/of which|sugar|fib(er|re)/);
+  const P=find(/protein/,null,null);
+  const cf=cands(F,78),cc=cands(C,275),cp=cands(P,50);
+  const pick={f:cf[0]??'',c:cc[0]??'',p:cp[0]??''};
+  if(cal!==''&&cf.length&&cc.length&&cp.length){let best=1e9;
+    cf.forEach((f,i)=>cc.forEach((c,j)=>cp.forEach((p,k)=>{const s=Math.abs(9*f+4*c+4*p-cal)+3*(i+j+k);if(s<best){best=s;pick.f=f;pick.c=c;pick.p=p;}})));}
+  return{cal,p:pick.p,c:pick.c,f:pick.f};
+}
+
 function vRecovery(){
   const f=fatigue();
   const rows=Object.keys(MUSCLES).map(m=>{
@@ -715,6 +923,21 @@ document.addEventListener('click',e=>{
       rebuild();save();closeModal();render();toast('Exercise added');break;}
     case'delcustom':{const id=b.dataset.id;if(S.workouts.some(w=>w.exercises.some(e=>e.exId===id))){toast("It's in your history, so it can't be deleted");break;}
       if(confirm('Delete this custom exercise?')){S.custom=S.custom.filter(c=>c.id!==id);rebuild();save();render();}break;}
+    case'day-':shiftDay(-1);render();break;
+    case'day+':shiftDay(1);render();break;
+    case'scanfood':$('#scanfile').click();break;
+    case'addfood':scanThumb='';foodForm(null);break;
+    case'sv-':case'sv+':{const el=$('#fsv');let v=parseFloat((el.value||'1').replace(',','.'))||1;v=b.dataset.a==='sv+'?(v<1?Math.min(1,v+.25):v+.5):(v<=1?Math.max(.25,v-.25):v-.5);el.value=r1(v);foodTotal();break;}
+    case'savefood':{const x=readFoodForm();if(!x.cal&&!x.p&&!x.c&&!x.f){toast('Enter at least the calories');break;}
+      if(foodEdit&&foodEdit.id){Object.assign(foodEdit,x);}else S.food.push(Object.assign({id:uid(),d:foodDay,t:Date.now()},x));
+      save();closeModal();render();toast('Saved');break;}
+    case'editfood':{if(e.target.closest('[data-a="delfood"]'))break;const it=S.food.find(f=>f.id===b.dataset.id);if(it){scanThumb='';foodForm(it);}break;}
+    case'delfood':{const it=S.food.find(f=>f.id===b.dataset.id);if(it&&confirm('Remove '+(it.name||'this food')+'?')){S.food=S.food.filter(f=>f!==it);save();render();}break;}
+    case'readd':{const it=S.food.find(f=>f.id===b.dataset.id);if(it){S.food.push({id:uid(),d:foodDay,t:Date.now(),name:it.name,sv:it.sv,cal:it.cal,p:it.p,c:it.c,f:it.f});save();render();toast('Added '+it.name);}break;}
+    case'nutform':nutForm();break;
+    case'nutauto':if(S.settings.nut){S.settings.nut.auto=true;save();render();toast('Targets recalculated');}break;
+    case'savenut':{const x=readNut();if(!calcTargets(x,x.bw)){toast('Fill in your age, height and body weight');break;}
+      S.settings.bw=x.bw;S.settings.bwUnit=U();S.settings.nut={goal:x.goal,sex:x.sex,age:x.age,cm:x.cm,act:x.act,auto:true};save();closeModal();render();toast('Targets set');break;}
     case'onboarded':S.settings.onboarded=true;save();closeModal();render();break;
   }
 });
@@ -727,12 +950,17 @@ document.addEventListener('input',e=>{
     save();return;
   }
   if(t.id==='pq')renderPickerList();
+  if(t.closest&&t.closest('#sheet')&&/^(fsv|f_)/.test(t.id))foodTotal();
+  if(t.closest&&t.closest('#sheet')&&/^n_/.test(t.id||t.name))nutPreview();
 });
 document.addEventListener('change',e=>{
   const t=e.target;
   if(t.id==='focus'){focusSel=t.value;return;}
   if(t.id==='progsel'){progEx=t.value;render();return;}
   if(t.id==='importfile'){importFile(t.files[0]);t.value='';return;}
+  if(t.id==='scanfile'){const f=t.files[0];t.value='';if(f)scanLabel(f);return;}
+  if(t.dataset.goal){const v=parseFloat(t.value);S.settings.goals=Object.assign(goals(),{[t.dataset.goal]:v>0?Math.round(v):GOALS_DEF[t.dataset.goal]});if(S.settings.nut)S.settings.nut.auto=false;save();render();return;}
+  if(t.closest&&t.closest('#sheet')&&/^n_/.test(t.id||t.name)){nutPreview();return;}
   if(t.dataset.s==='bw'){const v=parseFloat(t.value.replace(',','.'));S.settings.bw=v>0?v:'';S.settings.bwUnit=U();save();if(tab==='ranks')render();return;}
   if(t.dataset.s){let v=t.value;if(t.dataset.s==='count'||t.dataset.s==='rest')v=+v;S.settings[t.dataset.s]=v;save();return;}
   if(t.dataset.eq){const set=new Set(S.settings.equip);t.checked?set.add(t.dataset.eq):set.delete(t.dataset.eq);S.settings.equip=[...set];save();}

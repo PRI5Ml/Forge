@@ -3,6 +3,32 @@ Put each new update at the TOP, right below this note.
 Start an update with ## and a title. Use - at the start of a line for a bullet point.
 Plain lines show as normal text.
 
+## Oct 26 — Daily targets for your goal
+- Food tab → Calculate my targets: pick lose fat, maintain or build muscle
+- Uses your age, height, weight and activity level to set calories, protein, carbs and fat
+- Targets update automatically as your body weight changes
+- You can still type in your own numbers anytime
+
+## Oct 26 — New: Food tracker
+- New Food tab to track calories, protein, carbs and fat each day
+- Scan nutrition label: take a photo of the label and the numbers fill in automatically
+- Always double-check the numbers against the label before adding
+- Set your own daily goals, and re-add foods you eat often with one tap
+- Food is included in Copy backup
+
+## Oct 26 — More ways to rank every muscle
+- Forearms: reverse curl, reverse/behind-the-back/cable wrist curls, dead hang, plate pinch
+- Calves: leg press, dumbbell and single-leg calf raises
+- Inner thighs: cable adduction, Copenhagen plank, dumbbell sumo squat
+- Outer hips: cable abduction, side-lying leg raise, banded lateral walk, fire hydrant
+- Lower back: good morning, weighted back extension, bird dog
+
+## Oct 26 — Ranks are now harder
+- Godlike now takes truly elite strength (top 5% of the scale)
+- Higher standards for every rank above Diamond
+- Sets over 12 reps no longer inflate your rank
+- Your rank may drop a little — that's expected!
+
 ## Oct 26 — Core workouts & phone backups
 - 21 new ab and oblique exercises
 - New Core focus on the Workout tab
