@@ -1,42 +1,36 @@
 HOW TO POST AN UPDATE (this note is not shown in the app)
-Put each new update at the TOP, right below this note.
-Start an update with ## and a title. Use - at the start of a line for a bullet point.
-Plain lines show as normal text.
+One post per day: put the newest day at the TOP, right below this note, and add to that day's post if it already exists.
+Start a post with ## and a title. Use - at the start of a line for a bullet point. Plain lines show as normal text.
+For Spanish, add " || " then the Spanish text on the same line (English || Español).
 
-## Oct 26 — Daily targets for your goal
-- Food tab → Calculate my targets: pick lose fat, maintain or build muscle
-- Uses your age, height, weight and activity level to set calories, protein, carbs and fat
-- Targets update automatically as your body weight changes
-- You can still type in your own numbers anytime
+## Oct 27 updates || Novedades del 27 oct
+New features || Funciones nuevas
+- Calisthenics: a new Calisthenics focus on the Workout tab and 22 new moves (diamond and archer push-ups, muscle-ups, pistol squats, L-sits, front lever, handstands and more) || Calistenia: nuevo enfoque Calistenia en Entrenar y 22 ejercicios nuevos (flexiones diamante y arquero, muscle-ups, sentadillas pistola, L-sit, front lever, paradas de manos y más)
+- When a bodyweight move gets easy, the app suggests the next harder version; advanced skills unlock once you've mastered the move before them || Cuando un ejercicio con peso corporal se vuelve fácil, la app sugiere la siguiente versión más difícil; las habilidades avanzadas se desbloquean al dominar la anterior
+- Streaks on the Workout tab: rest days are fine, just don't miss 3 days in a row. Plus a weekly goal and milestone celebrations || Rachas en Entrenar: los días de descanso cuentan, solo no faltes 3 días seguidos. Además, meta semanal y celebraciones de logros
+- How-to guide for every exercise: tap ⓘ during a workout for steps, a form tip, the muscles worked and photos || Guía para cada ejercicio: toca ⓘ durante el entrenamiento para ver pasos, un consejo de técnica, los músculos y fotos
+- Body weight log with a trend chart in Progress, and a quick "Log today's weight" on the Food tab || Registro de peso con gráfica de tendencia en Progreso y un acceso rápido en Comida
+- Barcode scanning on the Food tab. Foods you've scanned before come up instantly, even offline || Escaneo de códigos de barras en Comida. Lo que ya escaneaste aparece al instante, incluso sin internet
+- Forge now speaks Spanish: pick your language when you open the app, or change it in Settings → Language || Forge ahora habla español: elige tu idioma al abrir la app o cámbialo en Ajustes → Idioma
+- Injuries: type what's hurt (Settings, or the 🩹 button on the Workout tab) and generated workouts skip exercises that load that area. Healed? Tap Healed ✓ || Lesiones: escribe qué te duele (en Ajustes o con el botón 🩹 en Entrenar) y los entrenamientos generados evitarán los ejercicios que carguen esa zona. ¿Ya sanaste? Toca Curado ✓
+Improvements || Mejoras
+- Weighted dips, pull-ups and other bodyweight moves now count toward your ranks (body weight must be set) || Los fondos, dominadas y otros ejercicios con peso añadido ahora cuentan para tus rangos (necesitas tu peso registrado)
+- Bodyweight exercises show an "Extra lb/kg" column: only enter added weight like a dip belt or vest || Los ejercicios con peso corporal muestran una columna "Extra lb/kg": solo ingresa peso añadido, como un cinturón o chaleco
+- Your ranks and food targets update from your logged weight || Tus rangos y metas de comida se actualizan con tu peso registrado
+- New app icon. To see it, back up (Settings → Copy backup), then remove and re-add the app || Nuevo ícono. Para verlo, haz un respaldo (Ajustes → Copiar respaldo) y vuelve a agregar la app
+- Exercise search works in Spanish, with or without accents || La búsqueda de ejercicios funciona en español, con o sin acentos
 
-## Oct 26 — New: Food tracker
-- New Food tab to track calories, protein, carbs and fat each day
-- Scan nutrition label: take a photo of the label and the numbers fill in automatically
-- Always double-check the numbers against the label before adding
-- Set your own daily goals, and re-add foods you eat often with one tap
-- Food is included in Copy backup
+## Oct 26 updates || Novedades del 26 oct
+New features || Funciones nuevas
+- Food tab: track calories, protein, carbs and fat each day, and scan nutrition labels with your camera || Pestaña Comida: registra calorías, proteína, carbohidratos y grasa cada día y escanea etiquetas nutricionales con la cámara
+- Calculate my targets: daily calories and macros for losing fat, maintaining or building muscle || Calcular mis metas: calorías y macros diarios para perder grasa, mantener o ganar músculo
+- Core focus on the Workout tab and 21 new ab and oblique exercises. Obliques now have their own rank and recovery || Enfoque Core en Entrenar y 21 ejercicios nuevos de abdomen y oblicuos. Los oblicuos ahora tienen su propio rango y recuperación
+- 20 more exercises so every muscle can be ranked (forearms, calves, inner thighs, outer hips, lower back) || 20 ejercicios más para que cada músculo pueda subir de rango (antebrazos, pantorrillas, aductores, abductores, espalda baja)
+- Copy backup / Paste backup in Settings, to move your history to a new phone || Copiar/Pegar respaldo en Ajustes para pasar tu historial a un teléfono nuevo
+- Updates button: tap the bell on the Workout screen (you're looking at it!) || Botón de novedades: toca la campana en Entrenar (¡lo estás viendo!)
+Improvements || Mejoras
+- Ranks are harder: Godlike now takes truly elite strength, and sets over 12 reps no longer inflate your rank || Los rangos son más difíciles: Divino ahora requiere fuerza de élite y las series de más de 12 reps ya no inflan tu rango
 
-## Oct 26 — More ways to rank every muscle
-- Forearms: reverse curl, reverse/behind-the-back/cable wrist curls, dead hang, plate pinch
-- Calves: leg press, dumbbell and single-leg calf raises
-- Inner thighs: cable adduction, Copenhagen plank, dumbbell sumo squat
-- Outer hips: cable abduction, side-lying leg raise, banded lateral walk, fire hydrant
-- Lower back: good morning, weighted back extension, bird dog
-
-## Oct 26 — Ranks are now harder
-- Godlike now takes truly elite strength (top 5% of the scale)
-- Higher standards for every rank above Diamond
-- Sets over 12 reps no longer inflate your rank
-- Your rank may drop a little — that's expected!
-
-## Oct 26 — Core workouts & phone backups
-- 21 new ab and oblique exercises
-- New Core focus on the Workout tab
-- Obliques now have their own rank and recovery
-- Copy backup / Paste backup in Settings, to move your history to a new phone
-- New Updates button: tap the bell on the Workout screen (you're looking at it!)
-
-## Oct 26 — Strength ranks & body map
-- New Ranks tab: Bronze 3 up to Godlike 1 for every muscle
-- Body map colored by your rank
-- Added seated & lying leg curl, hip abduction & hip adduction
+## Oct 24–25 || 24–25 oct
+- Strength ranks (Bronze 3 to Godlike 1) for every muscle, with a body map colored by your rank || Rangos de fuerza (Bronce 3 a Divino 1) para cada músculo, con un mapa corporal coloreado según tu rango
+- Seated and lying leg curls, hip abduction and hip adduction added || Se agregaron curl femoral sentado y acostado, abducción y aducción de cadera
