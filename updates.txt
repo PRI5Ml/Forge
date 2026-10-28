@@ -3,6 +3,12 @@ One post per day: put the newest day at the TOP, right below this note, and add 
 Start a post with ## and a title. Use - at the start of a line for a bullet point. Plain lines show as normal text.
 For Spanish, add " || " then the Spanish text on the same line (English || Español).
 
+## Oct 28 updates || Novedades del 28 oct
+New features || Funciones nuevas
+- Sex and age are now part of setup and in Settings. They make your calorie targets more accurate || El sexo y la edad ahora forman parte de la configuración y están en Ajustes. Hacen que tus metas de calorías sean más precisas
+- Women's ranks: if you pick Female, your ranks use women's strength standards and the Ranks tab shows a female body || Rangos para mujeres: si eliges Mujer, tus rangos usan estándares de fuerza femeninos y la pestaña Rangos muestra un cuerpo femenino
+- Idea box: tap the 💬 button next to the bell to send us an idea or a feature you'd like to see || Buzón de ideas: toca el botón 💬 junto a la campana para enviarnos una idea o una función que te gustaría ver
+
 ## Oct 27 updates || Novedades del 27 oct
 New features || Funciones nuevas
 - Calisthenics: a new Calisthenics focus on the Workout tab and 22 new moves (diamond and archer push-ups, muscle-ups, pistol squats, L-sits, front lever, handstands and more) || Calistenia: nuevo enfoque Calistenia en Entrenar y 22 ejercicios nuevos (flexiones diamante y arquero, muscle-ups, sentadillas pistola, L-sit, front lever, paradas de manos y más)
