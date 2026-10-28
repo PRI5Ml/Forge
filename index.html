@@ -426,7 +426,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.10.28j';
+const APP_VERSION='2026.10.28k';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup'],onboarded:false},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{}});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -698,7 +698,7 @@ const ES_BASE={
 "Looking up food…":"Buscando alimento…","You've had this before. Check the servings, then add.":"Ya lo has comido antes. Revisa las porciones y luego agrega.",
 "Couldn't reach the food database. Check your connection, or scan the nutrition label.":"No se pudo conectar con la base de datos de alimentos. Revisa tu conexión o escanea la etiqueta nutricional.",
 "This barcode isn't in the food database yet. Scan the nutrition label instead, or type the numbers in.":"Este código aún no está en la base de datos de alimentos. Escanea la etiqueta nutricional o escribe los números.",
-"Your daily targets":"Tus metas diarias","Your goal":"Tu objetivo","Lose fat":"Perder grasa","Maintain weight":"Mantener peso","Sex":"Sexo","Male":"Hombre","Time":"Tiempo","Type each time as minutes:seconds, like 1:45 (or 1.45).":"Escribe cada tiempo en minutos:segundos, como 1:45 (o 1.45).","First time: log your time for each rep (e.g. 1:45)":"Primera vez: registra tu tiempo en cada repetición (ej. 1:45)","Fastest time per session (lower is better)":"Mejor tiempo por sesión (menos es mejor)","No times logged yet.":"Aún no hay tiempos registrados.","Workout removed":"Entrenamiento eliminado","Undo":"Deshacer","Workout restored":"Entrenamiento restaurado","Remove workout":"Eliminar entrenamiento","Cancel":"Cancelar","Tip: press and hold a workout to remove it.":"Consejo: mantén presionado un entrenamiento para eliminarlo.","ⓘ How ranks work":"ⓘ Cómo funcionan los rangos","ⓘ How it's calculated":"ⓘ Cómo se calcula","Suggest an idea":"Sugerir una idea","What would make Forge better for you? A new exercise, a feature, something that bugs you. Every message is read.":"¿Qué haría que Forge fuera mejor para ti? Un ejercicio nuevo, una función, algo que te moleste. Se leen todos los mensajes.","Your idea":"Tu idea","e.g. Add a timer for planks":"p. ej. Agregar un temporizador para planchas","Name (optional)":"Nombre (opcional)","Email (optional)":"Correo (opcional)","for a reply":"para responderte","Send":"Enviar","Sending…":"Enviando…","Type your idea first":"Escribe tu idea primero","The idea box isn't set up yet":"El buzón de ideas aún no está listo","You're offline. Your idea is saved here, send it when you're back online":"No tienes conexión. Tu idea queda guardada aquí; envíala cuando vuelvas a tener internet","Thanks! Your idea was sent 💡":"¡Gracias! Tu idea fue enviada 💡","Couldn't send. Check your internet and try again":"No se pudo enviar. Revisa tu internet e inténtalo de nuevo","Choose":"Elegir","Two quick questions":"Dos preguntas rápidas","Your sex and age make your calorie targets more accurate. You can change them anytime in Settings.":"Tu sexo y edad hacen que tus metas de calorías sean más precisas. Puedes cambiarlos cuando quieras en Ajustes.","Not now":"Ahora no","Add your sex and age":"Agrega tu sexo y edad","Enter an age between 13 and 110":"Ingresa una edad entre 13 y 110","Female":"Mujer","Age":"Edad","years":"años","Height":"Estatura",
+"Your daily targets":"Tus metas diarias","Your goal":"Tu objetivo","Lose fat":"Perder grasa","Maintain weight":"Mantener peso","Sex":"Sexo","Male":"Hombre","📤 Share my ranks":"📤 Compartir mis rangos","📋 Copy as text":"📋 Copiar como texto","Share my ranks":"Compartir mis rangos","Press and hold the picture to save or share it.":"Mantén presionada la imagen para guardarla o compartirla.","Download picture":"Descargar imagen","Ranks copied. Paste them in a message":"Rangos copiados. Pégalos en un mensaje","Couldn't make the picture. Try Copy as text":"No se pudo crear la imagen. Prueba Copiar como texto","Copy as text":"Copiar como texto","Time":"Tiempo","Type each time as minutes:seconds, like 1:45 (or 1.45).":"Escribe cada tiempo en minutos:segundos, como 1:45 (o 1.45).","First time: log your time for each rep (e.g. 1:45)":"Primera vez: registra tu tiempo en cada repetición (ej. 1:45)","Fastest time per session (lower is better)":"Mejor tiempo por sesión (menos es mejor)","No times logged yet.":"Aún no hay tiempos registrados.","Workout removed":"Entrenamiento eliminado","Undo":"Deshacer","Workout restored":"Entrenamiento restaurado","Remove workout":"Eliminar entrenamiento","Cancel":"Cancelar","Tip: press and hold a workout to remove it.":"Consejo: mantén presionado un entrenamiento para eliminarlo.","ⓘ How ranks work":"ⓘ Cómo funcionan los rangos","ⓘ How it's calculated":"ⓘ Cómo se calcula","Suggest an idea":"Sugerir una idea","What would make Forge better for you? A new exercise, a feature, something that bugs you. Every message is read.":"¿Qué haría que Forge fuera mejor para ti? Un ejercicio nuevo, una función, algo que te moleste. Se leen todos los mensajes.","Your idea":"Tu idea","e.g. Add a timer for planks":"p. ej. Agregar un temporizador para planchas","Name (optional)":"Nombre (opcional)","Email (optional)":"Correo (opcional)","for a reply":"para responderte","Send":"Enviar","Sending…":"Enviando…","Type your idea first":"Escribe tu idea primero","The idea box isn't set up yet":"El buzón de ideas aún no está listo","You're offline. Your idea is saved here, send it when you're back online":"No tienes conexión. Tu idea queda guardada aquí; envíala cuando vuelvas a tener internet","Thanks! Your idea was sent 💡":"¡Gracias! Tu idea fue enviada 💡","Couldn't send. Check your internet and try again":"No se pudo enviar. Revisa tu internet e inténtalo de nuevo","Choose":"Elegir","Two quick questions":"Dos preguntas rápidas","Your sex and age make your calorie targets more accurate. You can change them anytime in Settings.":"Tu sexo y edad hacen que tus metas de calorías sean más precisas. Puedes cambiarlos cuando quieras en Ajustes.","Not now":"Ahora no","Add your sex and age":"Agrega tu sexo y edad","Enter an age between 13 and 110":"Ingresa una edad entre 13 y 110","Female":"Mujer","Age":"Edad","years":"años","Height":"Estatura",
 "Activity level":"Nivel de actividad","Mostly sitting — Desk job, little exercise":"Mayormente sentado: trabajo de oficina, poco ejercicio","Lightly active — Training 1–3 days a week":"Poco activo: entrenas 1–3 días por semana",
 "Active — Training 3–5 days a week":"Activo: entrenas 3–5 días por semana","Very active — Hard training 6–7 days a week":"Muy activo: entrenamiento intenso 6–7 días por semana","Athlete — Hard training plus a physical job":"Atleta: entrenamiento intenso y trabajo físico",
 "kcal/day":"kcal/día","protein":"proteína","carbs":"carbohidratos","fat":"grasa","Fill in your age, height and body weight to see your targets.":"Completa tu edad, estatura y peso corporal para ver tus metas.",
@@ -972,8 +972,8 @@ deadlift:3,bb_row:1.6,db_row:0.85,pullup:25,chinup:25,lat_pulldown:1.4,cable_row
 bb_curl:0.9,db_curl:0.45,hammer_curl:0.5,cable_curl:0.8,preacher:0.8,band_curl:50,skull:0.9,pushdown:0.9,oh_ext:0.5,ammo_press:120,farmer_carry:1.0,neg_pullup:20,sa_cable_ext:0.45,dual_cable_ext:0.4,cg_bench:1.6,bench_dip:50,band_pushdown:50,wrist_curl:0.4,rev_wrist_curl:0.25,btb_wrist_curl:0.9,rev_curl:0.75,cable_wrist_curl:0.6,dead_hang:150,plate_pinch:90,lp_calf:3,db_calf:0.6,sl_calf:40,cable_adduction:0.5,copenhagen:90,sumo_squat:0.9,cable_abduction:0.4,side_leg_raise:50,band_walk:60,fire_hydrant:50,good_morning:1.3,weighted_back_ext:0.6,bird_dog:40,
 squat:2.5,front_squat:2,goblet:0.8,kb_goblet:0.8,leg_press:4.5,leg_ext:1.6,leg_curl:1.2,lying_leg_curl:1.1,hip_abduction:1.6,hip_adduction:1.6,rdl:2.2,db_rdl:0.9,lunge:0.6,bss:0.6,step_up:0.6,hip_thrust:3,kb_swing:0.8,
 glute_bridge:60,bw_squat:100,bw_lunge:60,calf_raise:80,sit_up:60,decline_situp:40,reverse_crunch:40,leg_raise:30,v_up:40,flutter_kick:80,mountain_climber:80,hollow_hold:120,knee_raise:30,toes_to_bar:20,ab_wheel:25,machine_crunch:1.2,weighted_crunch:0.4,side_plank:180,bicycle_crunch:80,heel_taps:80,oblique_raise:25,woodchop:0.7,pallof:0.5,side_bend:0.6,weighted_twist:0.3,diamond_pushup:50,decline_pushup:50,archer_pushup:25,hspu:20,pseudo_planche:25,muscle_up:15,inverted_row:40,wide_pullup:20,archer_pullup:12,scap_pullup:25,pistol_squat:25,jump_squat:50,nordic_curl:15,sl_glute_bridge:40,cossack_squat:30,wall_sit:240,l_sit:60,windshield_wipers:25,dragon_flag:15,front_lever:45,handstand_hold:90,burpee:50,seated_calf:1.5,plank:300,crunch:80,dead_bug:60,russian_twist:80,hanging_raise:30,cable_crunch:1.2};
-const TIERS=[{n:'Bronze',f:'#cd7f32',t:'#2a1608',c:'#e0975a'},{n:'Silver',f:'#c3cad6',t:'#1b1e24',c:'#d3d9e3'},{n:'Diamond',f:'#6fd3ff',t:'#04212d',c:'#7fdcff'},
-{n:'Ultra',f:'#ffd400',t:'#2a2300',c:'#ffd400'},{n:'Titan',f:'#1f3fb8',t:'#e8eeff',c:'#5b84ff'},{n:'Godlike',f:'url(#glg)',t:'#fff',c:'#ff4d7a'}];
+const TIERS=[{n:'Bronze',e:'🟫',f:'#cd7f32',t:'#2a1608',c:'#e0975a'},{n:'Silver',e:'⬜',f:'#c3cad6',t:'#1b1e24',c:'#d3d9e3'},{n:'Diamond',e:'💎',f:'#6fd3ff',t:'#04212d',c:'#7fdcff'},
+{n:'Ultra',e:'🟨',f:'#ffd400',t:'#2a2300',c:'#ffd400'},{n:'Titan',e:'🟦',f:'#1f3fb8',t:'#e8eeff',c:'#5b84ff'},{n:'Godlike',e:'🟪',f:'url(#glg)',t:'#fff',c:'#ff4d7a'}];
 // Godlike 1 = 1.15 x the ELITE numbers below; Godlike is only the top 5%.
 const ELITE_SCALE=1.15;
 const TH=[0,.15,.22,.28,.34,.40,.46,.52,.58,.64,.70,.76,.82,.87,.91,.95,.98,1];
@@ -1793,6 +1793,51 @@ function bodySVG(list,col,vb,sw){
   const fills=list.map(([m,s])=>`<g fill="${m?col(m):'#17191f'}">${s}</g>`).join('');
   return`<svg viewBox="${vb}" class="body"><defs><linearGradient id="glg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2d55"/><stop offset="1" stop-color="#9b30ff"/></linearGradient></defs><g fill="#e4e6eb" stroke="#e4e6eb" stroke-width="${sw||13}" stroke-linejoin="round">${outline}</g>${fills}</svg>`;
 }
+// ---------- share ranks: a picture of the rank map, or plain text, for messages and group chats ----------
+function rankSummary(){const R=muscleRanks(),ranked=Object.keys(R).filter(m=>R[m]);
+  const avg=ranked.length?ranked.reduce((a,m)=>a+Math.min(R[m].s,1),0)/ranked.length:0;return{R,ranked,oi:ranked.length?rankIdx(avg):-1};}
+function rankText(){
+  const{R,ranked,oi}=rankSummary(),d=new Date().toLocaleDateString(LOC(),{month:'short',day:'numeric',year:'numeric'});
+  const lines=Object.keys(MUSCLES).map(m=>{const r=R[m];return`${r?TIERS[Math.floor(r.i/3)].e:'▫️'} ${tr(MUSCLES[m])}: ${r?tr(rankName(r.i))+' ('+tr(r.ex.name)+')':L('Unranked','Sin rango')}`;});
+  return`💪 ${L('My Forge strength ranks','Mis rangos de fuerza en Forge')} (${d})\n${L('Overall','General')}: ${tr(rankName(oi))} · ${ranked.length}/${Object.keys(MUSCLES).length} ${L('muscles ranked','músculos con rango')}\n\n${lines.join('\n')}\n\nForge: https://pri5mi.github.io/Forge/`;
+}
+function rankCardSVG(){
+  const{R,ranked,oi}=rankSummary(),W=1080,col=m=>R[m]?TIERS[Math.floor(R[m].i/3)].f:'#3a3e48',fem=S.settings.sex==='f';
+  const F='-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif',e=x=>esc(String(x));
+  const place=(svgStr,x,y,w,h)=>svgStr.replace(/<svg ([^>]*)>/,(m0,at)=>`<svg x="${x}" y="${y}" width="${w}" height="${h}" ${at.replace(/(^|\s)(width|height|class)="[^"]*"/g,'')}>`);
+  const front=fem?bodySVG(FRONT_F,col,FVB_F,+FVB_F.split(' ')[2]*13/1160*1.25):bodySVG(FRONT,col,'-80 -12 1160 2060'),back=fem?bodySVG(BACK_F,col,BVB_F,+BVB_F.split(' ')[2]*13/1160*1.25):bodySVG(BACK,col,'-80 -12 1160 2290');
+  const ms=Object.keys(MUSCLES),rows=Math.ceil(ms.length/2),y0=1330;
+  const list=ms.map((m,k)=>{const r=R[m],x=k<rows?60:560,y=y0+(k%rows)*92;
+    return place(badge(r?r.i:-1,60),x,y,60,60)+`<text x="${x+80}" y="${y+26}" font-size="28" font-weight="700" fill="#e9ecf2">${e(tr(MUSCLES[m]))}</text><text x="${x+80}" y="${y+58}" font-size="24" font-weight="600" fill="${r?rankColor(r.i).replace('var(--muted)','#8b92a1'):'#6b7280'}">${e(r?tr(rankName(r.i)):L('Unranked','Sin rango'))}</text>`;}).join('');
+  const H=y0+rows*92+110,d=new Date().toLocaleDateString(LOC(),{month:'long',day:'numeric',year:'numeric'});
+  const legend=TIERS.map((t,k)=>place(badge(k*3+2,40),60+k*165,1215,40,40)+`<text x="${108+k*165}" y="${1243}" font-size="22" font-weight="600" fill="${t.c}">${e(tr(t.n))}</text>`).join('');
+  return`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="${F}">
+  <defs><linearGradient id="glg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2d55"/><stop offset="1" stop-color="#9b30ff"/></linearGradient></defs>
+  <rect width="${W}" height="${H}" fill="#0d0f13"/><rect x="30" y="30" width="${W-60}" height="${H-60}" rx="40" fill="#16191f" stroke="#262a33" stroke-width="2"/>
+  <text x="70" y="110" font-size="30" font-weight="800" letter-spacing="6" fill="#ff6b35">FORGE</text>
+  <text x="70" y="170" font-size="54" font-weight="800" fill="#ffffff">${e(L('My strength ranks','Mis rangos de fuerza'))}</text>
+  <text x="70" y="215" font-size="26" fill="#8b92a1">${e(d)}</text>
+  ${place(badge(oi,130),W-210,70,130,130)}
+  <text x="${W-145}" y="240" text-anchor="middle" font-size="24" fill="#8b92a1">${e(L('Overall','General'))}</text>
+  <text x="${W-145}" y="275" text-anchor="middle" font-size="30" font-weight="800" fill="${oi<0?'#8b92a1':rankColor(oi)}">${e(tr(rankName(oi)))}</text>
+  ${place(front,90,300,430,860)}${place(back,560,300,430,860)}
+  <text x="305" y="1190" text-anchor="middle" font-size="24" fill="#8b92a1">${e(L('Front','Frente'))}</text><text x="775" y="1190" text-anchor="middle" font-size="24" fill="#8b92a1">${e(L('Back','Espalda'))}</text>
+  ${legend}${list}
+  <text x="${W/2}" y="${H-60}" text-anchor="middle" font-size="22" fill="#6b7280">${e(ranked.length+' / '+ms.length+' '+L('muscles ranked','músculos con rango')+' · Forge')}</text></svg>`;
+}
+function rankPNG(){return new Promise((res,rej)=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=img.width;c.height=img.height;
+  c.getContext('2d').drawImage(img,0,0);c.toBlob(b=>b?res(b):rej(new Error('no image')),'image/png');};img.onerror=rej;
+  img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(rankCardSVG());});}
+async function shareRanks(){
+  let blob;try{blob=await rankPNG();}catch(e){toast("Couldn't make the picture. Try Copy as text");return;}
+  const file=new File([blob],'forge-ranks.png',{type:'image/png'});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text:L('My Forge strength ranks 💪','Mis rangos de fuerza en Forge 💪')});return;}catch(e){if(e.name==='AbortError')return;}}
+  const url=URL.createObjectURL(blob);
+  showModal(`<div class="sheethead"><h3>Share my ranks</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div><p class="muted small" style="margin-top:0">Press and hold the picture to save or share it.</p><img src="${url}" alt="My ranks" style="width:100%;border-radius:14px"><a class="btn ghost" href="${url}" download="forge-ranks.png">Download picture</a>`);
+}
+async function copyRanks(){const t=rankText();
+  try{await navigator.clipboard.writeText(t);toast('Ranks copied. Paste them in a message');}
+  catch(e){showModal(`<div class="sheethead"><h3>Copy as text</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div><p class="muted small">Tap in the box, Select All, then Copy.</p><textarea readonly style="min-height:300px">${esc(t)}</textarea>`);}}
 function bodyMap(col){if(S.settings.sex==='f'){const w=v=>+v.split(' ')[2]*13/1160*1.25;return`<div class="bodymap"><div>${bodySVG(FRONT_F,col,FVB_F,w(FVB_F))}<span>Front</span></div><div>${bodySVG(BACK_F,col,BVB_F,w(BVB_F))}<span>Back</span></div></div>`;}return`<div class="bodymap"><div>${bodySVG(FRONT,col,'-80 -12 1160 2060')}<span>Front</span></div><div>${bodySVG(BACK,col,'-80 -12 1160 2290')}<span>Back</span></div></div>`;}
 
 function vRanks(){
@@ -1809,6 +1854,7 @@ function vRanks(){
   return`<div class="hdr"><h1>Ranks</h1><button class="helpbtn" data-a="rankhelp">ⓘ How ranks work</button></div>
   ${bw?'':`<div class="card"><h3>Add your body weight</h3><p class="muted small">Weighted lifts are ranked relative to body weight. Until you add it, only bodyweight exercises count.</p><input type="text" inputmode="decimal" data-s="bw" placeholder="Body weight (${U()})"></div>`}
   <div class="card overall">${badge(oi,72)}<div><div class="muted small">Overall</div><div class="big" style="color:${rankColor(oi)}">${rankName(oi)}</div><div class="muted small">${ranked.length} of ${Object.keys(MUSCLES).length} muscles ranked</div></div></div>
+  <div class="row" style="margin-top:0"><button class="btn primary" style="margin:0" data-a="rankshare">📤 Share my ranks</button><button class="btn ghost" style="margin:0" data-a="rankcopy">📋 Copy as text</button></div>
   <div class="card">${bodyMap(m=>R[m]?TIERS[Math.floor(R[m].i/3)].f:'#3a3e48')}<div class="tiers">${legend}</div></div>
   <div class="card">${rows}</div>
   <p class="muted small">Each muscle is ranked by your best lift for it: estimated 1-rep max relative to body weight (dumbbells: weight per hand). Bodyweight moves rank by reps, holds by time.</p>`;
@@ -2095,6 +2141,8 @@ document.addEventListener('click',e=>{
     case'rest+':restEnd+=15000;restTotal+=15;tick();break;
     case'restskip':stopRest();break;
     case'rankhelp':rankHelp();break;
+    case'rankshare':shareRanks();break;
+    case'rankcopy':copyRanks();break;
     case'usmccalc':usmcVals=null;usmcCalc(b.dataset.t);break;
     case'usmcca':S.settings.combatArms=!S.settings.combatArms;save();usmcCalc();break;
     case'nuthelp':nutHelp();break;
