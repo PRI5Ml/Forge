@@ -3,6 +3,10 @@ One post per day: put the newest day at the TOP, right below this note, and add 
 Start a post with ## and a title. Use - at the start of a line for a bullet point. Plain lines show as normal text.
 For Spanish, add " || " then the Spanish text on the same line (English || Español).
 
+## Oct 29 updates || Novedades del 29 oct
+New features || Funciones nuevas
+- DoD button on the Food tab: opens the official list of supplement ingredients prohibited for service members (Operation Supplement Safety) || Botón DoD en Comida: abre la lista oficial de ingredientes de suplementos prohibidos para militares (Operation Supplement Safety)
+
 ## Oct 28 updates || Novedades del 28 oct
 New features || Funciones nuevas
 - Sex and age are now part of setup and in Settings. They make your calorie targets more accurate || El sexo y la edad ahora forman parte de la configuración y están en Ajustes. Hacen que tus metas de calorías sean más precisas
