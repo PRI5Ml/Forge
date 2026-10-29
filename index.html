@@ -426,7 +426,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.10.28k';
+const APP_VERSION='2026.10.28m';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup'],onboarded:false},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{}});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -1104,9 +1104,14 @@ function fatigue(){
   return f;
 }
 function recovery(){const f=fatigue(),r={};for(const m in f)r[m]=Math.round(100-f[m]);return r;}
+function safeCount(g){const al=new Set(GROUPS[g]);return allEx().filter(ex=>!PREP_ONLY.has(ex.id)&&hasEq(ex)&&unlocked(ex)&&ex.p.length&&ex.p.every(m=>al.has(m))&&!injuryFor(ex)).length;}
 function pickAuto(rec){
   const lastF=(S.workouts[S.workouts.length-1]||{}).focus;let best='push',bs=-1;
-  for(const g of ['push','pull','legs']){const ms=GROUPS[g];let a=ms.reduce((s,m)=>s+rec[m],0)/ms.length;if(g===lastF)a-=5;if(a>bs){bs=a;best=g;}}
+  // with an injury, skip any group that doesn't have enough safe exercises for a full workout
+  const need=Math.min(S.settings.count||5,4),inj=activeInjuries().length;
+  let opts=['push','pull','legs'];if(inj){opts=opts.filter(g=>safeCount(g)>=need);
+    if(!opts.length){const alt=['lower','core','full','upper'].map(g=>[g,safeCount(g)]).sort((x,y)=>y[1]-x[1]);return alt[0][0];}}
+  for(const g of opts){const ms=GROUPS[g];let a=ms.reduce((s,m)=>s+rec[m],0)/ms.length;if(g===lastF)a-=5;if(a>bs){bs=a;best=g;}}
   return best;
 }
 // ---------- Marine PFT / CFT prep: solo sessions that rotate A, B, A, practice test ----------
@@ -1712,33 +1717,61 @@ function detectAreas(text){const t=' '+String(text||'').toLowerCase()+' ';let ou
   if(/disc|disk|discal|hernia de disco/.test(t)&&!/abdom|inguinal|umbilical|stomach|est[oó]mago/.test(t))out=out.filter(a=>a!=='abs'); // disc hernia = spine
   return out;}
 const ids=s=>new Set(s.split(' '));
-const HANG=ids('pullup chinup wide_pullup archer_pullup scap_pullup muscle_up dead_hang hanging_raise knee_raise toes_to_bar oblique_raise windshield_wipers front_lever lat_pulldown');
-const HANDS=ids('pushup diamond_pushup decline_pushup archer_pushup pseudo_planche pike_pushup hspu handstand_hold plank side_plank mountain_climber burpee bench_dip dip l_sit ab_wheel bird_dog front_squat plate_pinch dead_hang copenhagen');
-const SPINE=ids('squat front_squat deadlift rdl db_rdl good_morning bb_row ohp kb_swing sit_up decline_situp v_up leg_raise hanging_raise toes_to_bar russian_twist weighted_twist burpee jump_squat superman back_ext weighted_back_ext hip_thrust leg_press windshield_wipers dragon_flag flutter_kick');
-const KNEE=ids('leg_curl lying_leg_curl nordic_curl pistol_squat jump_squat burpee copenhagen cossack_squat bss mountain_climber lunge bw_lunge step_up sumo_squat wall_sit kb_swing');
-const ANKLE=ids('jump_squat burpee lunge bw_lunge step_up pistol_squat band_walk cossack_squat mountain_climber bss calf_raise sl_calf db_calf lp_calf seated_calf');
-const HIPX=ids('leg_raise hanging_raise knee_raise toes_to_bar mountain_climber flutter_kick v_up sit_up decline_situp');
-const NECK=ids('squat good_morning db_shrug sit_up decline_situp crunch v_up hspu handstand_hold bb_row');
+// Injury rules are deliberately cautious: a move is skipped if it bends, loads, stretches, hangs from,
+// kneels on, grips hard with, or jolts the injured area. The user can still add any move by hand (with a warning).
+const HANG=ids('pullup chinup wide_pullup archer_pullup scap_pullup neg_pullup muscle_up dead_hang hanging_raise knee_raise toes_to_bar oblique_raise windshield_wipers front_lever inverted_row');
+const ONHANDS=ids('pushup diamond_pushup decline_pushup archer_pushup pseudo_planche pike_pushup hspu handstand_hold plank side_plank mountain_climber burpee bench_dip dip l_sit ab_wheel bird_dog bear_crawl copenhagen dragon_flag');
+const HEAVYHOLD=ids('deadlift rdl db_rdl bb_row db_row db_shrug farmer_carry kb_swing goblet kb_goblet sumo_squat lunge bss step_up db_calf side_bend weighted_twist front_squat ammo_press');
+const SPINE=ids('squat front_squat deadlift rdl db_rdl good_morning bb_row ohp arnold kb_swing sit_up decline_situp v_up leg_raise hanging_raise knee_raise toes_to_bar oblique_raise russian_twist weighted_twist burpee jump_squat superman back_ext weighted_back_ext hip_thrust leg_press windshield_wipers dragon_flag flutter_kick goblet kb_goblet sumo_squat lunge bss step_up farmer_carry ammo_press db_shrug db_calf crunch cable_crunch machine_crunch weighted_crunch bicycle_crunch reverse_crunch ab_wheel side_bend woodchop pistol_squat cossack_squat l_sit front_lever muscle_up hspu handstand_hold shuttle_sprint mountain_climber');
+const KNEE=ids('leg_curl lying_leg_curl nordic_curl pistol_squat jump_squat burpee copenhagen cossack_squat bss mountain_climber lunge bw_lunge step_up sumo_squat wall_sit kb_swing deadlift hip_abduction hip_adduction cable_abduction cable_adduction band_walk fire_hydrant bird_dog seated_calf ab_wheel bear_crawl farmer_carry');
+const ANKLE=ids('squat front_squat goblet kb_goblet sumo_squat bw_squat jump_squat pistol_squat cossack_squat wall_sit lunge bw_lunge bss step_up leg_press deadlift rdl db_rdl good_morning kb_swing farmer_carry cable_abduction cable_adduction band_walk copenhagen nordic_curl burpee mountain_climber bear_crawl calf_raise sl_calf db_calf lp_calf seated_calf');
+const HIPX=ids('leg_raise hanging_raise knee_raise toes_to_bar oblique_raise mountain_climber flutter_kick v_up sit_up decline_situp reverse_crunch bicycle_crunch hollow_hold l_sit dragon_flag windshield_wipers wall_sit bear_crawl farmer_carry ab_wheel');
+const NECK=ids('squat front_squat good_morning deadlift db_shrug farmer_carry sit_up decline_situp crunch cable_crunch machine_crunch weighted_crunch bicycle_crunch heel_taps russian_twist weighted_twist v_up hollow_hold dragon_flag hspu handstand_hold pike_pushup bb_row ohp db_ohp arnold shoulder_press_m ammo_press muscle_up burpee');
+const run=ex=>ex.inc==='run',sprint=ex=>['run_400','run_880','shuttle_sprint'].includes(ex.id);
+const isFree=ex=>['barbell','dumbbell','kettlebell','cable','bands'].some(e=>ex.eq.includes(e));
 function injuryHits(ex,area){
-  const P=m=>ex.p.includes(m),Sx=m=>ex.s.includes(m),A=m=>P(m)||Sx(m);
+  const P=m=>ex.p.includes(m),Sx=m=>ex.s.includes(m),A=m=>P(m)||Sx(m),id=ex.id,in_=(...l)=>l.includes(id);
   switch(area){
-    case'shoulder':return A('shoulders')||P('chest')||HANG.has(ex.id)||['dip','bench_dip','squat','front_squat','good_morning','oh_ext','dual_cable_ext','skull'].includes(ex.id);
-    case'elbow':return P('triceps')||P('biceps')||P('forearms')||Sx('triceps')||ex.id==='dip'||ex.id==='muscle_up';
-    case'wrist':return A('forearms')||HANDS.has(ex.id)||['bb_curl','skull','cg_bench','bench','incline_bb','rev_curl','btb_wrist_curl'].includes(ex.id);
-    case'neck':return P('traps')||NECK.has(ex.id);
-    case'upperback':return P('traps')||P('lats')||HANG.has(ex.id);
-    case'lowerback':return A('lowerback')||SPINE.has(ex.id);
-    case'hip':return P('glutes')||P('adductors')||P('abductors')||(P('quads')&&ex.c)||P('hamstrings')||HIPX.has(ex.id);
-    case'knee':return P('quads')||KNEE.has(ex.id);
-    case'ankle':return P('calves')||ANKLE.has(ex.id);
-    case'chest':return A('chest');
-    case'biceps':return A('biceps');
-    case'triceps':return A('triceps');
-    case'abs':return P('abs')||P('obliques')||ex.inc==='big'||HANG.has(ex.id)&&ex.p.includes('abs');
-    case'quads':return P('quads');
-    case'hamstrings':return A('hamstrings');
-    case'groin':return A('adductors')||ex.id==='sumo_squat'||ex.id==='cossack_squat';
-    case'calves':return A('calves')||ex.id==='jump_squat'||ex.id==='burpee';
+    // presses, flies, raises, pulls, rows, hangs, push-ups, planks and anything overhead or held heavy at arm's length
+    case'shoulder':return A('shoulders')||A('chest')||A('lats')||P('traps')||HANG.has(id)||ONHANDS.has(id)||
+      in_('squat','front_squat','good_morning','oh_ext','dual_cable_ext','skull','deadlift','rdl','db_rdl','db_shrug','farmer_carry','kb_swing','ammo_press','hollow_hold');
+    // anything that bends or straightens the elbow under load, grips hard, hangs, or bears weight on the arms
+    case'elbow':return A('triceps')||A('biceps')||A('forearms')||HANG.has(id)||ONHANDS.has(id)||HEAVYHOLD.has(id)||
+      in_('face_pull','woodchop','pallof','db_fly','cable_fly','cable_crunch','squat','lat_raise','cable_lat_raise','rear_fly','band_pull_apart','good_morning','weighted_back_ext','weighted_crunch','machine_crunch');
+    // anything held in the hands, pressed, gripped, hung from, or done on the hands
+    case'wrist':return A('forearms')||HANG.has(id)||ONHANDS.has(id)||HEAVYHOLD.has(id)||ex.eq.includes('pullup')||
+      (isFree(ex)&&!in_('hip_thrust','cable_adduction','cable_abduction','band_walk'))||
+      in_('chest_press','shoulder_press_m','machine_row','preacher','pec_deck','good_morning','weighted_back_ext','weighted_crunch','machine_crunch');
+    // load on the spine or traps, neck bending, overhead pressing, head-down or jarring moves
+    case'neck':return P('traps')||NECK.has(id)||in_('rdl','db_rdl','jump_squat','shuttle_sprint');
+    // rhomboids and mid back: rows, pulls, shrugs, rear delts, heavy bar on the back, overhead work
+    case'upperback':return A('traps')||A('lats')||HANG.has(id)||
+      in_('deadlift','good_morning','squat','front_squat','rdl','db_rdl','kb_swing','rear_fly','ab_wheel','dragon_flag','farmer_carry','woodchop','russian_twist','weighted_twist');
+    // spine loaded, bent, twisted or jarred
+    case'lowerback':return A('lowerback')||SPINE.has(id)||in_('cable_row','heel_taps');
+    // hip joint and hip flexors: leg drives, deep hip bending, lunges, kicks, hanging leg raises
+    case'hip':return P('glutes')||P('adductors')||P('abductors')||P('hamstrings')||(P('quads')&&ex.c)||run(ex)||HIPX.has(id)||in_('bb_row','back_ext','weighted_back_ext','bird_dog','superman','russian_twist','woodchop','weighted_twist','muscle_up');
+    // knee bending under load, kneeling, pressure across the knee, landing
+    case'knee':return A('quads')||run(ex)||KNEE.has(id)||in_('cable_crunch','lp_calf');
+    // ankle bending under load, standing heavy, walking/running, landing, balancing on one leg
+    case'ankle':return P('calves')||run(ex)||ANKLE.has(id);
+    // pec: pressing, flies, dips, push-ups, and stretch under load
+    case'chest':return A('chest')||in_('pike_pushup','hspu','handstand_hold','bear_crawl','ab_wheel','dragon_flag','pseudo_planche','front_lever','l_sit');
+    // biceps: curls, pulls, hangs, and heavy straight-arm holds (deadlift is a common biceps-tear lift)
+    case'biceps':return A('biceps')||HANG.has(id)||HEAVYHOLD.has(id)||in_('deadlift','rdl','db_rdl','farmer_carry','db_shrug','kb_swing','dead_hang','dragon_flag','face_pull');
+    // triceps: pressing, push-ups, dips, extensions, and straight-arm support
+    case'triceps':return A('triceps')||ONHANDS.has(id)||in_('front_lever','dragon_flag','muscle_up');
+    // abdominal wall and hernia: any core work, heavy compound lifts (bracing), hanging, carries, sprints
+    case'abs':return A('abs')||A('obliques')||ex.c||ex.inc==='big'||HANG.has(id)||ONHANDS.has(id)||sprint(ex)||
+      in_('farmer_carry','ammo_press','back_ext','weighted_back_ext','good_morning','db_shrug','nordic_curl');
+    // quads and hip flexors (rectus femoris crosses the hip)
+    case'quads':return A('quads')||run(ex)||HIPX.has(id)||in_('deadlift','kb_swing','nordic_curl','cable_crunch');
+    // hamstrings: hinges, curls, bridges, sprints and straight-leg stretches
+    case'hamstrings':return A('hamstrings')||run(ex)||in_('bird_dog','superman','v_up','toes_to_bar','leg_raise','windshield_wipers','dragon_flag','l_sit','pike_pushup','burpee','mountain_climber','good_morning','kb_swing');
+    // inner thigh: wide or deep squats, lunges, side-to-side moves, sprints and cutting
+    case'groin':return A('adductors')||sprint(ex)||in_('squat','front_squat','goblet','kb_goblet','leg_press','bw_squat','sumo_squat','cossack_squat','pistol_squat','lunge','bw_lunge','bss','step_up','deadlift','hip_abduction','cable_abduction','fire_hydrant','jump_squat','burpee','mountain_climber','bear_crawl','windshield_wipers','band_walk','rdl','db_rdl','kb_swing','leg_raise','v_up','toes_to_bar','hanging_raise','knee_raise','dragon_flag','l_sit');
+    // calf and Achilles: pushing off the toes, jumping, running, walking heavy, deep ankle bend
+    case'calves':return A('calves')||run(ex)||in_('jump_squat','burpee','lunge','bw_lunge','bss','step_up','pistol_squat','cossack_squat','mountain_climber','bear_crawl','farmer_carry','kb_swing','squat','front_squat','goblet','kb_goblet','sumo_squat','bw_squat','wall_sit','leg_press');
   }
   return false;
 }
