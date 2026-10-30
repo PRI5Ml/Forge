@@ -241,8 +241,8 @@ GROUPS.lower=GROUPS.legs.concat(['abs','obliques']);
 GROUPS.core=['abs','obliques','lowerback'];
 GROUPS.calis=Object.keys(MUSCLES);
 GROUPS.full=Object.keys(MUSCLES);
-const FOCUS={auto:'Auto (most recovered)',cardio:'Cardio (burn calories)',swim:'Swim (pool workout)',push:'Push',pull:'Pull',legs:'Legs',upper:'Upper body',lower:'Lower body',core:'Core',calis:'Calisthenics',full:'Full body',pft:'PFT Prep (Marine PFT)',cft:'CFT Prep (Marine CFT)'};
-const FOCUS_NAME={push:'Push day',pull:'Pull day',legs:'Leg day',upper:'Upper body',lower:'Lower body',core:'Core day',calis:'Calisthenics day',full:'Full body',custom:'Custom workout',cardio:'Cardio day',swim:'Swim day',pft:'PFT prep',cft:'CFT prep'};
+const FOCUS={auto:'Auto (most recovered)',cardio:'Cardio (burn calories)',swim:'Swim (pool workout)',push:'Push',pull:'Pull',legs:'Legs',upper:'Upper body',lower:'Lower body',core:'Core',calis:'Calisthenics',full:'Full body',pft:'PFT Prep (Marine PFT)',cft:'CFT Prep (Marine CFT)',aft:'AFT Prep (Army AFT)'};
+const FOCUS_NAME={push:'Push day',pull:'Pull day',legs:'Leg day',upper:'Upper body',lower:'Lower body',core:'Core day',calis:'Calisthenics day',full:'Full body',custom:'Custom workout',cardio:'Cardio day',swim:'Swim day',pft:'PFT prep',cft:'CFT prep',aft:'AFT prep'};
 
 // id, name, equipment needed, primary muscles, secondary muscles, compound?, progression type
 const RAW=[
@@ -393,6 +393,9 @@ const RAW=[
 ['run_3mi','3-Mile Run','','quads hamstrings calves','glutes',0,'run'],
 ['run_880','880-Yard Sprint','','quads hamstrings calves','glutes',0,'run'],
 ['shuttle_sprint','300-Yard Shuttle Sprint','','quads hamstrings calves','glutes',0,'run'],
+['hrp','Hand-Release Push-Up','','chest','triceps shoulders abs',1,'bw'],
+['sdc','Sprint-Drag-Carry','','quads hamstrings glutes','calves forearms traps',0,'run'],
+['run_2mi','2-Mile Run','','quads hamstrings calves','glutes',0,'run'],
 ['walk','Brisk Walk','','calves','quads glutes',0,'cardio'],
 ['incline_walk','Incline Treadmill Walk','treadmill','glutes calves','quads hamstrings',0,'cardio'],
 ['jog','Easy Jog','','quads hamstrings calves','glutes',0,'cardio'],
@@ -466,9 +469,9 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.10.30d';
-const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],templates:[],water:{},active:null});
-function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[],templates:d.templates||[],water:d.water||{}});}
+const APP_VERSION='2026.10.30h';
+const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false,branch:''},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],templates:[],water:{},active:null});
+function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(!('branch' in (d.settings||{})))st.branch=st.onboarded?'usmc':'';if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[],templates:d.templates||[],water:d.water||{}});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
 let S=load();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){toast('Could not save — storage may be full');}}
@@ -514,6 +517,9 @@ run_800:[["Warm up with 5 minutes of easy jogging.","Run 800 m (two laps, about 
 run_tempo:[["Warm up with 5 minutes of easy jogging.","Run 2 miles at a comfortably hard pace: you can say a few words, but not chat.","Cool down with a few minutes of walking.","Log your total time."],"Tempo runs raise the pace you can hold without blowing up. Don't sprint the start."],
 run_3mi:[["Warm up with 5–10 minutes of easy jogging and a few short strides.","Run 3 miles as fast as you can hold for the whole distance.","Cool down by walking.","Log your total time."],"Start a little slower than you think and finish fast. Practice tests show you where you stand."],
 run_880:[["Warm up with easy jogging and a few short sprints.","Run 880 yards (half a mile, two laps of a track) as fast as you can, like Movement to Contact.","Walk for 3 minutes.","Repeat for every set. Log each rep's time."],"Run it in your boots and utilities sometimes, like the real test."],
+hrp:[["Lie face down with your hands flat beside your chest.","Push up to straight arms, keeping one straight line from head to heels.","Lower until your chest touches the ground. Lift both hands off the ground and reach your arms straight out to the sides, then put your hands back under your shoulders.","Repeat for 2 minutes. Log your reps."],"Keep your body stiff. Sagging hips or a bent body don't count on test day."],
+sdc:[["Mark two lines 25 m apart. The event is 5 trips of 50 m (down and back).","Sprint 50 m, then drag a 90 lb sled 50 m walking backward.","Shuffle sideways 50 m, then carry two 40 lb kettlebells 50 m.","Sprint the last 50 m. Log your total time."],"Touch the line with your hand and foot on every turn. No sled? Drag a heavy bag. No kettlebells? Use heavy dumbbells."],
+run_2mi:[["Warm up with 5–10 minutes of easy jogging and a few short strides.","Run 2 miles as fast as you can hold for the whole distance (8 laps of a 400 m track plus 19 m).","Cool down by walking.","Log your time."],"Even pacing wins. Run the first mile no faster than your goal pace."],
 shuttle_sprint:[["Mark two lines 25 yards apart.","Sprint to the far line and back 6 times (300 yards total). Touch the line with your foot or hand each turn.","Rest about 3 minutes.","Repeat for every set. Log each set's time."],"Stay low on the turns. Fast changes of direction win the Maneuver Under Fire course."],
 swim_free:[["Push off the wall and swim freestyle (front crawl) at a steady pace.","Reach long with each arm, roll your body side to side and breathe to the side.","Kick steadily from your hips with loose ankles.","Log the distance and your total time; the app works out your pace per 100."],"Breathe out under water so you're ready to breathe in when you turn your head."],
 swim_breast:[["Push off the wall and glide with arms straight in front.","Pull your hands out and back to your chest, then shoot them forward again.","Kick like a frog: heels toward your seat, feet out, then squeeze together.","Pull, breathe, kick, glide. Log the distance and your total time."],"The glide is where you rest and gain speed. Don't rush it. This is the stroke used in Marine water survival."],
@@ -665,7 +671,7 @@ const HOWTO_IMG={"diamond_pushup":"Push-Ups_-_Close_Triceps_Position","decline_p
 // ---------- Spanish translations ----------
 // Names that can appear inside longer text (exercise names, muscles, tiers, focus, equipment)
 const ES_PHR={
-"Freestyle Swim":"Natación estilo libre","Breaststroke Swim":"Natación de pecho","Freestyle Intervals":"Intervalos de estilo libre","Kickboard Kicks":"Patada con tabla","Pull Buoy Swim":"Nado con pull buoy","Treading Water":"Flotar en el agua","Deep-Water Running":"Correr en agua profunda","Pool":"Alberca","Swim (pool workout)":"Natación (entrenamiento en alberca)","Swim day":"Día de natación","Brisk Walk":"Caminata rápida","Incline Treadmill Walk":"Caminata inclinada en caminadora","Easy Jog":"Trote suave","Stationary Bike":"Bicicleta fija","Bike Intervals":"Intervalos en bicicleta","Rowing Machine":"Remadora","Elliptical":"Elíptica","Stair Climber":"Escaladora","Jump Rope":"Saltar la cuerda","Arm Bike":"Bicicleta de brazos","Treadmill":"Caminadora","Exercise bike":"Bicicleta fija","Rowing machine":"Remadora","Jump rope":"Cuerda para saltar","Arm bike":"Bicicleta de brazos","Cardio (burn calories)":"Cardio (quemar calorías)","Cardio day":"Día de cardio","Lose weight — strength + cardio":"Bajar de peso — fuerza + cardio","needs":"requiere","Flak Run (Front & Back Plates)":"Carrera con chaleco (placas frontal y trasera)","Flak Run (Front, Back & Side Plates)":"Carrera con chaleco (placas frontal, trasera y laterales)","Flak / plate carrier":"Chaleco / portaplacas","Single-Arm Cable Row":"Remo en polea a una mano","Dual Cable Row":"Remo con doble polea","Incline Dumbbell Curl":"Curl inclinado con mancuernas","Dumbbell Preacher Curl":"Curl predicador con mancuerna","EZ-Bar Preacher Curl":"Curl predicador con barra Z","400 m Repeats":"Repeticiones de 400 m","800 m Repeats":"Repeticiones de 800 m","2-Mile Tempo Run":"Carrera a ritmo de 2 millas","3-Mile Run":"Carrera de 3 millas","880-Yard Sprint":"Sprint de 880 yardas","300-Yard Shuttle Sprint":"Sprint de ida y vuelta de 300 yardas","Bear Crawl":"Gateo de oso","Ammo Can Press (30 lb)":"Press con caja de munición (30 lb)","Farmer's Carry":"Caminata del granjero","Negative Pull-Up":"Dominada negativa","PFT prep":"Preparación PFT","CFT prep":"Preparación CFT","PFT Prep (Marine PFT)":"Preparación PFT (Marines)","CFT Prep (Marine CFT)":"Preparación CFT (Marines)","also works":"también trabaja","hang with":"cuélgate con","hang on":"cuélgate","hold":"sostén","per hand":"por mano","Barbell Bench Press":"Press de banca con barra","Incline Barbell Bench Press":"Press inclinado con barra","Dumbbell Bench Press":"Press de banca con mancuernas","Incline Dumbbell Press":"Press inclinado con mancuernas",
+"Freestyle Swim":"Natación estilo libre","Breaststroke Swim":"Natación de pecho","Freestyle Intervals":"Intervalos de estilo libre","Kickboard Kicks":"Patada con tabla","Pull Buoy Swim":"Nado con pull buoy","Treading Water":"Flotar en el agua","Deep-Water Running":"Correr en agua profunda","Pool":"Alberca","Swim (pool workout)":"Natación (entrenamiento en alberca)","Swim day":"Día de natación","Brisk Walk":"Caminata rápida","Incline Treadmill Walk":"Caminata inclinada en caminadora","Easy Jog":"Trote suave","Stationary Bike":"Bicicleta fija","Bike Intervals":"Intervalos en bicicleta","Rowing Machine":"Remadora","Elliptical":"Elíptica","Stair Climber":"Escaladora","Jump Rope":"Saltar la cuerda","Arm Bike":"Bicicleta de brazos","Treadmill":"Caminadora","Exercise bike":"Bicicleta fija","Rowing machine":"Remadora","Jump rope":"Cuerda para saltar","Arm bike":"Bicicleta de brazos","Cardio (burn calories)":"Cardio (quemar calorías)","Cardio day":"Día de cardio","Lose weight — strength + cardio":"Bajar de peso — fuerza + cardio","needs":"requiere","Flak Run (Front & Back Plates)":"Carrera con chaleco (placas frontal y trasera)","Flak Run (Front, Back & Side Plates)":"Carrera con chaleco (placas frontal, trasera y laterales)","Flak / plate carrier":"Chaleco / portaplacas","Single-Arm Cable Row":"Remo en polea a una mano","Dual Cable Row":"Remo con doble polea","Incline Dumbbell Curl":"Curl inclinado con mancuernas","Dumbbell Preacher Curl":"Curl predicador con mancuerna","EZ-Bar Preacher Curl":"Curl predicador con barra Z","400 m Repeats":"Repeticiones de 400 m","800 m Repeats":"Repeticiones de 800 m","2-Mile Tempo Run":"Carrera a ritmo de 2 millas","3-Mile Run":"Carrera de 3 millas","880-Yard Sprint":"Sprint de 880 yardas","Hand-Release Push-Up":"Flexión con liberación de manos","Sprint-Drag-Carry":"Sprint-arrastre-carga","2-Mile Run":"Carrera de 2 millas","AFT Prep (Army AFT)":"Preparación AFT (Ejército)","AFT prep":"Preparación AFT","300-Yard Shuttle Sprint":"Sprint de ida y vuelta de 300 yardas","Bear Crawl":"Gateo de oso","Ammo Can Press (30 lb)":"Press con caja de munición (30 lb)","Farmer's Carry":"Caminata del granjero","Negative Pull-Up":"Dominada negativa","PFT prep":"Preparación PFT","CFT prep":"Preparación CFT","PFT Prep (Marine PFT)":"Preparación PFT (Marines)","CFT Prep (Marine CFT)":"Preparación CFT (Marines)","also works":"también trabaja","hang with":"cuélgate con","hang on":"cuélgate","hold":"sostén","per hand":"por mano","Barbell Bench Press":"Press de banca con barra","Incline Barbell Bench Press":"Press inclinado con barra","Dumbbell Bench Press":"Press de banca con mancuernas","Incline Dumbbell Press":"Press inclinado con mancuernas",
 "Dumbbell Fly":"Aperturas con mancuernas","Cable Fly":"Aperturas en polea","Pec Deck":"Pec deck (contractor de pecho)","Machine Chest Press":"Press de pecho en máquina","Push-Up":"Flexiones","Dip":"Fondos en paralelas",
 "Overhead Press":"Press militar","Seated Dumbbell Shoulder Press":"Press de hombros sentado con mancuernas","Arnold Press":"Press Arnold","Machine Shoulder Press":"Press de hombros en máquina",
 "Dumbbell Lateral Raise":"Elevaciones laterales con mancuernas","Cable Lateral Raise":"Elevación lateral en polea","Rear Delt Fly":"Pájaros (deltoide posterior)","Face Pull":"Face pull (jalón a la cara)",
@@ -797,7 +803,7 @@ const ES_RX=[
 [/^(\d+) workouts? · best (\d+) days$/,(m,a,b)=>a+(a==='1'?' entrenamiento':' entrenamientos')+' · récord '+b+' días'],
 [/^Best: (\d+) days$/,'Récord: $1 días'],
 [/^(\d+) days? to your (\d+)-day milestone$/,(m,a,b)=>'Falta'+(a==='1'?'':'n')+' '+a+(a==='1'?' día':' días')+' para tu meta de '+b+' días'],
-[/^(\d+)-day streak(!?)$/,(m,a,b)=>(b?'¡':'')+'Racha de '+a+' días'+b],
+[/^(\d+)-day streak(!?)$/,(m,a,b)=>(b?'¡':'')+'Racha de '+a+(a==='1'?' día':' días')+b],
 [/^(\d+) × (\d+)–(\d+)( sec)? · (.+)$/,(m,a,b,c,d,e)=>a+' × '+b+'–'+c+(d?' seg':'')+' · '+trPhrases(e)],
 [/^Next — (.+?): (.+)$/,(m,a,b)=>'Siguiente — '+trPhrases(a)+': '+trPhrases(b)],
 [/^Last: (.+)$/,(m,a)=>'Última vez: '+a],
@@ -867,6 +873,9 @@ run_800:[["Calienta con 5 minutos de trote suave.","Corre 800 m (dos vueltas, ap
 run_tempo:[["Calienta con 5 minutos de trote suave.","Corre 2 millas a un ritmo cómodamente duro: puedes decir unas palabras, pero no platicar.","Enfría caminando unos minutos.","Registra tu tiempo total."],"Las carreras a ritmo sostenido suben el ritmo que aguantas sin reventarte. No salgas a toda velocidad."],
 run_3mi:[["Calienta con 5–10 minutos de trote suave y unos sprints cortos.","Corre 3 millas lo más rápido que puedas mantener toda la distancia.","Enfría caminando.","Registra tu tiempo total."],"Empieza un poco más lento de lo que crees y termina fuerte. Las pruebas de práctica te muestran dónde estás."],
 run_880:[["Calienta con trote suave y unos sprints cortos.","Corre 880 yardas (media milla, dos vueltas a la pista) lo más rápido que puedas, como en Movement to Contact.","Camina 3 minutos.","Repite en cada serie. Registra el tiempo de cada una."],"A veces hazlo con botas y uniforme, como en la prueba real."],
+hrp:[["Acuéstate boca abajo con las manos planas junto al pecho.","Empuja hasta estirar los brazos, con una línea recta de la cabeza a los talones.","Baja hasta que el pecho toque el suelo. Levanta ambas manos del suelo y estira los brazos hacia los lados, luego regresa las manos bajo los hombros.","Repite durante 2 minutos. Registra tus repeticiones."],"Mantén el cuerpo firme. La cadera caída o el cuerpo doblado no cuentan el día de la prueba."],
+sdc:[["Marca dos líneas a 25 m de distancia. El evento son 5 recorridos de 50 m (ida y vuelta).","Corre 50 m, luego arrastra un trineo de 90 lb 50 m caminando hacia atrás.","Desplázate de lado 50 m, luego carga dos pesas rusas de 40 lb 50 m.","Corre los últimos 50 m. Registra tu tiempo total."],"Toca la línea con la mano y el pie en cada vuelta. ¿Sin trineo? Arrastra un saco pesado. ¿Sin pesas rusas? Usa mancuernas pesadas."],
+run_2mi:[["Calienta con 5–10 minutos de trote suave y unos sprints cortos.","Corre 2 millas lo más rápido que puedas mantener toda la distancia (8 vueltas a una pista de 400 m más 19 m).","Enfría caminando.","Registra tu tiempo."],"El ritmo parejo gana. Corre la primera milla no más rápido que tu ritmo meta."],
 shuttle_sprint:[["Marca dos líneas a 25 yardas de distancia.","Corre a la línea lejana y regresa 6 veces (300 yardas en total). Toca la línea con el pie o la mano en cada vuelta.","Descansa unos 3 minutos.","Repite en cada serie. Registra el tiempo de cada una."],"Mantente bajo en los giros. Los cambios de dirección rápidos ganan el circuito Maneuver Under Fire."],
 swim_free:[["Impúlsate de la pared y nada estilo libre (crol) a ritmo constante.","Estira cada brazo largo, rota el cuerpo de lado a lado y respira de lado.","Patea constante desde la cadera con los tobillos sueltos.","Registra la distancia y tu tiempo total; la app calcula tu ritmo por 100."],"Saca el aire bajo el agua para estar listo para respirar al girar la cabeza."],
 swim_breast:[["Impúlsate de la pared y deslízate con los brazos estirados al frente.","Abre las manos hacia afuera y atrás hasta el pecho, luego llévalas al frente otra vez.","Patea como rana: talones hacia los glúteos, pies afuera y luego júntalos.","Brazada, respira, patada, deslízate. Registra la distancia y tu tiempo total."],"El deslizamiento es donde descansas y ganas velocidad. No lo apresures. Es el estilo de supervivencia acuática de los Marines."],
@@ -1042,7 +1051,7 @@ function scheme(ex){
 function history(exId){const out=[];for(const w of S.workouts)for(const e of w.exercises)if(e.exId===exId)out.push({date:w.end,unit:w.unit,sets:e.sets,vest:e.vest});return out;}
 function lastSets(exId){const h=history(exId);return h.length?h[h.length-1]:null;}
 // Share of body weight each bodyweight move actually lifts (push-ups ≈ 65%, pull-ups/dips ≈ 100%).
-const BWF={neg_pullup:1,ammo_press:.1,pushup:.65,diamond_pushup:.65,archer_pushup:.7,decline_pushup:.72,pseudo_planche:.72,pike_pushup:.7,hspu:.92,bench_dip:.6,dip:.95,muscle_up:1,
+const BWF={neg_pullup:1,ammo_press:.1,pushup:.65,hrp:.65,diamond_pushup:.65,archer_pushup:.7,decline_pushup:.72,pseudo_planche:.72,pike_pushup:.7,hspu:.92,bench_dip:.6,dip:.95,muscle_up:1,
  pullup:1,chinup:1,wide_pullup:1,archer_pullup:1,scap_pullup:1,inverted_row:.6,band_row:.5,bw_squat:.8,jump_squat:.8,pistol_squat:.85,bw_lunge:.8,cossack_squat:.8,
  glute_bridge:.6,sl_glute_bridge:.65,nordic_curl:.6,calf_raise:1,sl_calf:1,back_ext:.55,hanging_raise:.35,knee_raise:.3,toes_to_bar:.4,burpee:.7};
 // Added weight on a bodyweight move -> equivalent bodyweight reps (same strength formula as barbell lifts).
@@ -1061,7 +1070,7 @@ const eliteOf=ex=>ex.id.startsWith('c_')?0:(ELITE[ex.id]||ELITE_DEFAULT[ex.inc]|
 // ---------- strength ranks ----------
 // Godlike 1 = "elite". Weighted lifts: elite est. 1RM as a multiple of body weight (dumbbells per hand).
 // Bodyweight moves: elite reps. Holds: elite seconds.
-const ELITE={bench:1.9,incline_bb:1.6,db_bench:0.75,incline_db:0.65,db_fly:0.45,cable_fly:0.6,pec_deck:1.4,chest_press:1.8,pushup:60,dip:35,
+const ELITE={bench:1.9,incline_bb:1.6,db_bench:0.75,incline_db:0.65,db_fly:0.45,cable_fly:0.6,pec_deck:1.4,chest_press:1.8,pushup:60,hrp:50,dip:35,
 ohp:1.25,db_ohp:0.55,arnold:0.5,shoulder_press_m:1.3,lat_raise:0.3,cable_lat_raise:0.25,rear_fly:0.3,face_pull:0.7,pike_pushup:30,band_pull_apart:50,
 deadlift:3,bb_row:1.6,db_row:0.85,pullup:25,chinup:25,lat_pulldown:1.4,cable_row:1.5,machine_row:1.6,db_shrug:0.9,band_row:50,back_ext:40,superman:180,
 bb_curl:0.9,db_curl:0.45,hammer_curl:0.5,cable_curl:0.8,preacher:0.8,band_curl:50,skull:0.9,pushdown:0.9,oh_ext:0.5,sa_cable_row:0.85,dual_cable_row:0.75,incline_curl:0.35,db_preacher:0.38,ez_preacher:0.7,ammo_press:120,farmer_carry:1.0,neg_pullup:20,sa_cable_ext:0.45,dual_cable_ext:0.4,cg_bench:1.6,bench_dip:50,band_pushdown:50,wrist_curl:0.4,rev_wrist_curl:0.25,btb_wrist_curl:0.9,rev_curl:0.75,cable_wrist_curl:0.6,dead_hang:150,plate_pinch:90,lp_calf:3,db_calf:0.6,sl_calf:40,cable_adduction:0.5,copenhagen:90,sumo_squat:0.9,cable_abduction:0.4,side_leg_raise:50,band_walk:60,fire_hydrant:50,good_morning:1.3,weighted_back_ext:0.6,bird_dog:40,
@@ -1220,7 +1229,7 @@ function pickAuto(rec){
 const SWIM=new Set(['swim_free','swim_breast','swim_intervals','kickboard','pull_buoy','tread','aqua_jog']),SWIMD=new Set(['swim_free','swim_breast']);
 const CARDIO={tread:4,aqua_jog:8,walk:4.3,incline_walk:6.5,jog:7,bike:6.8,bike_intervals:8.5,rower:7,elliptical:5,stair_climber:9,jump_rope:11,arm_bike:4};
 const cardioKcal=(id,min)=>{const kg=U()==='lb'?bodyW()*0.45359237:bodyW();return kg&&min>0?Math.round(CARDIO[id]*kg*min/60):0;};
-const PREP_ONLY=new Set([...SWIM,...Object.keys(CARDIO),'flak_run','flak_run_side','run_400','run_800','run_tempo','run_3mi','run_880','shuttle_sprint','bear_crawl','ammo_press']);
+const PREP_ONLY=new Set([...SWIM,...Object.keys(CARDIO),'flak_run','flak_run_side','run_400','run_800','run_tempo','run_3mi','run_880','shuttle_sprint','sdc','run_2mi','bear_crawl','ammo_press']);
 const tsec=v=>{v=String(v==null?'':v).trim();if(!v)return 0;let m,x;
   if(v.includes(':')){[m,x]=v.split(':');return(+m||0)*60+(+x||0);}
   if(v.includes('.')){[m,x]=v.split('.');return(+m||0)*60+(+(x+'0').slice(0,2)||0);}
@@ -1238,6 +1247,32 @@ function runVal(ex,s,u){const t=tsec(s.r);if(!(t>0))return 0;if(!DIST.has(ex.id)
 const fmtPace=(spm,ex)=>ex&&SWIMD.has(ex.id)?fmtT(U()==='kg'?spm:spm*0.9144)+'/100 '+su():fmtT(U()==='kg'?spm/1.609344:spm)+'/'+DU();
 const fmtT=t=>{t=Math.round(t);return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
 const PREP={
+ aft:[
+  {t:['Strength + push-ups','Fuerza + flexiones'],slots:[
+   [['deadlift','db_rdl','kb_swing','rdl'],5,180,['5 × 3 heavy, rest 3 min. The test is your heaviest set of 3 (hex bar on test day).','5 × 3 pesado, descansa 3 min. La prueba es tu serie más pesada de 3 (barra hexagonal el día de la prueba).'],3],
+   [['hrp','pushup'],4,90,['4 sets of max reps, rest 90 s. Chest to the ground and hands off on every rep.','4 series al máximo, descansa 90 s. Pecho al suelo y manos arriba en cada repetición.']],
+   [['run_400'],6,90,['6 × 400 m faster than your 2-mile goal pace. Walk or jog 90 s between.','6 × 400 m más rápido que tu ritmo meta de 2 millas. Camina o trota 90 s entre cada uno.']],
+   [['plank'],3,60,['3 × max hold, rest 60 s. A 3:40 plank is 100 points at ages 17–21.','3 × aguanta al máximo, descansa 60 s. Una plancha de 3:40 da 100 puntos de 17 a 21 años.']],
+   [['farmer_carry','kb_swing','lunge'],4,60,['4 × 50 m heavy, rest 60 s. Grip and legs for the carry.','4 × 50 m pesado, descansa 60 s. Agarre y piernas para la carga.']]]},
+  {t:['Sprint-drag-carry + run','Sprint-arrastre-carga + carrera'],slots:[
+   [['sdc'],3,180,['3 rounds for time, rest 3 min. Fast, clean turns.','3 rondas por tiempo, descansa 3 min. Giros rápidos y limpios.']],
+   [['run_tempo'],1,0,['2 miles at a comfortably hard pace: you can say a few words, but not chat.','2 millas a ritmo cómodamente duro: puedes decir unas palabras, pero no platicar.']],
+   [['lunge','bw_lunge','step_up'],3,90,['3 × 10 each leg. Strong legs for the drag and sprints.','3 × 10 por pierna. Piernas fuertes para el arrastre y los sprints.']],
+   [['hollow_hold','dead_bug','side_plank'],3,45,['3 sets. Extra core strength for a longer plank.','3 series. Más fuerza de core para aguantar más la plancha.']],
+   [['dead_hang','farmer_carry'],3,60,['3 × max hold. Grip endurance for the kettlebell carry.','3 × aguanta al máximo. Resistencia de agarre para cargar las pesas rusas.']]]},
+  {t:['Strength + intervals','Fuerza + intervalos'],slots:[
+   [['deadlift','db_rdl','kb_swing','rdl'],3,150,['3 × 5 at a weight you could lift 2 more times, rest 2.5 min.','3 × 5 con un peso que podrías levantar 2 veces más, descansa 2.5 min.'],5],
+   [['hrp','pushup'],6,60,['6 sets of about half your max reps, rest 60 s. Lots of clean reps builds your max.','6 series con la mitad de tu máximo, descansa 60 s. Muchas repeticiones limpias suben tu máximo.']],
+   [['run_800'],4,120,['4 × 800 m at a hard, steady pace. Walk or jog 2 min between.','4 × 800 m a ritmo duro y constante. Camina o trota 2 min entre cada uno.']],
+   [['plank'],3,60,['3 × max hold, rest 60 s.','3 × aguanta al máximo, descansa 60 s.']],
+   [['db_row','bb_row','inverted_row','band_row'],3,90,['3 × 8–12. A strong back for the deadlift and drag.','3 × 8–12. Espalda fuerte para el peso muerto y el arrastre.']]]},
+  {t:['Practice test','Prueba de práctica'],slots:[
+   [['deadlift','db_rdl','kb_swing'],3,300,['Work up to your heaviest set of 3 reps in 3 tries. Rest 5 min after.','Sube hasta tu serie más pesada de 3 repeticiones en 3 intentos. Descansa 5 min después.'],3],
+   [['hrp','pushup'],1,300,['1 set of max reps in 2 minutes. Rest 5 min.','1 serie al máximo en 2 minutos. Descansa 5 min.']],
+   [['sdc'],1,300,['1 round for time. Rest 5 min.','1 ronda por tiempo. Descansa 5 min.']],
+   [['plank'],1,300,['1 max hold, test rules: straight line from head to heels. Rest 5 min.','1 plancha al máximo con reglas de la prueba: línea recta de la cabeza a los talones. Descansa 5 min.']],
+   [['run_2mi'],1,0,['2 miles for time. Start steady, finish fast.','2 millas por tiempo. Empieza constante y termina fuerte.']]]}],
+
  pft:[
   {t:['Speed + pull-ups','Velocidad + dominadas'],slots:[
    [['pullup','chinup','neg_pullup','pushup'],5,120,['5 sets of max reps, rest 2 min. Start each rep from a dead hang; chin over the bar.','5 series al máximo, descansa 2 min. Empieza cada repetición colgado con brazos estirados; barbilla sobre la barra.']],
@@ -1342,6 +1377,103 @@ function usmcRows(){
     return`<div class="usrow"><div><b>${L(en,es)}</b><input type="text" inputmode="decimal" data-usmc="${ev}" value="${esc(shown)}" placeholder="${kind==='time'?'m:ss':L('reps','reps')}"></div><span class="uspts" style="color:${p==null?'var(--muted)':p===0?'var(--bad)':'var(--text)'}">${p==null?'—':p===0?L('below min','bajo mín.'):p}</span></div>`;}).join('')+
     (n===3?(()=>{const [c,col]=usmcClass(tot,all);return`<div class="ustot"><span>${L('Total','Total')}</span><b>${tot}</b><span style="color:${col};font-weight:700">${c}</span></div>${all&&tot<235?`<p class="muted small" style="margin:6px 0 0">${L(`${235-tot} more points for 1st Class.`,`${235-tot} puntos más para 1ra clase.`)}</p>`:''}`;})():`<p class="muted small" style="margin:8px 0 0">${L('Fill in all three events to see your total.','Llena los tres eventos para ver tu total.')}</p>`);
 }
+// ---------- Army Fitness Test (AFT) scoring tables: approved 1 May 2025, effective 1 June 2025.
+// 20 columns: ages 17-21 M|C, 17-21 F, 22-26 M|C, 22-26 F ... 62+ M|C, 62+ F (M|C = male and combat, the sex-neutral table).
+// Each column lists points 100 down to 60 ('-' where the sheet shows ---); rows under 60 are rebuilt below.
+// Plank has one column per age group (men and women are the same, ages 37+ share a column).
+const AFT_T={"mdl":["340 - 330 - 320 - 310 - 300 - - 290 - 280 - 270 - 260 - 250 - 240 - 230 - 220 - 210 - - 200 190 - 180 - 170 - 160 - - 150","220 - 210 200 - - 190 - - 180 - - 170 - - - 160 - - - 150 - - - - 140 - - - - - - 130 - - - - - - - 120","350 340 - 330 - 320 - 310 - 300 - 290 - 280 - 270 - 260 - 250 - 240 - 230 - 220 - 210 - 200 190 - - 180 - 170 - 160 - - 150","230 - 220 210 - 200 - 190 - - - 180 - - 170 - - - 160 - - - 150 - - - - 140 - - - - - 130 - - - - - - 120","350 - 340 330 - 320 - 310 - 300 - 290 - 280 - 270 - 260 - 250 - 240 - 230 - 220 - 210 - 200 190 - - 180 - 170 - 160 - - 150","240 230 220 - 210 200 - - 190 - - 180 - - 170 - - - 160 - - - 150 - - - - 140 - - - - - 130 - - - - - - 120","350 340 - 330 - 320 - 310 - 300 - 290 - 280 - 270 - 260 - 250 - 240 - 230 - 220 - 210 - 200 190 - - 180 - 170 - 160 - 150 140","230 220 - 210 - 200 - 190 - - 180 - - 170 - - - 160 - - - 150 - - - - 140 - - - - - 130 - - - - - - - 120","350 340 - 330 - 320 - 310 - 300 - 290 - 280 - 270 - 260 - 250 - 240 - 230 - 220 - 210 - 200 190 - - 180 - 170 - 160 150 - 140","220 210 - 200 - 190 - - 180 - - 170 - - - 160 - - - - 150 - - - - 140 - - - - - 130 - - - - - - - - 120","350 340 - 330 - 320 - 310 300 - 290 - 280 - 270 - 260 - 250 - - 240 230 - 220 - 210 - 200 - 190 - 180 - 170 - 160 - 150 - 140","210 - 200 - 190 - - 180 - - 170 - - - 160 - - - 150 - - - - - 140 - - - - - 130 - - - - - - - - - 120","340 330 - 320 - 310 - 300 - 290 - 280 - - 270 - 260 - 250 - 240 - 230 - 220 - 210 - 200 - 190 - 180 - 170 - 160 - 150 - 140","200 - 190 - 180 - - 170 - - - 160 - - - - 150 - - - - 140 - - - - - 130 - - - - - - - - - - - - 120","330 320 - 310 - 300 - 290 - 280 - 270 - - 260 - 250 - 240 - 230 - 220 - 210 - 200 - 190 - 180 - - 170 - 160 - 150 - - 140","190 - 180 - - 170 - - - 160 - - - - - 150 - - - - - 140 - - - - - - 130 - - - - - - - - - - - 120","250 240 230 220 210 - 200 190 - 180 - 170 - - - - - - - - - 160 - - - - - - - 150 - - - - - - - - - - 140","170 160 - - - - - - - - 150 - - - - - - - - - 140 - - - - - - - - 130 - - - - - - - - - - 120","230 220 210 - - 200 190 180 170 - - - - - - - - - 160 - - - - - - - - - 150 - - - - - - - - - - - 140","170 160 - - - - - - - - 150 - - - - - - - - - 140 - - - - - - - 130 - - - - - - - - - - - 120"],"hrp":["58 57 55 54 53 52 51 49 48 47 46 45 44 43 42 41 40 - 39 38 37 36 35 34 33 32 31 30 29 - 28 26 25 24 23 22 21 19 18 17 15","53 48 44 42 40 38 36 35 34 33 32 31 30 29 28 27 26 25 - 24 23 22 21 - 20 - - 19 - - 18 - 15 - 14 - 13 - 12 - 11","61 59 57 56 55 53 52 51 50 49 48 46 45 44 43 42 41 40 39 38 37 36 35 34 32 31 30 29 28 27 26 25 24 23 22 21 19 18 17 15 14","50 45 44 42 40 39 38 36 35 34 33 32 31 30 29 28 27 26 25 24 23 - 22 21 20 - 19 18 - 17 16 - 15 - 14 13 - 12 - - 11","62 60 58 57 55 54 53 52 51 49 48 47 46 45 44 43 42 41 39 38 37 36 35 34 33 32 31 30 29 28 26 25 24 23 22 21 20 18 17 15 14","48 45 43 42 40 39 37 36 35 34 33 32 31 30 29 28 27 26 25 24 23 - 22 21 20 - 19 18 - 17 16 - 15 - 14 - 13 - 12 - 11","60 58 57 55 54 53 52 51 49 48 47 46 45 44 43 42 41 40 39 37 36 35 34 33 32 31 30 29 28 27 26 25 24 22 21 20 19 18 16 15 13","47 44 42 40 39 38 36 35 34 33 32 31 30 29 28 27 26 25 24 - 23 22 21 - 20 19 - 18 17 - 16 - 15 14 - 13 - 12 - - 11","59 57 55 54 53 51 50 49 48 47 46 45 44 42 41 40 39 38 37 36 35 34 33 32 31 30 29 28 27 25 24 23 22 21 20 19 18 17 15 14 12","43 41 39 38 37 35 34 33 32 31 30 29 28 27 - 26 25 24 23 - 22 21 - 20 19 - 18 17 - 16 - 15 - 14 - 13 - 12 - 11 10","57 55 53 52 51 49 48 47 46 45 44 43 42 41 40 39 38 37 36 35 34 33 32 31 30 29 28 26 25 24 23 22 21 20 19 18 17 16 15 13 11","40 38 37 36 35 33 32 31 30 - 29 28 27 26 25 - 24 23 22 - 21 20 - 19 - 18 17 - 16 - 15 - 14 - 13 - 12 - 11 - 10","55 53 51 50 49 48 46 45 44 43 42 41 40 39 38 37 36 35 34 33 32 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 12 11","38 37 35 34 33 32 31 30 29 28 - 27 26 25 24 - 23 22 - 21 20 - 19 - 18 17 - 16 - 15 - 14 - - 13 - 12 - 11 - 10","51 50 48 47 46 45 44 43 42 41 40 39 38 37 36 35 34 33 32 31 30 29 28 27 26 - 25 24 23 22 21 20 19 18 17 16 15 14 13 11 10","36 34 33 32 31 30 29 28 27 - 26 25 24 - 23 22 - 21 20 - 19 - 18 - 17 - 16 - 15 - 14 - 13 - - 12 - 11 - - 10","46 43 40 38 37 35 34 33 31 30 29 26 25 24 23 - 22 21 20 19 18 - 17 - 16 15 - 14 - 13 - - 12 - - 11 - - - - 10","24 23 22 21 20 19 18 - 17 16 15 14 - - - - 13 - - - - - - 12 - - - - - - - - - 11 - - - - - - 10","43 41 39 37 35 34 33 31 30 29 26 24 - 23 - 22 21 20 19 18 17 16 - 15 14 - 13 - - 12 - - 11 - - - - - - - 10","24 23 22 21 20 19 18 - 17 16 15 14 - - 13 - - - - - - 12 - - - - - - - - - 11 - - - - - - - - 10"],"sdc":["89 91 94 95 96 97 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 126 127 128 131 133 135 137 142 148","115 119 122 125 126 128 130 132 133 134 136 137 138 140 141 142 143 144 145 146 148 149 150 151 153 154 155 157 159 160 161 164 165 167 169 173 175 178 180 188 195","90 92 93 94 96 97 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 118 119 120 121 122 123 125 127 128 130 131 134 136 138 141 146 151","115 116 120 122 125 126 129 130 132 133 135 136 138 140 141 142 143 145 146 147 149 150 151 152 154 155 157 158 160 162 163 165 167 169 171 174 177 179 181 189 195","90 91 94 95 97 98 100 101 102 103 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 124 125 126 128 130 131 133 135 137 140 142 148 152","115 117 121 124 126 128 130 132 133 135 136 138 139 140 142 143 144 146 147 148 149 150 151 152 154 156 157 158 160 161 163 165 167 169 171 174 176 179 180 187 195","93 94 97 98 100 101 103 104 105 106 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 127 128 130 131 133 135 136 139 141 144 146 151 156","119 121 125 128 130 131 134 135 137 138 140 141 143 144 146 147 148 150 151 152 154 155 156 157 159 160 161 163 165 166 167 170 171 173 175 178 180 182 186 195 202","96 97 100 102 103 105 107 108 109 110 112 113 114 115 116 117 118 119 120 121 122 123 124 125 127 128 129 130 132 133 134 136 138 140 141 144 146 148 151 156 161","122 124 130 131 134 135 138 140 141 143 145 146 147 149 150 151 152 154 155 156 158 159 160 162 163 165 166 167 169 170 172 175 176 178 180 182 185 189 193 201 207","100 102 104 106 108 109 111 112 113 114 116 117 118 119 120 121 122 124 125 126 127 128 129 130 132 133 134 135 137 138 140 142 143 145 146 149 151 153 156 161 165","129 130 135 137 138 140 143 145 147 148 150 151 153 155 156 157 158 160 161 162 164 165 166 167 169 170 172 173 175 176 178 180 181 182 186 190 192 197 201 211 222","105 106 110 112 114 115 117 119 120 121 122 123 125 126 127 128 129 130 132 133 134 135 136 137 139 140 141 143 145 146 147 149 150 152 154 157 159 161 164 168 173","131 133 142 144 146 148 150 151 153 155 157 158 160 161 162 164 165 166 167 168 170 171 172 174 176 177 178 179 180 182 185 188 190 194 196 201 204 209 212 222 231","112 115 117 120 121 123 125 126 127 129 130 131 133 134 135 136 137 139 140 141 143 - 145 146 148 149 150 151 152 154 155 157 158 160 161 164 166 168 170 177 180","138 141 148 150 152 155 158 160 161 162 164 165 166 168 170 171 172 174 175 177 178 179 180 182 185 187 189 190 193 196 199 205 207 209 213 218 222 225 230 238 243","118 122 123 126 128 129 131 133 135 136 137 139 140 141 142 143 144 146 147 148 149 150 151 153 155 156 157 158 160 162 163 165 167 168 170 173 175 177 179 184 192","146 148 154 159 161 164 165 166 168 172 174 175 177 178 179 180 181 182 183 184 187 188 189 191 197 201 205 212 214 215 216 220 221 223 226 234 240 248 256 261 288","129 132 - 133 - 134 135 136 - - - 137 138 139 140 141 142 143 144 147 152 153 155 156 158 161 163 164 166 167 169 172 176 177 180 183 189 191 192 194 196","146 148 154 159 161 164 165 166 168 172 174 175 177 178 179 180 181 182 183 184 187 188 189 191 197 201 205 212 214 215 216 220 221 223 226 234 240 248 256 261 288"],"plk":["220 217 214 210 207 204 201 197 194 191 188 184 181 178 175 171 168 165 161 158 155 152 149 145 142 139 135 132 129 126 122 119 116 113 109 106 103 100 97 93 90","215 212 209 205 202 199 196 192 189 186 183 179 176 173 170 166 163 160 157 153 150 147 143 140 137 134 130 127 124 121 118 114 111 108 105 101 98 95 92 88 85","210 207 204 200 197 194 191 187 184 181 178 174 171 168 165 161 158 155 151 148 145 142 138 135 132 129 126 122 119 116 112 109 106 103 99 96 93 90 86 83 80","205 202 199 195 192 189 186 182 179 176 173 169 166 163 160 156 153 150 147 143 140 137 133 130 127 124 120 117 114 111 107 104 101 98 95 91 88 85 82 78 75","200 197 194 190 187 184 181 177 174 171 167 164 161 158 155 151 148 145 142 138 135 132 128 125 122 119 116 112 109 106 102 99 96 93 90 86 83 80 76 73 70"],"tmr":["802 827 844 859 872 885 896 907 918 929 939 949 959 969 979 988 998 1008 1017 1027 1033 1037 1045 1054 1063 1072 1080 1089 1098 1107 1115 1125 1134 1143 1153 1163 1173 1183 - 1194 1197","960 988 1009 1027 1034 1043 1051 1057 1064 1070 1075 1087 1093 1104 1114 1124 1134 1143 1152 1161 1170 1179 1187 1196 1205 1213 1224 1235 1245 1256 1266 1277 1288 1309 1321 1332 1345 1358 1373 - 1375","805 827 835 852 867 881 894 905 917 928 938 949 959 969 979 989 999 1009 1019 1028 - 1038 1048 1057 1066 1075 1083 1092 1101 - 1103 1110 1119 1128 1137 1147 1156 1166 1176 - 1185","930 944 955 960 964 987 1006 1023 1037 1051 1064 1075 1087 1098 1108 1118 1128 1138 1147 1156 1165 1174 1183 1192 1201 1212 1224 1235 1246 1257 1260 1292 1300 1309 1318 1327 1336 1346 1357 - 1365","805 827 835 852 867 881 894 905 917 928 938 955 965 974 984 993 1003 1012 1022 1032 1041 1050 1058 1067 1075 1084 1093 1101 - - 1103 1110 1119 1137 1146 1155 1165 1175 - - 1185","930 944 955 960 964 987 1006 1023 1037 1051 1064 1100 1110 1120 1130 1139 1148 1158 1167 1176 1185 1193 1201 1210 1218 1226 1234 1242 1250 1258 1260 1275 1283 1292 1300 1309 1319 1329 1339 1351 1365","822 846 863 877 889 901 912 923 933 943 950 953 962 972 981 990 1000 1009 1018 1027 1036 1046 1054 1062 1070 1078 1087 1095 1103 - 1110 1138 1146 1156 1165 1174 1184 1195 1206 1218 1244","948 975 996 1014 1029 1043 1056 1068 1079 1090 1101 1111 1121 1130 1140 1149 1158 1167 1176 1185 1193 1201 1209 1217 1225 1233 1241 1249 1257 1265 1273 1281 1289 1297 1306 1315 1324 1334 1344 1355 1370","822 856 872 886 899 910 921 932 942 952 961 971 980 989 999 1008 1017 1026 1035 1044 1053 1061 1070 1078 1086 1094 1102 1111 - - 1115 1127 1144 1153 1162 1171 1181 1191 1212 1224 1244","951 981 1002 1019 1034 1048 1061 1073 1084 1095 1105 1115 1125 1134 1144 1153 1162 1171 1180 1189 1197 1205 1213 1221 1229 1237 1245 1253 1260 1268 1276 1284 1292 1301 1309 1318 1327 1337 1347 1358 1379","845 869 885 899 912 924 935 945 955 965 975 984 993 1003 1012 1021 1030 1039 1048 1057 1067 1076 1086 1095 1105 1115 1125 1134 - - 1135 1155 1176 1187 1198 1210 1237 1252 1269 1291 1324","960 991 1012 1030 1045 1059 1072 1084 1096 1106 1117 1127 1137 1147 1156 1165 1175 1184 1193 1201 1210 1218 1226 1234 1242 1250 1258 1266 1274 1282 1290 1298 1306 1315 1323 1332 1342 1351 1362 1373 1395","870 892 908 922 935 947 958 969 979 989 999 1008 1018 1027 1036 1045 1055 1064 1073 1082 1092 1101 1111 1121 1131 1140 1150 1160 - - 1170 1181 1202 1213 1237 1250 1264 1279 1297 1319 1324","990 1020 1040 1057 1072 1086 1099 1111 1122 1132 1143 1153 1162 1172 1181 1190 1199 1208 1217 1226 1234 1242 1250 1258 1266 1274 1282 1289 1297 1305 1300 1321 1329 1337 1346 1355 1364 1374 1384 1395 1410","909 938 954 968 981 993 1004 1015 1026 1036 1046 1055 1065 1074 1084 1093 1102 1112 1121 1131 1140 1150 1160 1170 1179 1189 1199 1210 - - 1220 1252 1263 1275 1287 1300 1314 1330 1348 - 1370","1019 1064 1085 1102 1117 1130 1143 1155 1166 1177 1187 1197 1207 1216 1226 1235 1244 1253 1262 1270 1279 1287 1295 1303 1311 1319 1327 1334 1342 1350 1358 1366 1374 1383 1391 1400 1409 1419 1429 1441 1440","928 955 982 1004 1018 1034 1047 1065 1077 1087 1097 1105 1116 1125 1133 1140 1147 1157 1167 1176 1185 1191 1199 1207 1214 1222 1231 1241 1246 1254 1260 1261 1279 1295 1307 1323 1341 1359 1378 1392 1416","1038 1067 1076 1080 1105 1111 1116 1126 1128 1136 1139 1144 1154 1169 1181 1185 1198 1202 1207 1217 1222 1231 1238 1243 1244 1244 1250 1263 1275 1292 1300 1303 1319 1329 1343 1353 1363 1381 1402 1445 1488","928 955 982 1004 1018 1034 1047 1065 1077 1087 1097 1105 1116 1125 1133 1140 1147 1157 1167 1176 1185 1191 1199 1207 1214 1222 1231 1241 1246 1254 1260 1261 1279 1295 1307 1323 1341 1359 1378 1392 1416","1038 1067 1076 1080 1105 1111 1116 1126 1128 1136 1139 1144 1154 1169 1181 1185 1198 1202 1207 1217 1222 1231 1238 1243 1244 1244 1250 1263 1275 1292 1300 1303 1322 1335 1351 1364 1370 1384 1402 1451 1500"]};
+const AFT_RUN_LOW=[[3,6,8,11,14,17,20,22,25,28,31,34,36,39,42,45,47,50,53,56,59,61,64,67,70,73,75,78,81,84,87,89,92,95,98,101,103,106,109,112,115,117,120,123,126,129,131,134,137,140,142,145,148,151,154,156,159,162,165,168],[3,6,9,12,15,17,20,23,26,29,32,35,38,41,44,47,49,52,55,58,61,64,67,70,73,76,79,81,84,87,90,93,96,99,102,105,108,111,113,116,119,122,125,128,131,134,137,140,143,145,148,151,154,157,160,163,166,169,172,175]];
+const AFT_AGE=['17–21','22–26','27–31','32–36','37–41','42–46','47–51','52–56','57–61','62+'];
+const aftAgeIx=a=>{a=+a||0;const c=[21,26,31,36,41,46,51,56,61];for(let i=0;i<c.length;i++)if(a<=c[i])return i;return 9;};
+const aftMC=()=>!!S.settings.armyCombat||S.settings.sex!=='f';
+const aftCol=()=>aftAgeIx(S.settings.age)*2+(aftMC()?0:1);
+const AFT_CACHE={};
+function aftStd(ev,col){
+  const k=ev+col;if(AFT_CACHE[k])return AFT_CACHE[k];
+  const src=ev==='plk'?AFT_T.plk[Math.min(4,col>>1)]:AFT_T[ev][col],t=new Array(101).fill(null);
+  src.split(' ').forEach((x,i)=>{if(x!=='-')t[100-i]=+x;});
+  const v60=t[60],m=col%2===0;
+  if(ev==='mdl')[50,40,30,20,10,0].forEach((p,i)=>t[p]=(m?130:110)-10*i);
+  else if(ev==='hrp')[50,40,30,20,10,0].forEach((p,i)=>t[p]=9-i);
+  else if(ev==='sdc')for(let p=0;p<60;p++)t[p]=v60+60-p;
+  else if(ev==='plk')for(let p=0;p<60;p+=2)t[p]=v60-(60-p)/2;
+  else if(ev==='tmr')for(let p=0;p<60;p++)t[p]=v60+AFT_RUN_LOW[col%2][59-p];
+  return AFT_CACHE[k]=t;
+}
+// points = the highest row whose standard you meet (more reps/weight/plank time, or a faster time)
+function aftPts(ev,v,col){v=+v;if(!(v>0))return null;const t=aftStd(ev,col==null?aftCol():col),low=ev==='sdc'||ev==='tmr';
+  for(let p=100;p>=0;p--){const s=t[p];if(s!=null&&(low?v<=s:v>=s))return p;}return 0;}
+// alternate aerobic events are Go/No-Go: finish the distance within the time
+const AFT_ALT={walk:['2.5-mile walk','Caminata de 2.5 millas','31:00 34:00 30:45 33:30 30:30 33:00 30:45 33:30 31:00 34:00 31:00 34:00 32:00 35:00 32:00 35:00 33:00 36:00 33:00 36:00'],
+ bike:['12 km bike','Bicicleta 12 km','26:25 28:58 26:12 28:31 26:00 28:07 26:12 28:31 26:25 28:58 26:25 28:58 27:16 29:50 27:16 29:50 28:07 30:41 28:07 30:41'],
+ swim:['1 km swim','Natación 1 km','30:48 33:48 30:30 33:18 30:20 32:48 30:30 33:18 30:48 33:48 30:48 33:48 31:48 34:48 31:48 34:48 32:50 35:48 32:50 35:48'],
+ row:['5 km row','Remo 5 km','30:48 33:48 30:30 33:18 30:20 32:48 30:30 33:18 30:48 33:48 30:48 33:48 31:48 34:48 31:48 34:48 32:50 35:48 32:50 35:48']};
+const aftAltStd=k=>tsec(AFT_ALT[k][2].split(' ')[aftCol()]);
+const AFT_EV=[['mdl','3-rep max deadlift','Peso muerto máximo (3 reps)','wt'],['hrp','Hand-release push-ups (2 min)','Flexiones con liberación de manos (2 min)','reps'],
+ ['sdc','Sprint-drag-carry','Sprint-arrastre-carga','time'],['plk','Plank','Plancha','time'],['tmr','2-mile run','Carrera de 2 millas','time']];
+const AFT_IDS={mdl:'deadlift',hrp:'hrp',sdc:'sdc',plk:'plank',tmr:'run_2mi'};
+const aftNeed=()=>S.settings.armyCombat?350:300;
+const toLb=v=>U()==='kg'?v*2.20462:v;
+// latest logged value of each event (deadlift: heaviest set of 3+ reps in the last session, in your units)
+function aftLatest(){
+  const last=id=>{const h=history(id);return h.length?h[h.length-1]:null;};
+  const d=last('deadlift');let mdl='';
+  if(d){const w=Math.max(0,...d.sets.filter(s=>(+s.r||0)>=3).map(s=>parseFloat(String(s.w).replace(',','.'))||0));if(w>0){const lb=d.unit==='kg'?w*2.20462:w;mdl=Math.round(U()==='kg'?lb/2.20462:lb);}}
+  const maxR=id=>{const x=last(id);return x?Math.max(0,...x.sets.map(s=>+s.r||0))||'':'';};
+  const minT=id=>{const x=last(id);if(!x)return'';const v=Math.min(...x.sets.map(s=>tsec(s.r)).filter(t=>t>0));return isFinite(v)?v:'';};
+  return{mdl,hrp:maxR('hrp'),sdc:minT('sdc'),plk:maxR('plank'),tmr:minT('run_2mi'),alt:''};
+}
+const aftVal=(ev,raw)=>{if(raw===''||raw==null)return 0;if(ev==='mdl')return toLb(parseFloat(String(raw).replace(',','.'))||0);
+  return ev==='hrp'?(+raw||0):(typeof raw==='number'?raw:tsec(raw));};
+function aftSum(vals,alt){
+  const evs=AFT_EV.filter(([ev])=>!(alt&&ev==='tmr'));let tot=0,n=0,low=0;
+  const ps=evs.map(([ev])=>{const v=aftVal(ev,vals[ev]),p=v?aftPts(ev,v):null;if(p!=null){n++;tot+=p;if(p<60)low++;}return p;});
+  const go=alt?(()=>{const v=aftVal('alt',vals.alt);return v?v<=aftAltStd(alt):null;})():null;
+  return{ps,evs,tot,n,low,full:n===evs.length&&(!alt||go!=null),go};
+}
+function aftVerdict(r,alt){
+  if(alt)return r.low||r.go===false?[L('Fail','No aprobado'),'var(--bad)']:[L('All events Go','Todos los eventos Go'),'var(--good)'];
+  return r.low||r.tot<aftNeed()?[L('Fail','No aprobado'),'var(--bad)']:[L('Pass','Aprobado'),'var(--good)'];
+}
+let aftVals=null,aftAlt='';
+function aftCalc(){
+  if(!aftVals)aftVals=aftLatest();const st=S.settings,ok=st.age>=17,tbl=st.armyCombat?L('combat (sex-neutral)','de combate (neutral)'):aftMC()?L('male','hombres'):L('female','mujeres');
+  showModal(`<div data-notr="1" id="aft"><div class="sheethead"><h3>${L('Army AFT calculator','Calculadora AFT del Ejército')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
+  <p class="muted small">${ok?L(`Scored on the ${tbl} table, ages ${AFT_AGE[aftAgeIx(st.age)]}.`,`Calificado con la tabla ${tbl}, edades ${AFT_AGE[aftAgeIx(st.age)]}.`):L('Add your age and sex in Settings for your exact tables (17+).','Agrega tu edad y sexo en Ajustes para usar tus tablas exactas (17+).')} ${L('Times as m:ss.','Tiempos en m:ss.')}</p>
+  <div class="field" style="margin-bottom:4px"><label class="lbl">${L('Aerobic event','Evento aeróbico')}</label><select id="aftalt"><option value="">${L('2-mile run (scored)','Carrera de 2 millas (con puntos)')}</option>${Object.entries(AFT_ALT).map(([k,a])=>`<option value="${k}" ${aftAlt===k?'selected':''}>${L(a[0],a[1])} (Go/No-Go)</option>`).join('')}</select></div>
+  <div id="aftrows"></div>
+  <label class="ebrow"><span><b>${L('Combat MOS','MOS de combate')}</b><span class="muted small">${L('Sex-neutral table. 350 points to pass, with 60 in every event.','Tabla neutral. 350 puntos para aprobar, con 60 en cada evento.')}</span></span><button class="tog ${st.armyCombat?'on':''}" data-a="aftcombat" aria-label="Combat MOS"><i></i></button></label>
+  <p class="muted small" style="margin-bottom:0">${L('General standard: 60 in every event and 300 total. Max 500. From the AFT scoring tables effective 1 June 2025; combat standards start 1 Jan 2026 (active duty) and 1 June 2026 (Guard and Reserve). Unofficial: your grader\'s score is the one that counts.','Estándar general: 60 en cada evento y 300 en total. Máximo 500. Según las tablas del AFT vigentes desde el 1 de junio de 2025; los estándares de combate empiezan el 1 de enero de 2026 (servicio activo) y el 1 de junio de 2026 (Guardia y Reserva). No oficial: cuenta el puntaje de tu evaluador.')}</p></div>`);
+  aftRows();
+}
+function aftRows(){
+  const el=$('#aftrows');if(!el)return;const r=aftSum(aftVals,aftAlt),u=U();
+  const row=(key,label,ph,pts)=>`<div class="usrow"><div><b>${label}</b><input type="text" inputmode="decimal" data-aft="${key}" value="${esc(aftShown(key))}" placeholder="${ph}"></div>${pts}</div>`;
+  const ptsHtml=p=>`<span class="uspts" style="color:${p==null?'var(--muted)':p<60?'var(--bad)':'var(--text)'}">${p==null?'—':p}</span>`;
+  let h=r.evs.map(([ev,en,es,kind],k)=>row(ev,L(en,es)+(kind==='wt'?` (${u})`:''),kind==='time'?'m:ss':kind==='wt'?u:L('reps','reps'),ptsHtml(r.ps[k]))).join('');
+  if(aftAlt){const a=AFT_ALT[aftAlt];h+=row('alt',`${L(a[0],a[1])} · ${L('max','máx.')} ${fmtT(aftAltStd(aftAlt))}`,'m:ss',`<span class="uspts" style="font-size:16px;color:${r.go==null?'var(--muted)':r.go?'var(--good)':'var(--bad)'}">${r.go==null?'—':r.go?'Go':'No-Go'}</span>`);}
+  if(r.full){const [c,col]=aftVerdict(r,aftAlt);
+    h+=`<div class="ustot"><span>${aftAlt?L('4 events','4 eventos'):L('Total','Total')}</span><b>${r.tot}</b><span style="color:${col};font-weight:700">${c}</span></div>`;
+    const notes=[];if(r.low)notes.push(L(`${r.low} event${r.low>1?'s':''} under 60 points. Every event needs 60.`,`${r.low} evento${r.low>1?'s':''} con menos de 60 puntos. Cada evento necesita 60.`));
+    if(!aftAlt&&!r.low&&r.tot<aftNeed())notes.push(L(`${aftNeed()-r.tot} more points to pass.`,`${aftNeed()-r.tot} puntos más para aprobar.`));
+    if(aftAlt)notes.push(L('With an alternate aerobic event, ask your unit how your total is recorded.','Con un evento aeróbico alterno, pregunta en tu unidad cómo se registra tu total.'));
+    h+=notes.map(x=>`<p class="muted small" style="margin:6px 0 0">${x}</p>`).join('');}
+  else h+=`<p class="muted small" style="margin:8px 0 0">${L('Fill in every event to see your total.','Llena todos los eventos para ver tu total.')}</p>`;
+  el.innerHTML=h;
+}
+const aftShown=k=>{const v=aftVals[k];return v===''||v==null?'':k==='mdl'||k==='hrp'?v:typeof v==='number'?fmtT(v):v;};
+function aftCard(){
+  const r=aftSum(aftLatest(),'');
+  const est=r.full&&S.settings.age>=17?(()=>{const [c,col]=aftVerdict(r,'');return`<div class="ustot" style="margin:0 0 10px"><span>${L('Latest estimate','Estimado más reciente')}</span><b>${r.tot}</b><span style="color:${col};font-weight:700">${c}</span></div>`;})():`<p class="muted small" style="margin-top:0">${L('Do a practice test session, or enter your numbers, to see your estimated score.','Haz una sesión de prueba de práctica, o ingresa tus números, para ver tu puntaje estimado.')}</p>`;
+  return`<div class="card" data-notr="1"><h3>🎖 AFT ${L('score','puntaje')}</h3>${est}<button class="btn ghost" style="margin:0" data-a="aftcalc">${L('Score calculator','Calculadora de puntaje')}</button></div>`;
+}
+// points for the AFT events done in a finished workout
+function aftDone(exs){
+  if(!(S.settings.age>=17))return'';const v=aftLatest(),inW=AFT_EV.filter(([ev])=>exs.some(e=>e.exId===AFT_IDS[ev]));if(!inW.length)return'';
+  const ps=inW.map(([ev])=>{const x=aftVal(ev,v[ev]);return x?aftPts(ev,x):null;}),full=inW.length===5&&ps.every(x=>x!=null),tot=ps.reduce((a,b)=>a+(b||0),0);
+  return`<div data-notr="1"><h3>🎖 ${L('Estimated AFT points','Puntos estimados del AFT')}</h3>${inW.map(([ev,en,es],k)=>`<div class="pr">${L(en,es)}: <b style="color:${ps[k]!=null&&ps[k]<60?'var(--bad)':'inherit'}">${ps[k]==null?'—':ps[k]}</b></div>`).join('')}${full?(()=>{const [c,col]=aftVerdict({ps,tot,low:ps.filter(x=>x<60).length},'');return`<div class="ustot"><span>${L('Total','Total')}</span><b>${tot}</b><span style="color:${col};font-weight:700">${c}</span></div>`;})():''}</div>`;
+}
+
 function usmcCard(f){
   const v=usmcLatest(),evs=USMC_EV[f];let tot=0,n=0,all=true;for(const [ev,,,kind] of evs){const p=v[ev]?usmcPts(ev,v[ev]):null;if(p!=null){n++;tot+=p;if(!p)all=false;}}
   const est=n===3&&S.settings.age>=17?(()=>{const [c,col]=usmcClass(tot,all);return`<div class="ustot" style="margin:0 0 10px"><span>${L('Latest estimate','Estimado más reciente')}</span><b>${tot}</b><span style="color:${col};font-weight:700">${c}</span></div>`;})():`<p class="muted small" style="margin-top:0">${L('Do a practice test session, or enter your numbers, to see your estimated score.','Haz una sesión de prueba de práctica, o ingresa tus números, para ver tu puntaje estimado.')}</p>`;
@@ -1511,11 +1643,11 @@ function tplPickerHtml(){
 function generatePrep(f){
   const plans=PREP[f],done=S.workouts.filter(w=>w.focus===f).length,pl=plans[done%plans.length];
   let skipped=0;const used=new Set(),entries=[];
-  for(const [ids,n,rest,plan] of pl.slots){
+  for(const [ids,n,rest,plan,reps] of pl.slots){
     const ok=ids.map(EX).filter(ex=>ex&&!used.has(ex.id)&&hasEq(ex)&&unlocked(ex));
     const safe=ok.filter(ex=>!injuryFor(ex));if(ok.length&&!safe.length){skipped++;continue;}
     const ex=safe[0];if(!ex)continue;used.add(ex.id);
-    const sg=suggest(ex);entries.push({exId:ex.id,note:sg.note,plan,rest,sets:Array.from({length:n},()=>({w:sg.w,r:sg.r,done:false}))});
+    const sg=suggest(ex);entries.push({exId:ex.id,note:sg.note,plan,rest,sets:Array.from({length:n},()=>({w:sg.w,r:reps&&ex.id===ids[0]?reps:sg.r,done:false}))});
   }
   return{focus:f,entries,title:pl.t,skipped,n:done%plans.length+1,of:plans.length};
 }
@@ -1578,17 +1710,18 @@ function render(){$('#view').innerHTML={workout:vWorkout,food:vFood,recovery:vRe
 
 function vWorkout(){
   if(S.active)return vActive();
+  if(!focusOk(focusSel))focusSel='auto';
   const rec=recovery(),auto=pickAuto(rec);
   const tired=Object.keys(MUSCLES).filter(m=>rec[m]<85).sort((a,b)=>rec[a]-rec[b]).slice(0,5);
   const lw=S.workouts[S.workouts.length-1];
   return`<div class="hdr"><h1>Workout</h1><div class="hbtns"><button class="bell" data-a="idea" aria-label="Suggest an idea"><svg viewBox="0 0 24 24">${BUBBLE}</svg></button><button class="bell" data-a="tab" data-t="updates" aria-label="Updates"><svg viewBox="0 0 24 24">${BELL}</svg>${hasNewNews()?'<i class="dot"></i>':''}</button></div></div>
   ${streakCard()}
-  <div class="card"><label class="lbl">Focus</label><select id="focus">${Object.entries(FOCUS).map(([k,l])=>`<option value="${k}" ${k===focusSel?'selected':''}>${l}</option>`).join('')}</select>
+  <div class="card"><label class="lbl">Focus</label><select id="focus">${Object.entries(FOCUS).filter(([k])=>focusOk(k)).map(([k,l])=>`<option value="${k}" ${k===focusSel?'selected':''}>${l}</option>`).join('')}</select>
   <p class="muted small">Auto picks <b>${FOCUS[auto]}</b> today — those muscles are the most recovered.</p>
   ${injuryChip()}
   <button class="btn primary big" data-a="gen">Generate workout</button>
   <button class="btn ghost" data-a="empty">Start empty workout</button></div>
-  ${tplCard()}${PREP[focusSel]?usmcCard(focusSel):''}${S.settings.goal==='fatloss'?goalCard():''}
+  ${tplCard()}${PREP[focusSel]?(focusSel==='aft'?aftCard():usmcCard(focusSel)):''}${S.settings.goal==='fatloss'?goalCard():''}
   <div class="card"><h3>Still recovering</h3>${tired.length?tired.map(m=>bar(m,rec[m])).join(''):'<p class="muted" style="margin:0">Everything is fully recovered.</p>'}</div>
   ${lw?`<div class="card"><h3>Last workout</h3><p class="muted" style="margin:0">${fmtDate(lw.end)} · ${esc(FOCUS_NAME[lw.focus]||'Workout')} · ${lw.exercises.length} exercises</p></div>`:''}`;
 }
@@ -2079,9 +2212,12 @@ const SWIMX={shoulder:'swim_free swim_breast swim_intervals pull_buoy kickboard 
  ankle:'swim_free swim_breast swim_intervals kickboard tread aqua_jog',groin:'swim_breast tread kickboard',calves:'swim_free swim_intervals kickboard tread aqua_jog',
  quads:'kickboard aqua_jog swim_breast',hamstrings:'kickboard aqua_jog',chest:'swim_free swim_breast swim_intervals pull_buoy',elbow:'swim_free swim_breast swim_intervals pull_buoy',
  triceps:'swim_free swim_intervals pull_buoy',biceps:'swim_free swim_intervals pull_buoy swim_breast',wrist:'',abs:''};
+// sprint-drag-carry = sprints + backward sled drag + side shuffle + heavy carry
+const INJ_ALIAS={hrp:['pushup'],sdc:['shuttle_sprint','farmer_carry','bear_crawl','lunge','deadlift']};
 function injuryHits(ex,area){
   const P=m=>ex.p.includes(m),Sx=m=>ex.s.includes(m),A=m=>P(m)||Sx(m),id=ex.id,in_=(...l)=>l.includes(id);
   if(SWIM.has(id))return(SWIMX[area]||'').split(' ').includes(id);
+  if(INJ_ALIAS[id])return INJ_ALIAS[id].some(x=>EX(x)&&injuryHits(EX(x),area));
   switch(area){
     // presses, flies, raises, pulls, rows, hangs, push-ups, planks and anything overhead or held heavy at arm's length
     case'shoulder':return A('shoulders')||A('chest')||A('lats')||P('traps')||HANG.has(id)||ONHANDS.has(id)||ex.eq.includes('armor')||
@@ -2502,7 +2638,7 @@ function parseDexa(text){
   if(dm){let y=+dm[3];if(y<100)y+=2000;const m=+dm[1],d=+dm[2];if(m>=1&&m<=12&&d>=1&&d<=31&&y>=2000){const iso=y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');if(iso<=dk(Date.now()))out.d=iso;}}
   return out;
 }
-function vProgress(){return'<h1>Progress</h1>'+weightCard()+waistCard()+dexaCard()+'<h2 style="font-size:20px;margin:18px 0 10px">Lifts</h2>'+vLifts();}
+function vProgress(){return'<h1>Progress</h1>'+weightCard()+(S.settings.branch==='usmc'?waistCard():'')+dexaCard()+'<h2 style="font-size:20px;margin:18px 0 10px">Lifts</h2>'+vLifts();}
 function vLifts(){
   const ids=[...new Set(S.workouts.flatMap(w=>w.exercises.map(e=>e.exId)))].filter(id=>EX(id));
   if(!ids.length)return`<div class="card"><p class="muted" style="margin:0">Log a few workouts and your charts will appear here.</p></div>`;
@@ -2521,6 +2657,12 @@ function vLifts(){
   <div class="card"><h3>Recent sessions</h3>${h.slice(-6).reverse().map(x=>`<div class="hrow"><span class="muted">${shortDate(x.date)}</span><span>${x.sets.map(s=>fmtSet(ex,s,x.unit)).join(' · ')}${vestTxt(x.vest,x.unit)}</span></div>`).join('')}</div>`;
 }
 
+// Military branch decides which fitness test prep shows up (Navy and Air Force tables come later)
+const BRANCHES=[['none','None / civilian','Ninguna / civil'],['usmc','Marine Corps','Cuerpo de Marines'],['army','Army','Ejército'],['navy','Navy','Marina'],['af','Air Force','Fuerza Aérea']];
+const focusOk=k=>k==='pft'||k==='cft'?S.settings.branch==='usmc':k==='aft'?S.settings.branch==='army':true;
+function branchField(){const b=S.settings.branch||'';
+  return`<div class="field" data-notr="1"><label class="lbl">${L('Military branch','Rama militar')}</label><select data-s="branch">${b?'':`<option value="" selected disabled>${L('Choose','Elige')}</option>`}${BRANCHES.map(([v,en,es])=>`<option value="${v}" ${b===v?'selected':''}>${L(en,es)}</option>`).join('')}</select>
+  <p class="muted small" style="margin:6px 0 0">${b==='usmc'?L('Adds PFT and CFT prep workouts and score calculators to the Focus list.','Agrega entrenamientos de preparación y calculadoras de PFT y CFT a la lista de Enfoque.'):b==='army'?L('Adds AFT prep workouts and the AFT score calculator to the Focus list.','Agrega entrenamientos de preparación y la calculadora del AFT a la lista de Enfoque.'):b==='navy'||b==='af'?L(`${b==='navy'?'Navy':'Air Force'} fitness test prep is coming soon.`,`La preparación para la prueba física de la ${b==='navy'?'Marina':'Fuerza Aérea'} llegará pronto.`):L('Pick your branch to add its fitness test prep.','Elige tu rama para agregar la preparación de su prueba física.')}</p></div>`;}
 function sel(key,opts){return`<select data-s="${key}">${opts.map(([v,l])=>`<option value="${v}" ${String(S.settings[key])===String(v)?'selected':''}>${l}</option>`).join('')}</select>`;}
 function setGoalW(v){S.settings.goalW=+v;S.settings.goalWU=U();S.settings.goalStart=bodyW()||'';const n=S.settings.nut;if(n&&n.goal==='lose')n.auto=true;}
 function profileFields(){
@@ -2531,6 +2673,7 @@ const profileDone=()=>!!(S.settings.sex&&+S.settings.age>=13);
 function profileAsk(){showModal(`<h2>Two quick questions</h2><p class="muted">Your sex and age make your calorie targets more accurate. You can change them anytime in Settings.</p>${profileFields()}<button class="btn primary big" data-a="profiledone">Save</button><button class="btn ghost" data-a="profileskip">Not now</button>`);}
 function prefsForm(){
   return`${profileFields()}
+  ${branchField()}
   <div class="field"><label class="lbl">Goal</label>${sel('goal',[['strength','Strength — heavy, low reps'],['hypertrophy','Build muscle'],['endurance','Endurance — lighter, more reps'],['fatloss','Lose weight — strength + cardio']])}</div>
   ${S.settings.goal==='fatloss'?`<div class="field"><label class="lbl">Goal weight (${U()})</label><input type="text" inputmode="decimal" data-s="goalW" value="${goalW()?r1(goalW()):''}" placeholder="${U()}"><p class="muted small" style="margin:6px 0 0">Workouts and food targets work toward this.</p></div>`:''}
   <div class="field"><label class="lbl">Experience</label>${sel('exp',[['beginner','Beginner'],['intermediate','Intermediate'],['advanced','Advanced']])}</div>
@@ -2641,7 +2784,7 @@ function finish(){
   const stkHtml=`<div class="stkdone ${hit?'mile':''}"><span class="flame">🔥</span><div>${hit?`<b>${hit}-day streak!</b><div class="small">Milestone unlocked. Keep it going!</div>`:`<b>${stk}-day streak</b><div class="small muted">${stk>stkBefore?'Streak extended.':'Streak kept alive.'}</div>`}</div></div>`;
   const ups=Object.keys(MUSCLES).filter(m=>after[m]&&(!before[m]||after[m].i>before[m].i));
   const upHtml=ups.length?'<h3>Rank ups ⬆</h3>'+ups.map(m=>`<div class="rk">${badge(after[m].i,32)}<div class="rkbody"><b>${MUSCLES[m]}</b> <span style="color:${rankColor(after[m].i)};font-weight:700">${rankName(after[m].i)}</span></div></div>`).join(''):'';
-  const usHtml=PREP[w.focus]&&S.settings.age>=17?(()=>{const v=usmcLatest(),evs=USMC_EV[w.focus],ids={pull:'pullup',plank:'plank',run:'run_3mi',mtc:'run_880',acl:'ammo_press'};
+  const usHtml=w.focus==='aft'?aftDone(exs):PREP[w.focus]&&S.settings.age>=17?(()=>{const v=usmcLatest(),evs=USMC_EV[w.focus],ids={pull:'pullup',plank:'plank',run:'run_3mi',mtc:'run_880',acl:'ammo_press'};
     const inW=evs.filter(([ev])=>exs.some(e=>e.exId===ids[ev]));if(!inW.length)return'';
     const ps=inW.map(([ev])=>usmcPts(ev,v[ev])),tot=ps.reduce((x,y)=>x+(y||0),0),full=inW.length===3&&ps.every(x=>x!=null);
     return`<div data-notr="1"><h3>🎖 ${L('Estimated test points','Puntos estimados de la prueba')}</h3>${inW.map(([ev,en,es],k)=>{const p=ps[k];return`<div class="pr">${L(en,es)}: <b>${p==null?'—':p===0?L('below min','bajo mín.'):p}</b></div>`;}).join('')}${full?(()=>{const [c,col]=usmcClass(tot,ps.every(x=>x>0));return`<div class="ustot"><span>${L('Total','Total')}</span><b>${tot}</b><span style="color:${col};font-weight:700">${c}</span></div>`;})():''}</div>`;})():'';
@@ -2766,6 +2909,8 @@ document.addEventListener('click',e=>{
     case'addburn':{const k=+b.dataset.k||0,d=dk(Date.now());S.burn=S.burn||{};S.burn[d]=(+S.burn[d]||0)+k;save();b.disabled=true;b.textContent=L('Added ✓','Agregado ✓');toast(L(`Added ${k} kcal to Food`,`Se sumaron ${k} kcal en Comida`));break;}
     case'rankshare':stat('share-ranks',true);shareRanks();break;
     case'rankcopy':copyRanks();break;
+    case'aftcalc':aftVals=null;aftCalc();break;
+    case'aftcombat':S.settings.armyCombat=!S.settings.armyCombat;save();aftCalc();break;
     case'usmccalc':usmcVals=null;usmcCalc(b.dataset.t);break;
     case'usmcca':S.settings.combatArms=!S.settings.combatArms;save();usmcCalc();break;
     case'nuthelp':nutHelp();break;
@@ -2825,7 +2970,7 @@ document.addEventListener('click',e=>{
     case'savenut':{const x=readNut();if(!calcTargets(x,x.bw)){toast('Fill in your age, height and body weight');break;}
       logWeight(x.bw);if(x.goal==='lose'&&x.gw>0)setGoalW(x.gw);if(x.sex)S.settings.sex=x.sex;if(x.age>=13)S.settings.age=Math.round(x.age);S.settings.nut={goal:x.goal,sex:x.sex,age:x.age,cm:x.cm,act:x.act,auto:true};save();closeModal();render();toast('Targets set');break;}
     case'picklang':{const l=b.dataset.l;S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;modalLocked=false;closeModal();render();if(!S.settings.onboarded)onboarding();break;}
-    case'onboarded':{const a=$('[data-s="age"]');if(a)a.dispatchEvent(new Event('change',{bubbles:true}));if(!profileDone()){toast('Add your sex and age');break;}S.settings.onboarded=true;S.settings.askedProfile=true;modalLocked=false;save();closeModal();render();break;}
+    case'onboarded':{const a=$('[data-s="age"]');if(a)a.dispatchEvent(new Event('change',{bubbles:true}));if(!profileDone()){toast('Add your sex and age');break;}if(!S.settings.branch){toast(L('Pick your military branch, or None / civilian','Elige tu rama militar, o Ninguna / civil'));break;}S.settings.onboarded=true;S.settings.askedProfile=true;modalLocked=false;save();closeModal();render();break;}
     case'profiledone':{const a=$('[data-s="age"]');if(a)a.dispatchEvent(new Event('change',{bubbles:true}));if(!profileDone()){toast('Add your sex and age');break;}S.settings.askedProfile=true;save();closeModal();render();toast('Saved');break;}
     case'profileskip':S.settings.askedProfile=true;save();closeModal();break;
   }
@@ -2842,6 +2987,7 @@ document.addEventListener('input',e=>{
   if(t.dataset&&t.dataset.vest!=null&&S.active){const en=S.active.exercises[+t.dataset.vest];if(en){en.vest=t.value.replace(',','.');save();}return;}
   if(t.closest&&t.closest('#waistsheet')){waistPreview();return;}
   if(t.closest&&t.closest('#dexaform')){dexaCheck(t.id);return;}
+  if(t.dataset&&t.dataset.aft){aftVals[t.dataset.aft]=t.value;const pos=t.selectionStart,ev=t.dataset.aft;aftRows();const n=document.querySelector(`[data-aft="${ev}"]`);if(n){n.focus();try{n.setSelectionRange(pos,pos);}catch(e){}}return;}
   if(t.dataset&&t.dataset.usmc){usmcVals[t.dataset.usmc]=t.value;const pos=t.selectionStart,ev=t.dataset.usmc;usmcRows();const n=document.querySelector(`[data-usmc="${ev}"]`);if(n){n.focus();try{n.setSelectionRange(pos,pos);}catch(e){}}return;}
   if(t.id==='pq')renderPickerList();
   if(t.id==='injtext'&&injDraft){injDraft.text=t.value;if(!injDraft.manual){injDraft.areas=detectAreas(t.value);}injAreasRender();}
@@ -2852,6 +2998,7 @@ document.addEventListener('change',e=>{
   const t=e.target;
   if(t.name==='langsel'){setLang(t.value);return;}
   if(t.id==='focus'){const was=!!PREP[focusSel];focusSel=t.value;if(was||PREP[focusSel])render();return;}
+  if(t.id==='aftalt'){aftAlt=t.value;aftRows();return;}
   if(t.name==='usmctest'){usmcTest=t.value;usmcCalc();return;}
   if(t.id==='progsel'){progEx=t.value;render();return;}
   if(t.id==='importfile'){importFile(t.files[0]);t.value='';return;}
@@ -2865,6 +3012,7 @@ document.addEventListener('change',e=>{
     S.settings[t.dataset.s]=v;if(S.settings.nut&&v!==''){S.settings.nut[t.dataset.s]=v;}save();if(tab==='food')render();return;}
   if(t.dataset.s==='bw'){const v=parseFloat(t.value.replace(',','.'));if(v>0)logWeight(v);else S.settings.bw='';save();if(tab==='ranks')render();return;}
   if(t.dataset.s==='goalW'){const v=parseFloat(t.value.replace(',','.'));if(v>0){setGoalW(v);if(bodyW()&&v>=bodyW())toast('Your goal weight is at or above your current weight');}else{S.settings.goalW='';}save();return;}
+  if(t.dataset.s==='branch'){S.settings.branch=t.value;if(!focusOk(focusSel))focusSel='auto';save();if($('#sheet [data-a="onboarded"]'))onboarding();else render();return;}
   if(t.dataset.s==='goal'){S.settings.goal=t.value;const n=S.settings.nut;
     if(t.value==='fatloss'){if(n&&n.goal!=='lose'){n.goal='lose';n.auto=true;toast('Food targets switched to Lose fat');}else if(!n)toast('Set your food targets on the Food tab to match');}
     save();if($('#sheet [data-a="onboarded"]'))onboarding();else render();return;}
