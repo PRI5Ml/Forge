@@ -55,7 +55,7 @@ h3{font-size:17px;margin:0 0 8px}
 .lbl{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
 .field{margin-bottom:14px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-select,input[type=text],input[type=search],input[type=email]{width:100%;padding:12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);color:var(--text);font-size:16px;font-family:inherit}
+select,input[type=text],input[type=search],input[type=email],input[type=date]{width:100%;padding:12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);color:var(--text);font-size:16px;font-family:inherit}
 #idea_msg{font-family:inherit;font-size:16px;resize:vertical;min-height:120px;line-height:1.4}
 .btn{display:block;width:100%;border:0;border-radius:14px;padding:13px 16px;font-family:inherit;font-size:16px;font-weight:600;margin-top:10px;background:var(--card2);color:var(--text);cursor:pointer}
 .btn.primary{background:var(--acc);color:#fff}
@@ -178,6 +178,10 @@ nav.tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2
 .plan{background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.3);border-radius:10px;padding:8px 10px;margin:8px 0}
 .usrow{display:flex;align-items:flex-end;gap:12px;margin:10px 0}.usrow>div{flex:1}.usrow b{display:block;font-size:14px;margin-bottom:6px}.uspts{width:74px;text-align:right;font-size:22px;font-weight:800}
 .ustot{display:flex;align-items:center;gap:12px;background:var(--card2);border-radius:12px;padding:12px 14px;margin-top:12px}.ustot b{font-size:28px;margin-left:auto}
+.vestrow{display:flex;align-items:center;gap:10px;margin:10px 0 4px}.vestrow label{flex:1;font-weight:600;font-size:14px}.vestrow input{width:96px!important;text-align:center}
+.okmsg,.warnmsg{border-radius:10px;padding:8px 10px;margin:0 0 10px}.okmsg{background:rgba(52,211,153,.12);color:var(--good)}.warnmsg{background:rgba(245,192,74,.12);color:#f5c04a}
+#dexaform input.filled{border-color:var(--acc)}
+.whtrchip{display:inline-block;padding:6px 10px;border-radius:20px;font-size:13px;font-weight:700}.whtrchip.ok{background:rgba(52,211,153,.15);color:var(--good)}.whtrchip.bad{background:rgba(255,84,104,.15);color:var(--bad)}
 .lp{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}.hbtns{display:flex;gap:8px}
 .dodbtn{display:flex;align-items:center;gap:6px;height:44px;padding:0 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);color:var(--text);text-decoration:none;font-weight:700;font-size:15px}.dodbtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .bell{position:relative;width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--line);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer}
@@ -218,7 +222,7 @@ const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const sp=s=>s?s.split(' '):[];
 
 const MUSCLES={chest:'Chest',shoulders:'Shoulders',triceps:'Triceps',biceps:'Biceps',forearms:'Forearms',lats:'Lats',traps:'Upper back',lowerback:'Lower back',abs:'Abs',obliques:'Obliques',quads:'Quads',hamstrings:'Hamstrings',adductors:'Inner thighs',abductors:'Outer hips',glutes:'Glutes',calves:'Calves'};
-const EQUIP={barbell:'Barbell',rack:'Squat rack',bench:'Bench',dumbbell:'Dumbbells',kettlebell:'Kettlebell',cable:'Cable machine',machine:'Weight machines',pullup:'Pull-up / dip bar',bands:'Resistance bands',abwheel:'Ab wheel'};
+const EQUIP={treadmill:'Treadmill',bike:'Exercise bike',rower:'Rowing machine',elliptical:'Elliptical',stairs:'Stair climber',jumprope:'Jump rope',armbike:'Arm bike',armor:'Flak / plate carrier',barbell:'Barbell',rack:'Squat rack',bench:'Bench',dumbbell:'Dumbbells',kettlebell:'Kettlebell',cable:'Cable machine',machine:'Weight machines',pullup:'Pull-up / dip bar',bands:'Resistance bands',abwheel:'Ab wheel'};
 const WEIGHT_EQ=['barbell','dumbbell','kettlebell','cable','machine'];
 const GROUPS={push:['chest','shoulders','triceps'],pull:['lats','traps','biceps','forearms'],legs:['quads','hamstrings','glutes','adductors','abductors','calves','lowerback']};
 GROUPS.upper=GROUPS.push.concat(GROUPS.pull);
@@ -226,8 +230,8 @@ GROUPS.lower=GROUPS.legs.concat(['abs','obliques']);
 GROUPS.core=['abs','obliques','lowerback'];
 GROUPS.calis=Object.keys(MUSCLES);
 GROUPS.full=Object.keys(MUSCLES);
-const FOCUS={auto:'Auto (most recovered)',push:'Push',pull:'Pull',legs:'Legs',upper:'Upper body',lower:'Lower body',core:'Core',calis:'Calisthenics',full:'Full body',pft:'PFT Prep (Marine PFT)',cft:'CFT Prep (Marine CFT)'};
-const FOCUS_NAME={push:'Push day',pull:'Pull day',legs:'Leg day',upper:'Upper body',lower:'Lower body',core:'Core day',calis:'Calisthenics day',full:'Full body',custom:'Custom workout',pft:'PFT prep',cft:'CFT prep'};
+const FOCUS={auto:'Auto (most recovered)',cardio:'Cardio (burn calories)',push:'Push',pull:'Pull',legs:'Legs',upper:'Upper body',lower:'Lower body',core:'Core',calis:'Calisthenics',full:'Full body',pft:'PFT Prep (Marine PFT)',cft:'CFT Prep (Marine CFT)'};
+const FOCUS_NAME={push:'Push day',pull:'Pull day',legs:'Leg day',upper:'Upper body',lower:'Lower body',core:'Core day',calis:'Calisthenics day',full:'Full body',custom:'Custom workout',cardio:'Cardio day',pft:'PFT prep',cft:'CFT prep'};
 
 // id, name, equipment needed, primary muscles, secondary muscles, compound?, progression type
 const RAW=[
@@ -258,6 +262,8 @@ const RAW=[
 ['chinup','Chin-Up','pullup','lats biceps','forearms',1,'bw'],
 ['lat_pulldown','Lat Pulldown','cable','lats','biceps',1,'std'],
 ['cable_row','Seated Cable Row','cable','lats traps','biceps',1,'std'],
+['sa_cable_row','Single-Arm Cable Row','cable','lats','biceps traps',1,'std'],
+['dual_cable_row','Dual Cable Row','cable','lats traps','biceps',1,'std'],
 ['machine_row','Machine Row','machine','lats traps','biceps',1,'std'],
 ['db_shrug','Dumbbell Shrug','dumbbell','traps','forearms',0,'std'],
 ['band_row','Band Row','bands','lats','biceps',0,'bw'],
@@ -270,6 +276,9 @@ const RAW=[
 ['db_curl','Dumbbell Curl','dumbbell','biceps','forearms',0,'std'],
 ['hammer_curl','Hammer Curl','dumbbell','biceps forearms','',0,'std'],
 ['cable_curl','Cable Curl','cable','biceps','forearms',0,'std'],
+['incline_curl','Incline Dumbbell Curl','dumbbell bench','biceps','forearms',0,'std'],
+['db_preacher','Dumbbell Preacher Curl','dumbbell bench','biceps','forearms',0,'std'],
+['ez_preacher','EZ-Bar Preacher Curl','barbell bench','biceps','forearms',0,'std'],
 ['preacher','Machine Preacher Curl','machine','biceps','',0,'std'],
 ['band_curl','Band Curl','bands','biceps','',0,'bw'],
 ['skull','Skull Crusher','barbell bench','triceps','',0,'std'],
@@ -373,6 +382,18 @@ const RAW=[
 ['run_3mi','3-Mile Run','','quads hamstrings calves','glutes',0,'run'],
 ['run_880','880-Yard Sprint','','quads hamstrings calves','glutes',0,'run'],
 ['shuttle_sprint','300-Yard Shuttle Sprint','','quads hamstrings calves','glutes',0,'run'],
+['walk','Brisk Walk','','calves','quads glutes',0,'cardio'],
+['incline_walk','Incline Treadmill Walk','treadmill','glutes calves','quads hamstrings',0,'cardio'],
+['jog','Easy Jog','','quads hamstrings calves','glutes',0,'cardio'],
+['bike','Stationary Bike','bike','quads','glutes calves',0,'cardio'],
+['bike_intervals','Bike Intervals','bike','quads','glutes calves',0,'cardio'],
+['rower','Rowing Machine','rower','lats quads','hamstrings glutes biceps lowerback',0,'cardio'],
+['elliptical','Elliptical','elliptical','quads glutes','calves hamstrings',0,'cardio'],
+['stair_climber','Stair Climber','stairs','quads glutes','calves hamstrings',0,'cardio'],
+['jump_rope','Jump Rope','jumprope','calves','shoulders forearms',0,'cardio'],
+['arm_bike','Arm Bike','armbike','shoulders','triceps biceps',0,'cardio'],
+['flak_run','Flak Run (Front & Back Plates)','armor','quads hamstrings calves','glutes traps abs',0,'run'],
+['flak_run_side','Flak Run (Front, Back & Side Plates)','armor','quads hamstrings calves','glutes traps abs',0,'run'],
 ['bear_crawl','Bear Crawl','','shoulders abs','quads triceps',0,'run'],
 ['ammo_press','Ammo Can Press (30 lb)','','shoulders','triceps traps',0,'bw'],
 ['farmer_carry',"Farmer's Carry",'dumbbell','forearms traps','abs glutes',0,'std'],
@@ -427,9 +448,9 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.10.29a';
-const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup'],onboarded:false},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},active:null});
-function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{}});}
+const APP_VERSION='2026.10.29h';
+const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],active:null});
+function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
 let S=load();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){toast('Could not save — storage may be full');}}
@@ -476,6 +497,18 @@ run_tempo:[["Warm up with 5 minutes of easy jogging.","Run 2 miles at a comforta
 run_3mi:[["Warm up with 5–10 minutes of easy jogging and a few short strides.","Run 3 miles as fast as you can hold for the whole distance.","Cool down by walking.","Log your total time."],"Start a little slower than you think and finish fast. Practice tests show you where you stand."],
 run_880:[["Warm up with easy jogging and a few short sprints.","Run 880 yards (half a mile, two laps of a track) as fast as you can, like Movement to Contact.","Walk for 3 minutes.","Repeat for every set. Log each rep's time."],"Run it in your boots and utilities sometimes, like the real test."],
 shuttle_sprint:[["Mark two lines 25 yards apart.","Sprint to the far line and back 6 times (300 yards total). Touch the line with your foot or hand each turn.","Rest about 3 minutes.","Repeat for every set. Log each set's time."],"Stay low on the turns. Fast changes of direction win the Maneuver Under Fire course."],
+walk:[["Walk outside or on a track at a fast pace, swinging your arms.","Aim for a pace where you're breathing harder but can still talk.","Keep it going for the full time.","Log your minutes."],"Walking is easy on the joints and one of the best ways to burn extra calories every day."],
+incline_walk:[["Set a treadmill to a walking speed (about 3 mph / 5 km/h) and a 8–12% incline.","Walk tall without holding the rails.","Keep a steady pace for the full time.","Log your minutes."],"Holding the rails cuts the calories you burn. Lower the incline before you grab them."],
+jog:[["Jog at an easy, conversational pace, outside or on a treadmill.","Land softly under your hips with short, quick steps.","Keep it going for the full time; walk breaks are fine.","Log your minutes."],"Easy means you could hold a conversation. Most of your running should feel like this."],
+bike:[["Set the seat so your knee is slightly bent at the bottom of the pedal stroke.","Pedal at a steady pace with enough resistance to feel it.","Keep it going for the full time.","Log your minutes."],"Low impact and easy on the joints, so it's great on lifting days."],
+bike_intervals:[["Warm up for 2–3 minutes of easy pedaling.","Pedal hard for 30 seconds (high resistance or fast).","Pedal easy for 90 seconds.","Repeat until the time is up. Log your minutes."],"Intervals burn a lot in a short time. Hard should feel hard, easy should let you recover."],
+rower:[["Strap your feet in and grab the handle with straight arms.","Push with your legs first, then lean back slightly, then pull the handle to your lower ribs.","Reverse it: arms out, lean forward, then bend your knees.","Keep a steady rhythm for the full time. Log your minutes."],"It's legs, then back, then arms. Most of the power comes from your legs, not your arms."],
+elliptical:[["Step on and hold the handles lightly.","Push and pull with your arms while your legs move smoothly.","Add resistance until it feels like work.","Keep it going for the full time. Log your minutes."],"No impact at all, which makes it a good choice if running bothers your joints."],
+stair_climber:[["Step on and start at a slow, steady speed.","Stand tall and take full steps without leaning on the rails.","Raise the speed until it's challenging.","Keep it going for the full time. Log your minutes."],"Leaning on the rails makes it much easier. Hold them lightly for balance only."],
+jump_rope:[["Hold the handles at hip height with the rope behind you.","Turn the rope with your wrists, not your arms.","Jump just high enough to clear it, landing softly on the balls of your feet.","Mix in short rests if you need them. Log your total minutes."],"High calorie burn, but high impact on the calves and ankles. Build up slowly."],
+arm_bike:[["Sit facing the arm bike with the handles at shoulder height.","Pedal with your arms in a smooth circle.","Add resistance until it feels like work.","Keep it going for the full time. Log your minutes."],"Great cardio when a leg, knee or ankle injury keeps you off the other machines."],
+flak_run:[["Put on your flak or plate carrier with front and back plates. Tighten it so it doesn't bounce.","Warm up with a few minutes of walking and easy jogging in it.","Run your planned distance at a steady pace you can hold.","Log the distance and your total time; the app works out your pace."],"Build up slowly: start with shorter distances than your normal runs. Stop if your back, shoulders or knees hurt."],
+flak_run_side:[["Put on your flak or plate carrier with front, back and side plates. Tighten it so nothing shifts.","Warm up with a few minutes of walking and easy jogging in it.","Run your planned distance at a steady pace you can hold.","Log the distance and your total time; the app works out your pace."],"The side plates add weight and limit breathing room. Go shorter and slower than your front-and-back runs at first."],
 bear_crawl:[["Get on your hands and feet, knees just off the ground, back flat.","Crawl forward 25 yards, moving opposite hand and foot together.","Stand up, rest about 45 seconds.","Repeat for every set. Log each set's time."],"Keep your hips low and your back flat. Builds the crawling strength the CFT course needs."],
 ammo_press:[["Hold a 30 lb dumbbell, kettlebell or loaded ammo can at your shoulders with both hands.","Press it straight overhead until your arms lock out.","Lower it back to your chin.","Repeat as many times as you can in the time given. Log your reps."],"Breathe out on every press and find a steady rhythm. Only reps with full lockout count on the test."],
 farmer_carry:[["Pick up a heavy dumbbell in each hand, standing tall.","Walk 50 yards with short, quick steps, keeping your shoulders back.","Set them down under control.","Rest, then repeat. Log the weight per hand and reps as trips."],"Don't let the weights swing or your shoulders round. Builds grip for carries and buddy drags."],
@@ -509,6 +542,8 @@ pullup:[["Hang from the bar with an overhand grip, hands slightly wider than sho
 chinup:[["Hang from the bar with palms facing you, hands about shoulder-width.","Pull your shoulders down, then pull up.","Bring your chin over the bar.","Lower all the way down slowly."],"Usually easier than pull-ups because your biceps help more. A great first goal."],
 lat_pulldown:[["Sit with your thighs under the pads and grab the bar wider than your shoulders.","Lean back slightly and pull your shoulders down.","Pull the bar to your upper chest, driving your elbows down.","Let the bar rise slowly until your arms are straight."],"Don't pull behind your neck, and don't swing your body to move the weight."],
 cable_row:[["Sit with your feet on the platform, knees slightly bent, and grab the handle.","Sit tall with a flat back and arms straight.","Pull the handle to your belly, squeezing your shoulder blades together.","Return slowly until your arms are straight."],"Keep your torso still. Don't rock back and forth to move the weight."],
+sa_cable_row:[["Set a single handle on a cable at about chest height (or sit at a low row and use one handle).","Hold the handle in one hand with your arm straight and your torso still.","Pull your elbow back past your ribs and squeeze your shoulder blade.","Let your arm straighten slowly, then switch sides."],"Don't twist your torso to finish the rep. Log the weight for one arm."],
+dual_cable_row:[["Set both pulleys of a cable crossover at chest height with a handle on each.","Step back holding a handle in each hand, arms straight in front of you.","Pull both elbows back past your ribs and squeeze your shoulder blades together.","Return slowly until your arms are straight."],"Keep your chest up and stay still; only your arms and shoulder blades move. Log the weight on one side."],
 machine_row:[["Adjust the seat so the handles are at chest height, chest against the pad.","Grab the handles with arms straight.","Pull back, driving your elbows past your sides.","Return slowly."],"Pause and squeeze for a second at the back of every rep."],
 db_shrug:[["Stand holding dumbbells at your sides.","Lift your shoulders straight up toward your ears.","Hold for a second at the top.","Lower slowly."],"Go straight up and down. Don't roll your shoulders."],
 band_row:[["Anchor a band at chest height, or loop it around your feet while seated.","Hold the ends with straight arms.","Pull your hands toward your belly, squeezing your shoulder blades.","Return slowly."],"Step back further for more resistance."],
@@ -521,6 +556,9 @@ bb_curl:[["Stand holding a barbell with an underhand grip at shoulder-width.","K
 db_curl:[["Stand holding dumbbells at your sides, palms facing forward.","Keep your elbows at your sides.","Curl the weights up, squeezing your biceps.","Lower slowly all the way down."],"Lowering slowly (2–3 seconds) builds as much muscle as lifting."],
 hammer_curl:[["Stand holding dumbbells at your sides, palms facing your body.","Keep your palms facing in the whole time.","Curl the weights up toward your shoulders.","Lower slowly."],"Works your forearms and the outer biceps more than regular curls."],
 cable_curl:[["Attach a straight bar or rope to the low pulley.","Stand facing the machine and grab the handle with an underhand grip.","Curl the handle up toward your shoulders, elbows at your sides.","Lower slowly."],"The cable keeps tension the whole way, so keep the reps smooth."],
+incline_curl:[["Set a bench to about 45° and lie back with a dumbbell in each hand.","Let your arms hang straight down, palms forward.","Curl the dumbbells up without moving your upper arms forward.","Lower slowly all the way down."],"The incline stretches the biceps; use a lighter weight than standing curls."],
+db_preacher:[["Sit at a preacher bench with the back of your upper arm flat on the pad.","Hold a dumbbell with your palm facing up and your arm almost straight.","Curl the dumbbell up toward your shoulder.","Lower slowly until your arm is almost straight. Switch arms, or do both at once."],"Don't let the weight drop at the bottom; control it to protect your elbow. Log the weight per dumbbell."],
+ez_preacher:[["Sit at a preacher bench with your upper arms flat on the pad.","Hold an EZ bar on the angled grips, palms up.","Curl the bar up toward your chin.","Lower slowly until your arms are almost straight."],"Keep your armpits snug against the top of the pad and don't bounce out of the bottom."],
 preacher:[["Adjust the seat so your upper arms rest flat on the pad.","Grab the handles with an underhand grip.","Curl up until your forearms are vertical.","Lower slowly until your arms are almost straight."],"Don't drop fast at the bottom; that's where elbows get strained."],
 band_curl:[["Stand on the middle of a band and hold the ends, palms forward.","Keep your elbows at your sides.","Curl your hands up toward your shoulders.","Lower slowly."],"Use a wider stance on the band for more resistance."],
 skull:[["Lie on a bench holding a barbell or EZ-bar over your chest with arms straight.","Keep your upper arms still and slightly angled back.","Bend your elbows to lower the bar toward your forehead.","Straighten your arms to lift it back up."],"Go light and slow. Lower the bar to just behind your head if your elbows complain."],
@@ -598,11 +636,11 @@ pallof:[["Set a cable at chest height and stand side-on, holding the handle at y
 side_bend:[["Stand holding a dumbbell in one hand.","Keep your hips still.","Bend sideways toward the dumbbell.","Stand back up by squeezing the opposite side. Finish one side, then switch."],"Hold the weight in one hand only. Two cancel each other out."],
 weighted_twist:[["Sit with knees bent, holding a dumbbell or plate at your chest.","Lean back slightly with a straight back.","Rotate to bring the weight beside one hip.","Rotate to the other side. Each side counts as a rep."],"Move slowly and keep the weight close to your body."]
 };
-const HOWTO_IMG={"diamond_pushup":"Push-Ups_-_Close_Triceps_Position","decline_pushup":"Decline_Push-Up","hspu":"Handstand_Push-Ups","muscle_up":"Muscle_Up","inverted_row":"Inverted_Row","scap_pullup":"Scapular_Pull-Up","jump_squat":"Freehand_Jump_Squat","nordic_curl":"Natural_Glute_Ham_Raise","sl_glute_bridge":"Single_Leg_Glute_Bridge","bench":"Barbell_Bench_Press_-_Medium_Grip","incline_bb":"Barbell_Incline_Bench_Press_-_Medium_Grip","db_bench":"Dumbbell_Bench_Press","incline_db":"Incline_Dumbbell_Press","db_fly":"Dumbbell_Flyes","cable_fly":"Cable_Crossover","pec_deck":"Butterfly","chest_press":"Leverage_Chest_Press","pushup":"Pushups","dip":"Dips_-_Chest_Version","ohp":"Standing_Military_Press","db_ohp":"Seated_Dumbbell_Press","arnold":"Arnold_Dumbbell_Press","shoulder_press_m":"Machine_Shoulder_Military_Press","lat_raise":"Side_Lateral_Raise","cable_lat_raise":"Cable_Seated_Lateral_Raise","rear_fly":"Seated_Bent-Over_Rear_Delt_Raise","face_pull":"Face_Pull","band_pull_apart":"Band_Pull_Apart","deadlift":"Barbell_Deadlift","bb_row":"Bent_Over_Barbell_Row","db_row":"One-Arm_Dumbbell_Row","pullup":"Pullups","chinup":"Chin-Up","lat_pulldown":"Wide-Grip_Lat_Pulldown","cable_row":"Seated_Cable_Rows","machine_row":"Leverage_Iso_Row","db_shrug":"Dumbbell_Shrug","back_ext":"Hyperextensions_Back_Extensions","good_morning":"Good_Morning","weighted_back_ext":"Hyperextensions_Back_Extensions","superman":"Superman","bb_curl":"Barbell_Curl","db_curl":"Dumbbell_Bicep_Curl","hammer_curl":"Hammer_Curls","cable_curl":"Standing_Biceps_Cable_Curl","preacher":"Machine_Preacher_Curls","skull":"EZ-Bar_Skullcrusher","pushdown":"Triceps_Pushdown","oh_ext":"Standing_Dumbbell_Triceps_Extension","sa_cable_ext":"Cable_One_Arm_Tricep_Extension","dual_cable_ext":"Cable_Rope_Overhead_Triceps_Extension","cg_bench":"Close-Grip_Barbell_Bench_Press","bench_dip":"Bench_Dips","wrist_curl":"Palms-Up_Dumbbell_Wrist_Curl_Over_A_Bench","rev_wrist_curl":"Palms-Down_Dumbbell_Wrist_Curl_Over_A_Bench","btb_wrist_curl":"Standing_Palms-Up_Barbell_Behind_The_Back_Wrist_Curl","rev_curl":"Reverse_Barbell_Curl","cable_wrist_curl":"Cable_Wrist_Curl","plate_pinch":"Plate_Pinch","squat":"Barbell_Full_Squat","front_squat":"Front_Barbell_Squat","goblet":"Goblet_Squat","kb_goblet":"Goblet_Squat","leg_press":"Leg_Press","leg_ext":"Leg_Extensions","leg_curl":"Seated_Leg_Curl","lying_leg_curl":"Lying_Leg_Curls","hip_abduction":"Thigh_Abductor","hip_adduction":"Thigh_Adductor","cable_adduction":"Cable_Hip_Adduction","sumo_squat":"Plie_Dumbbell_Squat","side_leg_raise":"Side_Leg_Raises","rdl":"Romanian_Deadlift","db_rdl":"Stiff-Legged_Dumbbell_Deadlift","lunge":"Dumbbell_Lunges","step_up":"Dumbbell_Step_Ups","hip_thrust":"Barbell_Hip_Thrust","kb_swing":"One-Arm_Kettlebell_Swings","glute_bridge":"Butt_Lift_Bridge","bw_squat":"Bodyweight_Squat","bw_lunge":"Bodyweight_Walking_Lunge","calf_raise":"Standing_Calf_Raises","seated_calf":"Seated_Calf_Raise","lp_calf":"Calf_Press_On_The_Leg_Press_Machine","db_calf":"Standing_Dumbbell_Calf_Raise","plank":"Plank","crunch":"Crunches","dead_bug":"Dead_Bug","russian_twist":"Russian_Twist","hanging_raise":"Hanging_Leg_Raise","cable_crunch":"Cable_Crunch","sit_up":"Sit-Up","reverse_crunch":"Reverse_Crunch","leg_raise":"Flat_Bench_Lying_Leg_Raise","v_up":"Jackknife_Sit-Up","flutter_kick":"Flutter_Kicks","mountain_climber":"Mountain_Climbers","knee_raise":"Knee_Hip_Raise_On_Parallel_Bars","ab_wheel":"Ab_Roller","machine_crunch":"Ab_Crunch_Machine","weighted_crunch":"Weighted_Crunches","side_plank":"Side_Bridge","bicycle_crunch":"Air_Bike","woodchop":"Standing_Cable_Wood_Chop","pallof":"Pallof_Press","side_bend":"Dumbbell_Side_Bend","weighted_twist":"Russian_Twist"};
+const HOWTO_IMG={"diamond_pushup":"Push-Ups_-_Close_Triceps_Position","decline_pushup":"Decline_Push-Up","hspu":"Handstand_Push-Ups","muscle_up":"Muscle_Up","inverted_row":"Inverted_Row","scap_pullup":"Scapular_Pull-Up","jump_squat":"Freehand_Jump_Squat","nordic_curl":"Natural_Glute_Ham_Raise","sl_glute_bridge":"Single_Leg_Glute_Bridge","bench":"Barbell_Bench_Press_-_Medium_Grip","incline_bb":"Barbell_Incline_Bench_Press_-_Medium_Grip","db_bench":"Dumbbell_Bench_Press","incline_db":"Incline_Dumbbell_Press","db_fly":"Dumbbell_Flyes","cable_fly":"Cable_Crossover","pec_deck":"Butterfly","chest_press":"Leverage_Chest_Press","pushup":"Pushups","dip":"Dips_-_Chest_Version","ohp":"Standing_Military_Press","db_ohp":"Seated_Dumbbell_Press","arnold":"Arnold_Dumbbell_Press","shoulder_press_m":"Machine_Shoulder_Military_Press","lat_raise":"Side_Lateral_Raise","cable_lat_raise":"Cable_Seated_Lateral_Raise","rear_fly":"Seated_Bent-Over_Rear_Delt_Raise","face_pull":"Face_Pull","band_pull_apart":"Band_Pull_Apart","deadlift":"Barbell_Deadlift","bb_row":"Bent_Over_Barbell_Row","db_row":"One-Arm_Dumbbell_Row","pullup":"Pullups","chinup":"Chin-Up","lat_pulldown":"Wide-Grip_Lat_Pulldown","cable_row":"Seated_Cable_Rows","machine_row":"Leverage_Iso_Row","db_shrug":"Dumbbell_Shrug","back_ext":"Hyperextensions_Back_Extensions","good_morning":"Good_Morning","weighted_back_ext":"Hyperextensions_Back_Extensions","superman":"Superman","bb_curl":"Barbell_Curl","db_curl":"Dumbbell_Bicep_Curl","hammer_curl":"Hammer_Curls","cable_curl":"Standing_Biceps_Cable_Curl","preacher":"Machine_Preacher_Curls","skull":"EZ-Bar_Skullcrusher","pushdown":"Triceps_Pushdown","oh_ext":"Standing_Dumbbell_Triceps_Extension","walk":"Trail_Running_Walking","incline_walk":"Walking_Treadmill","jog":"Jogging_Treadmill","bike":"Bicycling_Stationary","bike_intervals":"Air_Bike","rower":"Rowing_Stationary","elliptical":"Elliptical_Trainer","stair_climber":"Stairmaster","jump_rope":"Rope_Jumping","sa_cable_row":"Seated_One-arm_Cable_Pulley_Rows","incline_curl":"Incline_Dumbbell_Curl","db_preacher":"One_Arm_Dumbbell_Preacher_Curl","ez_preacher":"Preacher_Curl","sa_cable_ext":"Cable_One_Arm_Tricep_Extension","dual_cable_ext":"Cable_Rope_Overhead_Triceps_Extension","cg_bench":"Close-Grip_Barbell_Bench_Press","bench_dip":"Bench_Dips","wrist_curl":"Palms-Up_Dumbbell_Wrist_Curl_Over_A_Bench","rev_wrist_curl":"Palms-Down_Dumbbell_Wrist_Curl_Over_A_Bench","btb_wrist_curl":"Standing_Palms-Up_Barbell_Behind_The_Back_Wrist_Curl","rev_curl":"Reverse_Barbell_Curl","cable_wrist_curl":"Cable_Wrist_Curl","plate_pinch":"Plate_Pinch","squat":"Barbell_Full_Squat","front_squat":"Front_Barbell_Squat","goblet":"Goblet_Squat","kb_goblet":"Goblet_Squat","leg_press":"Leg_Press","leg_ext":"Leg_Extensions","leg_curl":"Seated_Leg_Curl","lying_leg_curl":"Lying_Leg_Curls","hip_abduction":"Thigh_Abductor","hip_adduction":"Thigh_Adductor","cable_adduction":"Cable_Hip_Adduction","sumo_squat":"Plie_Dumbbell_Squat","side_leg_raise":"Side_Leg_Raises","rdl":"Romanian_Deadlift","db_rdl":"Stiff-Legged_Dumbbell_Deadlift","lunge":"Dumbbell_Lunges","step_up":"Dumbbell_Step_Ups","hip_thrust":"Barbell_Hip_Thrust","kb_swing":"One-Arm_Kettlebell_Swings","glute_bridge":"Butt_Lift_Bridge","bw_squat":"Bodyweight_Squat","bw_lunge":"Bodyweight_Walking_Lunge","calf_raise":"Standing_Calf_Raises","seated_calf":"Seated_Calf_Raise","lp_calf":"Calf_Press_On_The_Leg_Press_Machine","db_calf":"Standing_Dumbbell_Calf_Raise","plank":"Plank","crunch":"Crunches","dead_bug":"Dead_Bug","russian_twist":"Russian_Twist","hanging_raise":"Hanging_Leg_Raise","cable_crunch":"Cable_Crunch","sit_up":"Sit-Up","reverse_crunch":"Reverse_Crunch","leg_raise":"Flat_Bench_Lying_Leg_Raise","v_up":"Jackknife_Sit-Up","flutter_kick":"Flutter_Kicks","mountain_climber":"Mountain_Climbers","knee_raise":"Knee_Hip_Raise_On_Parallel_Bars","ab_wheel":"Ab_Roller","machine_crunch":"Ab_Crunch_Machine","weighted_crunch":"Weighted_Crunches","side_plank":"Side_Bridge","bicycle_crunch":"Air_Bike","woodchop":"Standing_Cable_Wood_Chop","pallof":"Pallof_Press","side_bend":"Dumbbell_Side_Bend","weighted_twist":"Russian_Twist"};
 // ---------- Spanish translations ----------
 // Names that can appear inside longer text (exercise names, muscles, tiers, focus, equipment)
 const ES_PHR={
-"400 m Repeats":"Repeticiones de 400 m","800 m Repeats":"Repeticiones de 800 m","2-Mile Tempo Run":"Carrera a ritmo de 2 millas","3-Mile Run":"Carrera de 3 millas","880-Yard Sprint":"Sprint de 880 yardas","300-Yard Shuttle Sprint":"Sprint de ida y vuelta de 300 yardas","Bear Crawl":"Gateo de oso","Ammo Can Press (30 lb)":"Press con caja de munición (30 lb)","Farmer's Carry":"Caminata del granjero","Negative Pull-Up":"Dominada negativa","PFT prep":"Preparación PFT","CFT prep":"Preparación CFT","PFT Prep (Marine PFT)":"Preparación PFT (Marines)","CFT Prep (Marine CFT)":"Preparación CFT (Marines)","also works":"también trabaja","hang with":"cuélgate con","hang on":"cuélgate","hold":"sostén","per hand":"por mano","Barbell Bench Press":"Press de banca con barra","Incline Barbell Bench Press":"Press inclinado con barra","Dumbbell Bench Press":"Press de banca con mancuernas","Incline Dumbbell Press":"Press inclinado con mancuernas",
+"Brisk Walk":"Caminata rápida","Incline Treadmill Walk":"Caminata inclinada en caminadora","Easy Jog":"Trote suave","Stationary Bike":"Bicicleta fija","Bike Intervals":"Intervalos en bicicleta","Rowing Machine":"Remadora","Elliptical":"Elíptica","Stair Climber":"Escaladora","Jump Rope":"Saltar la cuerda","Arm Bike":"Bicicleta de brazos","Treadmill":"Caminadora","Exercise bike":"Bicicleta fija","Rowing machine":"Remadora","Jump rope":"Cuerda para saltar","Arm bike":"Bicicleta de brazos","Cardio (burn calories)":"Cardio (quemar calorías)","Cardio day":"Día de cardio","Lose weight — strength + cardio":"Bajar de peso — fuerza + cardio","needs":"requiere","Flak Run (Front & Back Plates)":"Carrera con chaleco (placas frontal y trasera)","Flak Run (Front, Back & Side Plates)":"Carrera con chaleco (placas frontal, trasera y laterales)","Flak / plate carrier":"Chaleco / portaplacas","Single-Arm Cable Row":"Remo en polea a una mano","Dual Cable Row":"Remo con doble polea","Incline Dumbbell Curl":"Curl inclinado con mancuernas","Dumbbell Preacher Curl":"Curl predicador con mancuerna","EZ-Bar Preacher Curl":"Curl predicador con barra Z","400 m Repeats":"Repeticiones de 400 m","800 m Repeats":"Repeticiones de 800 m","2-Mile Tempo Run":"Carrera a ritmo de 2 millas","3-Mile Run":"Carrera de 3 millas","880-Yard Sprint":"Sprint de 880 yardas","300-Yard Shuttle Sprint":"Sprint de ida y vuelta de 300 yardas","Bear Crawl":"Gateo de oso","Ammo Can Press (30 lb)":"Press con caja de munición (30 lb)","Farmer's Carry":"Caminata del granjero","Negative Pull-Up":"Dominada negativa","PFT prep":"Preparación PFT","CFT prep":"Preparación CFT","PFT Prep (Marine PFT)":"Preparación PFT (Marines)","CFT Prep (Marine CFT)":"Preparación CFT (Marines)","also works":"también trabaja","hang with":"cuélgate con","hang on":"cuélgate","hold":"sostén","per hand":"por mano","Barbell Bench Press":"Press de banca con barra","Incline Barbell Bench Press":"Press inclinado con barra","Dumbbell Bench Press":"Press de banca con mancuernas","Incline Dumbbell Press":"Press inclinado con mancuernas",
 "Dumbbell Fly":"Aperturas con mancuernas","Cable Fly":"Aperturas en polea","Pec Deck":"Pec deck (contractor de pecho)","Machine Chest Press":"Press de pecho en máquina","Push-Up":"Flexiones","Dip":"Fondos en paralelas",
 "Overhead Press":"Press militar","Seated Dumbbell Shoulder Press":"Press de hombros sentado con mancuernas","Arnold Press":"Press Arnold","Machine Shoulder Press":"Press de hombros en máquina",
 "Dumbbell Lateral Raise":"Elevaciones laterales con mancuernas","Cable Lateral Raise":"Elevación lateral en polea","Rear Delt Fly":"Pájaros (deltoide posterior)","Face Pull":"Face pull (jalón a la cara)",
@@ -699,7 +737,7 @@ const ES_BASE={
 "Looking up food…":"Buscando alimento…","You've had this before. Check the servings, then add.":"Ya lo has comido antes. Revisa las porciones y luego agrega.",
 "Couldn't reach the food database. Check your connection, or scan the nutrition label.":"No se pudo conectar con la base de datos de alimentos. Revisa tu conexión o escanea la etiqueta nutricional.",
 "This barcode isn't in the food database yet. Scan the nutrition label instead, or type the numbers in.":"Este código aún no está en la base de datos de alimentos. Escanea la etiqueta nutricional o escribe los números.",
-"Your daily targets":"Tus metas diarias","Your goal":"Tu objetivo","Lose fat":"Perder grasa","Maintain weight":"Mantener peso","Sex":"Sexo","Male":"Hombre","DoD prohibited supplement ingredients":"Ingredientes de suplementos prohibidos por el DoD","📤 Share my ranks":"📤 Compartir mis rangos","📋 Copy as text":"📋 Copiar como texto","Share my ranks":"Compartir mis rangos","Press and hold the picture to save or share it.":"Mantén presionada la imagen para guardarla o compartirla.","Download picture":"Descargar imagen","Ranks copied. Paste them in a message":"Rangos copiados. Pégalos en un mensaje","Couldn't make the picture. Try Copy as text":"No se pudo crear la imagen. Prueba Copiar como texto","Copy as text":"Copiar como texto","Time":"Tiempo","Type each time as minutes:seconds, like 1:45 (or 1.45).":"Escribe cada tiempo en minutos:segundos, como 1:45 (o 1.45).","First time: log your time for each rep (e.g. 1:45)":"Primera vez: registra tu tiempo en cada repetición (ej. 1:45)","Fastest time per session (lower is better)":"Mejor tiempo por sesión (menos es mejor)","No times logged yet.":"Aún no hay tiempos registrados.","Workout removed":"Entrenamiento eliminado","Undo":"Deshacer","Workout restored":"Entrenamiento restaurado","Remove workout":"Eliminar entrenamiento","Cancel":"Cancelar","Tip: press and hold a workout to remove it.":"Consejo: mantén presionado un entrenamiento para eliminarlo.","ⓘ How ranks work":"ⓘ Cómo funcionan los rangos","ⓘ How it's calculated":"ⓘ Cómo se calcula","Suggest an idea":"Sugerir una idea","What would make Forge better for you? A new exercise, a feature, something that bugs you. Every message is read.":"¿Qué haría que Forge fuera mejor para ti? Un ejercicio nuevo, una función, algo que te moleste. Se leen todos los mensajes.","Your idea":"Tu idea","e.g. Add a timer for planks":"p. ej. Agregar un temporizador para planchas","Name (optional)":"Nombre (opcional)","Email (optional)":"Correo (opcional)","for a reply":"para responderte","Send":"Enviar","Sending…":"Enviando…","Type your idea first":"Escribe tu idea primero","The idea box isn't set up yet":"El buzón de ideas aún no está listo","You're offline. Your idea is saved here, send it when you're back online":"No tienes conexión. Tu idea queda guardada aquí; envíala cuando vuelvas a tener internet","Thanks! Your idea was sent 💡":"¡Gracias! Tu idea fue enviada 💡","Couldn't send. Check your internet and try again":"No se pudo enviar. Revisa tu internet e inténtalo de nuevo","Choose":"Elegir","Two quick questions":"Dos preguntas rápidas","Your sex and age make your calorie targets more accurate. You can change them anytime in Settings.":"Tu sexo y edad hacen que tus metas de calorías sean más precisas. Puedes cambiarlos cuando quieras en Ajustes.","Not now":"Ahora no","Add your sex and age":"Agrega tu sexo y edad","Enter an age between 13 and 110":"Ingresa una edad entre 13 y 110","Female":"Mujer","Age":"Edad","years":"años","Height":"Estatura",
+"Your daily targets":"Tus metas diarias","Your goal":"Tu objetivo","Lose fat":"Perder grasa","Maintain weight":"Mantener peso","Sex":"Sexo","Male":"Hombre","Delete this measurement?":"¿Eliminar esta medida?","Workouts and food targets work toward this.":"Los entrenamientos y metas de comida trabajan hacia esto.","Your goal weight is at or above your current weight":"Tu peso meta es igual o mayor que tu peso actual","Food targets switched to Lose fat":"Metas de comida cambiadas a Perder grasa","Set your food targets on the Food tab to match":"Pon tus metas de comida en Comida para que coincidan","Min":"Min","Cardio ·":"Cardio ·","Go at a pace where talking is possible but hard":"Ve a un ritmo en el que puedas hablar, pero cueste","Minutes per session":"Minutos por sesión","No safe cardio for your injury with your equipment. An arm bike works with most leg injuries; tick it in Settings if you have one":"No hay cardio seguro para tu lesión con tu equipo. La bicicleta de brazos funciona con la mayoría de lesiones de pierna; márcala en Ajustes si tienes una","Add cardio equipment in Settings, or try Brisk Walk":"Agrega equipo de cardio en Ajustes, o prueba Caminata rápida","Vest weight":"Peso del chaleco","First time: log the distance and your time (e.g. 2 and 18:30)":"Primera vez: registra la distancia y tu tiempo (ej. 2 y 18:30)","Best pace per session (lower is better)":"Mejor ritmo por sesión (menos es mejor)","DoD prohibited supplement ingredients":"Ingredientes de suplementos prohibidos por el DoD","📤 Share my ranks":"📤 Compartir mis rangos","📋 Copy as text":"📋 Copiar como texto","Share my ranks":"Compartir mis rangos","Press and hold the picture to save or share it.":"Mantén presionada la imagen para guardarla o compartirla.","Download picture":"Descargar imagen","Ranks copied. Paste them in a message":"Rangos copiados. Pégalos en un mensaje","Couldn't make the picture. Try Copy as text":"No se pudo crear la imagen. Prueba Copiar como texto","Copy as text":"Copiar como texto","Time":"Tiempo","Type each time as minutes:seconds, like 1:45 (or 1.45).":"Escribe cada tiempo en minutos:segundos, como 1:45 (o 1.45).","First time: log your time for each rep (e.g. 1:45)":"Primera vez: registra tu tiempo en cada repetición (ej. 1:45)","Fastest time per session (lower is better)":"Mejor tiempo por sesión (menos es mejor)","No times logged yet.":"Aún no hay tiempos registrados.","Workout removed":"Entrenamiento eliminado","Undo":"Deshacer","Workout restored":"Entrenamiento restaurado","Remove workout":"Eliminar entrenamiento","Cancel":"Cancelar","Tip: press and hold a workout to remove it.":"Consejo: mantén presionado un entrenamiento para eliminarlo.","ⓘ How ranks work":"ⓘ Cómo funcionan los rangos","ⓘ How it's calculated":"ⓘ Cómo se calcula","Suggest an idea":"Sugerir una idea","What would make Forge better for you? A new exercise, a feature, something that bugs you. Every message is read.":"¿Qué haría que Forge fuera mejor para ti? Un ejercicio nuevo, una función, algo que te moleste. Se leen todos los mensajes.","Your idea":"Tu idea","e.g. Add a timer for planks":"p. ej. Agregar un temporizador para planchas","Name (optional)":"Nombre (opcional)","Email (optional)":"Correo (opcional)","for a reply":"para responderte","Send":"Enviar","Sending…":"Enviando…","Type your idea first":"Escribe tu idea primero","The idea box isn't set up yet":"El buzón de ideas aún no está listo","You're offline. Your idea is saved here, send it when you're back online":"No tienes conexión. Tu idea queda guardada aquí; envíala cuando vuelvas a tener internet","Thanks! Your idea was sent 💡":"¡Gracias! Tu idea fue enviada 💡","Couldn't send. Check your internet and try again":"No se pudo enviar. Revisa tu internet e inténtalo de nuevo","Choose":"Elegir","Two quick questions":"Dos preguntas rápidas","Your sex and age make your calorie targets more accurate. You can change them anytime in Settings.":"Tu sexo y edad hacen que tus metas de calorías sean más precisas. Puedes cambiarlos cuando quieras en Ajustes.","Not now":"Ahora no","Add your sex and age":"Agrega tu sexo y edad","Enter an age between 13 and 110":"Ingresa una edad entre 13 y 110","Female":"Mujer","Age":"Edad","years":"años","Height":"Estatura",
 "Activity level":"Nivel de actividad","Mostly sitting — Desk job, little exercise":"Mayormente sentado: trabajo de oficina, poco ejercicio","Lightly active — Training 1–3 days a week":"Poco activo: entrenas 1–3 días por semana",
 "Active — Training 3–5 days a week":"Activo: entrenas 3–5 días por semana","Very active — Hard training 6–7 days a week":"Muy activo: entrenamiento intenso 6–7 días por semana","Athlete — Hard training plus a physical job":"Atleta: entrenamiento intenso y trabajo físico",
 "kcal/day":"kcal/día","protein":"proteína","carbs":"carbohidratos","fat":"grasa","Fill in your age, height and body weight to see your targets.":"Completa tu edad, estatura y peso corporal para ver tus metas.",
@@ -718,6 +756,10 @@ const ES_BASE={
 };
 // Text with numbers or names in it
 const ES_RX=[
+[/^Goal weight \((lb|kg)\)$/,'Peso meta ($1)'],
+[/^Log the minutes you did\. About (\d+) kcal at this time\.$/,'Registra los minutos que hiciste. Unas $1 kcal con este tiempo.'],[/^Log the minutes you did\.$/,'Registra los minutos que hiciste.'],[/^Last time: (\d+) min\. Go a little longer or a little harder$/,'La última vez: $1 min. Haz un poco más de tiempo o un poco más fuerte'],[/^(\d+) min$/,'$1 min'],
+[/^Best pace last time: (\d+:\d\d\/(?:mi|km))\. Try to beat it$/,'Mejor ritmo la última vez: $1. Intenta superarlo'],
+[/^Enter the distance \((mi|km)\) and your time as minutes:seconds, like 18:30\. Your pace is worked out for you\.$/,'Escribe la distancia ($1) y tu tiempo en minutos:segundos, como 18:30. La app calcula tu ritmo.'],
 [/^Best last time: (\d+:\d\d)\. Try to beat it$/,'Mejor tiempo la última vez: $1. Intenta superarlo'],
 [/^(.+) · (\d+) exercises$/,(m,a,b)=>trPhrases(a)+' · '+b+' ejercicios'],
 [/^([\d,.]+) \+ ([\d,.]+) burned$/,'$1 + $2 quemadas'],
@@ -800,6 +842,18 @@ run_tempo:[["Calienta con 5 minutos de trote suave.","Corre 2 millas a un ritmo 
 run_3mi:[["Calienta con 5–10 minutos de trote suave y unos sprints cortos.","Corre 3 millas lo más rápido que puedas mantener toda la distancia.","Enfría caminando.","Registra tu tiempo total."],"Empieza un poco más lento de lo que crees y termina fuerte. Las pruebas de práctica te muestran dónde estás."],
 run_880:[["Calienta con trote suave y unos sprints cortos.","Corre 880 yardas (media milla, dos vueltas a la pista) lo más rápido que puedas, como en Movement to Contact.","Camina 3 minutos.","Repite en cada serie. Registra el tiempo de cada una."],"A veces hazlo con botas y uniforme, como en la prueba real."],
 shuttle_sprint:[["Marca dos líneas a 25 yardas de distancia.","Corre a la línea lejana y regresa 6 veces (300 yardas en total). Toca la línea con el pie o la mano en cada vuelta.","Descansa unos 3 minutos.","Repite en cada serie. Registra el tiempo de cada una."],"Mantente bajo en los giros. Los cambios de dirección rápidos ganan el circuito Maneuver Under Fire."],
+walk:[["Camina afuera o en una pista a paso rápido, moviendo los brazos.","Busca un ritmo en el que respires más fuerte pero aún puedas hablar.","Mantente así todo el tiempo.","Registra tus minutos."],"Caminar es suave para las articulaciones y una de las mejores formas de quemar calorías extra cada día."],
+incline_walk:[["Pon la caminadora a paso de caminata (unos 5 km/h / 3 mph) con 8–12% de inclinación.","Camina erguido sin agarrarte de los barandales.","Mantén un ritmo constante todo el tiempo.","Registra tus minutos."],"Agarrarte de los barandales reduce las calorías que quemas. Baja la inclinación antes de agarrarte."],
+jog:[["Trota a un ritmo suave en el que puedas platicar, afuera o en caminadora.","Pisa suave debajo de la cadera con pasos cortos y rápidos.","Mantente todo el tiempo; está bien caminar ratos.","Registra tus minutos."],"Suave significa que podrías platicar. La mayoría de tus carreras deben sentirse así."],
+bike:[["Ajusta el asiento para que la rodilla quede un poco doblada abajo del pedaleo.","Pedalea a ritmo constante con suficiente resistencia para sentirlo.","Mantente así todo el tiempo.","Registra tus minutos."],"Bajo impacto y suave para las articulaciones, ideal en días de pesas."],
+bike_intervals:[["Calienta 2–3 minutos pedaleando suave.","Pedalea fuerte 30 segundos (resistencia alta o rápido).","Pedalea suave 90 segundos.","Repite hasta completar el tiempo. Registra tus minutos."],"Los intervalos queman mucho en poco tiempo. Lo fuerte debe sentirse fuerte, y lo suave debe dejarte recuperar."],
+rower:[["Ajusta los pies en las correas y toma el agarre con los brazos estirados.","Empuja primero con las piernas, luego inclínate un poco atrás y jala el agarre a las costillas bajas.","Regresa al revés: brazos al frente, inclínate adelante y dobla las rodillas.","Mantén un ritmo constante todo el tiempo. Registra tus minutos."],"Es piernas, luego espalda, luego brazos. La mayor fuerza viene de las piernas, no de los brazos."],
+elliptical:[["Súbete y toma los agarres suavemente.","Empuja y jala con los brazos mientras las piernas se mueven con fluidez.","Sube la resistencia hasta que cueste trabajo.","Mantente todo el tiempo. Registra tus minutos."],"Cero impacto, buena opción si correr te molesta las articulaciones."],
+stair_climber:[["Súbete y empieza a una velocidad lenta y constante.","Párate derecho y da pasos completos sin recargarte en los barandales.","Sube la velocidad hasta que sea un reto.","Mantente todo el tiempo. Registra tus minutos."],"Recargarte en los barandales lo hace mucho más fácil. Sostenlos solo para el equilibrio."],
+jump_rope:[["Sostén los mangos a la altura de la cadera con la cuerda detrás de ti.","Gira la cuerda con las muñecas, no con los brazos.","Salta solo lo necesario para pasarla, cayendo suave en la parte delantera del pie.","Toma descansos cortos si los necesitas. Registra tus minutos totales."],"Quema muchas calorías pero es de alto impacto para pantorrillas y tobillos. Aumenta poco a poco."],
+arm_bike:[["Siéntate frente a la bicicleta de brazos con los agarres a la altura de los hombros.","Pedalea con los brazos en un círculo fluido.","Sube la resistencia hasta que cueste trabajo.","Mantente todo el tiempo. Registra tus minutos."],"Excelente cardio cuando una lesión de pierna, rodilla o tobillo no te deja usar otras máquinas."],
+flak_run:[["Ponte el chaleco o portaplacas con placas al frente y atrás. Ajústalo para que no rebote.","Calienta unos minutos caminando y trotando suave con él.","Corre la distancia planeada a un ritmo constante que puedas mantener.","Registra la distancia y tu tiempo total; la app calcula tu ritmo."],"Aumenta poco a poco: empieza con distancias más cortas que tus carreras normales. Detente si te duelen la espalda, los hombros o las rodillas."],
+flak_run_side:[["Ponte el chaleco o portaplacas con placas al frente, atrás y a los lados. Ajústalo para que nada se mueva.","Calienta unos minutos caminando y trotando suave con él.","Corre la distancia planeada a un ritmo constante que puedas mantener.","Registra la distancia y tu tiempo total; la app calcula tu ritmo."],"Las placas laterales agregan peso y limitan la respiración. Al principio corre menos y más lento que con placas al frente y atrás."],
 bear_crawl:[["Apóyate en manos y pies, con las rodillas apenas sobre el piso y la espalda plana.","Avanza gateando 25 yardas, moviendo mano y pie contrarios a la vez.","Levántate y descansa unos 45 segundos.","Repite en cada serie. Registra el tiempo de cada una."],"Mantén la cadera baja y la espalda plana. Desarrolla la fuerza para gatear del circuito del CFT."],
 ammo_press:[["Sostén una mancuerna, pesa rusa o caja de munición de 30 lb a la altura de los hombros con ambas manos.","Empújala hacia arriba hasta bloquear los brazos.","Bájala de nuevo a la barbilla.","Repite tantas veces como puedas en el tiempo indicado. Registra tus repeticiones."],"Exhala en cada empuje y encuentra un ritmo constante. En la prueba solo cuentan las repeticiones con los brazos bloqueados."],
 farmer_carry:[["Levanta una mancuerna pesada en cada mano y párate derecho.","Camina 50 yardas con pasos cortos y rápidos, con los hombros hacia atrás.","Bájalas con control.","Descansa y repite. Registra el peso por mano y los viajes como repeticiones."],"No dejes que las pesas se balanceen ni que se redondeen los hombros. Fortalece el agarre para cargar y arrastrar."],
@@ -833,6 +887,8 @@ pullup:[["Cuélgate de la barra con agarre prono, las manos un poco más abierta
 chinup:[["Cuélgate de la barra con las palmas hacia ti y las manos al ancho de hombros.","Baja los hombros y luego sube.","Lleva la barbilla por encima de la barra.","Baja completamente despacio."],"Suelen ser más fáciles que las dominadas porque los bíceps ayudan más. Una gran primera meta."],
 lat_pulldown:[["Siéntate con los muslos bajo las almohadillas y toma la barra más abierta que los hombros.","Inclínate un poco atrás y baja los hombros.","Jala la barra a la parte alta del pecho, llevando los codos abajo.","Deja subir la barra despacio hasta estirar los brazos."],"No jales por detrás del cuello ni balancees el cuerpo para mover el peso."],
 cable_row:[["Siéntate con los pies en la plataforma, rodillas un poco flexionadas, y toma el agarre.","Siéntate derecho con la espalda recta y los brazos estirados.","Jala el agarre hacia el abdomen juntando los omóplatos.","Regresa despacio hasta estirar los brazos."],"Mantén el torso quieto. No te balancees para mover el peso."],
+sa_cable_row:[["Pon un agarre simple en una polea a la altura del pecho (o siéntate en un remo bajo con un solo agarre).","Sostén el agarre con una mano, el brazo estirado y el torso quieto.","Lleva el codo hacia atrás pasando las costillas y aprieta el omóplato.","Deja que el brazo se estire despacio y cambia de lado."],"No gires el torso para terminar la repetición. Registra el peso de un brazo."],
+dual_cable_row:[["Pon las dos poleas de un cruce de poleas a la altura del pecho con un agarre en cada una.","Da un paso atrás con un agarre en cada mano y los brazos estirados al frente.","Lleva ambos codos hacia atrás pasando las costillas y junta los omóplatos.","Regresa despacio hasta estirar los brazos."],"Mantén el pecho arriba y el cuerpo quieto; solo se mueven los brazos y omóplatos. Registra el peso de un lado."],
 machine_row:[["Ajusta el asiento para que los agarres queden a la altura del pecho, con el pecho en el respaldo.","Toma los agarres con los brazos estirados.","Jala hacia atrás llevando los codos más allá de los costados.","Regresa despacio."],"Haz una pausa de un segundo apretando atrás en cada rep."],
 db_shrug:[["Párate con mancuernas a los costados.","Sube los hombros directo hacia las orejas.","Sostén un segundo arriba.","Baja despacio."],"Sube y baja en línea recta. No gires los hombros."],
 band_row:[["Ancla una banda a la altura del pecho, o pásala por los pies estando sentado.","Sostén los extremos con los brazos estirados.","Jala las manos hacia el abdomen juntando los omóplatos.","Regresa despacio."],"Aléjate más para tener más resistencia."],
@@ -845,6 +901,9 @@ bb_curl:[["Párate con una barra en agarre supino al ancho de hombros.","Mantén
 db_curl:[["Párate con mancuernas a los costados, palmas al frente.","Mantén los codos a los costados.","Sube las pesas apretando los bíceps.","Baja despacio hasta abajo."],"Bajar despacio (2–3 segundos) construye tanto músculo como subir."],
 hammer_curl:[["Párate con mancuernas a los costados, palmas hacia el cuerpo.","Mantén las palmas hacia dentro todo el tiempo.","Sube las pesas hacia los hombros.","Baja despacio."],"Trabaja más los antebrazos y la parte externa del bíceps que el curl normal."],
 cable_curl:[["Pon una barra recta o una cuerda en la polea baja.","Párate frente a la máquina y toma el agarre en supino.","Sube el agarre hacia los hombros con los codos a los costados.","Baja despacio."],"El cable mantiene la tensión todo el recorrido; haz las reps suaves."],
+incline_curl:[["Pon una banca a unos 45° y recuéstate con una mancuerna en cada mano.","Deja los brazos colgando rectos, con las palmas al frente.","Sube las mancuernas sin mover los brazos hacia adelante.","Baja despacio hasta abajo."],"La inclinación estira el bíceps; usa menos peso que en el curl de pie."],
+db_preacher:[["Siéntate en un banco predicador con la parte de atrás del brazo plana sobre el cojín.","Sostén una mancuerna con la palma hacia arriba y el brazo casi estirado.","Sube la mancuerna hacia el hombro.","Baja despacio hasta casi estirar el brazo. Cambia de brazo, o hazlo con ambos a la vez."],"No dejes caer el peso abajo; contrólalo para proteger el codo. Registra el peso por mancuerna."],
+ez_preacher:[["Siéntate en un banco predicador con los brazos planos sobre el cojín.","Toma una barra Z en los agarres inclinados, palmas arriba.","Sube la barra hacia la barbilla.","Baja despacio hasta casi estirar los brazos."],"Mantén las axilas pegadas a la parte alta del cojín y no rebotes abajo."],
 preacher:[["Ajusta el asiento para que los brazos queden planos sobre la almohadilla.","Toma los agarres en supino.","Sube hasta que los antebrazos queden verticales.","Baja despacio hasta casi estirar los brazos."],"No dejes caer el peso rápido abajo; ahí es donde se lastiman los codos."],
 band_curl:[["Párate sobre el centro de una banda y sostén los extremos, palmas al frente.","Mantén los codos a los costados.","Sube las manos hacia los hombros.","Baja despacio."],"Abre más los pies sobre la banda para más resistencia."],
 skull:[["Acuéstate en un banco con una barra o barra Z sobre el pecho y los brazos estirados.","Mantén los brazos quietos y un poco inclinados hacia atrás.","Dobla los codos para bajar la barra hacia la frente.","Estira los brazos para subirla de nuevo."],"Poco peso y despacio. Baja la barra justo detrás de la cabeza si te molestan los codos."],
@@ -934,18 +993,20 @@ function showHowto(id){
   ${im?'<p class="muted small" style="margin-bottom:0">Photos: free-exercise-db (public domain). Needs internet to load.</p>':''}`);
 }
 function scheme(ex){
-  if(ex.inc==='run')return{sets:3,lo:0,hi:0};
+  if(ex.inc==='run')return{sets:DIST.has(ex.id)?1:3,lo:0,hi:0};
+  if(ex.inc==='cardio')return{sets:1,lo:S.settings.exp==='beginner'?10:S.settings.exp==='advanced'?25:20,hi:0};
   const g=S.settings.goal,x=S.settings.exp;let sets,lo,hi;
   if(ex.inc==='sec'){sets=3;lo=30;hi=60;}
   else if(ex.inc==='bw'){sets=3;lo=8;hi=20;if(g==='strength'){lo=5;hi=12;}}
   else if(g==='strength'){if(ex.c){sets=5;lo=3;hi=6;}else{sets=3;lo=8;hi=12;}}
   else if(g==='endurance'){sets=3;lo=12;hi=20;}
+  else if(g==='fatloss'){sets=3;if(ex.c){lo=8;hi=12;}else{lo=12;hi=15;}}
   else{if(ex.c){sets=4;lo=6;hi=10;}else{sets=3;lo=10;hi=15;}}
   if(x==='beginner'&&sets>3)sets--;
   if(x==='advanced'&&ex.c)sets++;
   return{sets,lo,hi};
 }
-function history(exId){const out=[];for(const w of S.workouts)for(const e of w.exercises)if(e.exId===exId)out.push({date:w.end,unit:w.unit,sets:e.sets});return out;}
+function history(exId){const out=[];for(const w of S.workouts)for(const e of w.exercises)if(e.exId===exId)out.push({date:w.end,unit:w.unit,sets:e.sets,vest:e.vest});return out;}
 function lastSets(exId){const h=history(exId);return h.length?h[h.length-1]:null;}
 // Share of body weight each bodyweight move actually lifts (push-ups ≈ 65%, pull-ups/dips ≈ 100%).
 const BWF={neg_pullup:1,ammo_press:.1,pushup:.65,diamond_pushup:.65,archer_pushup:.7,decline_pushup:.72,pseudo_planche:.72,pike_pushup:.7,hspu:.92,bench_dip:.6,dip:.95,muscle_up:1,
@@ -954,7 +1015,7 @@ const BWF={neg_pullup:1,ammo_press:.1,pushup:.65,diamond_pushup:.65,archer_pushu
 // Added weight on a bodyweight move -> equivalent bodyweight reps (same strength formula as barbell lifts).
 function bwEq(ex,w,r){const bw=bodyW();if(!(w>0)||!bw||!(r>0))return r;const k=1+w/(bw*(BWF[ex.id]||.7));
   return Math.round((ex.inc==='sec'?r*k:30*(k*(1+r/30)-1))*10)/10;}
-function metric(ex,w,r){if(ex.inc==='run')return tsec(r);if(!isLoad(ex))return bwEq(ex,w,r);return w?w*(1+r/30):0;}
+function metric(ex,w,r){if(ex.inc==='cardio')return +r||0;if(ex.inc==='run')return tsec(r);if(!isLoad(ex))return bwEq(ex,w,r);return w?w*(1+r/30):0;}
 // Every built-in exercise is ranked: if one ever lacks its own standard, use a sensible default for its type.
 const ELITE_DEFAULT={std:1,big:2,bw:30,sec:90};
 // Women's standards: share of the men's elite number, by body region (based on published male vs female strength standards).
@@ -970,7 +1031,7 @@ const eliteOf=ex=>ex.id.startsWith('c_')?0:(ELITE[ex.id]||ELITE_DEFAULT[ex.inc]|
 const ELITE={bench:1.9,incline_bb:1.6,db_bench:0.75,incline_db:0.65,db_fly:0.45,cable_fly:0.6,pec_deck:1.4,chest_press:1.8,pushup:60,dip:35,
 ohp:1.25,db_ohp:0.55,arnold:0.5,shoulder_press_m:1.3,lat_raise:0.3,cable_lat_raise:0.25,rear_fly:0.3,face_pull:0.7,pike_pushup:30,band_pull_apart:50,
 deadlift:3,bb_row:1.6,db_row:0.85,pullup:25,chinup:25,lat_pulldown:1.4,cable_row:1.5,machine_row:1.6,db_shrug:0.9,band_row:50,back_ext:40,superman:180,
-bb_curl:0.9,db_curl:0.45,hammer_curl:0.5,cable_curl:0.8,preacher:0.8,band_curl:50,skull:0.9,pushdown:0.9,oh_ext:0.5,ammo_press:120,farmer_carry:1.0,neg_pullup:20,sa_cable_ext:0.45,dual_cable_ext:0.4,cg_bench:1.6,bench_dip:50,band_pushdown:50,wrist_curl:0.4,rev_wrist_curl:0.25,btb_wrist_curl:0.9,rev_curl:0.75,cable_wrist_curl:0.6,dead_hang:150,plate_pinch:90,lp_calf:3,db_calf:0.6,sl_calf:40,cable_adduction:0.5,copenhagen:90,sumo_squat:0.9,cable_abduction:0.4,side_leg_raise:50,band_walk:60,fire_hydrant:50,good_morning:1.3,weighted_back_ext:0.6,bird_dog:40,
+bb_curl:0.9,db_curl:0.45,hammer_curl:0.5,cable_curl:0.8,preacher:0.8,band_curl:50,skull:0.9,pushdown:0.9,oh_ext:0.5,sa_cable_row:0.85,dual_cable_row:0.75,incline_curl:0.35,db_preacher:0.38,ez_preacher:0.7,ammo_press:120,farmer_carry:1.0,neg_pullup:20,sa_cable_ext:0.45,dual_cable_ext:0.4,cg_bench:1.6,bench_dip:50,band_pushdown:50,wrist_curl:0.4,rev_wrist_curl:0.25,btb_wrist_curl:0.9,rev_curl:0.75,cable_wrist_curl:0.6,dead_hang:150,plate_pinch:90,lp_calf:3,db_calf:0.6,sl_calf:40,cable_adduction:0.5,copenhagen:90,sumo_squat:0.9,cable_abduction:0.4,side_leg_raise:50,band_walk:60,fire_hydrant:50,good_morning:1.3,weighted_back_ext:0.6,bird_dog:40,
 squat:2.5,front_squat:2,goblet:0.8,kb_goblet:0.8,leg_press:4.5,leg_ext:1.6,leg_curl:1.2,lying_leg_curl:1.1,hip_abduction:1.6,hip_adduction:1.6,rdl:2.2,db_rdl:0.9,lunge:0.6,bss:0.6,step_up:0.6,hip_thrust:3,kb_swing:0.8,
 glute_bridge:60,bw_squat:100,bw_lunge:60,calf_raise:80,sit_up:60,decline_situp:40,reverse_crunch:40,leg_raise:30,v_up:40,flutter_kick:80,mountain_climber:80,hollow_hold:120,knee_raise:30,toes_to_bar:20,ab_wheel:25,machine_crunch:1.2,weighted_crunch:0.4,side_plank:180,bicycle_crunch:80,heel_taps:80,oblique_raise:25,woodchop:0.7,pallof:0.5,side_bend:0.6,weighted_twist:0.3,diamond_pushup:50,decline_pushup:50,archer_pushup:25,hspu:20,pseudo_planche:25,muscle_up:15,inverted_row:40,wide_pullup:20,archer_pullup:12,scap_pullup:25,pistol_squat:25,jump_squat:50,nordic_curl:15,sl_glute_bridge:40,cossack_squat:30,wall_sit:240,l_sit:60,windshield_wipers:25,dragon_flag:15,front_lever:45,handstand_hold:90,burpee:50,seated_calf:1.5,plank:300,crunch:80,dead_bug:60,russian_twist:80,hanging_raise:30,cable_crunch:1.2};
 const TIERS=[{n:'Bronze',e:'🟫',f:'#cd7f32',t:'#2a1608',c:'#e0975a'},{n:'Silver',e:'⬜',f:'#c3cad6',t:'#1b1e24',c:'#d3d9e3'},{n:'Diamond',e:'💎',f:'#6fd3ff',t:'#04212d',c:'#7fdcff'},
@@ -997,7 +1058,7 @@ function exScore(ex){
 }
 // Grip: the heaviest weight you held in your hands also ranks your forearms.
 // Number = hands sharing the load (dumbbell moves are logged per hand). Hanging moves hold your body weight + added weight.
-const GRIP={farmer_carry:1,neg_pullup:2,deadlift:2,rdl:2,db_rdl:1,bb_row:2,db_row:1,db_shrug:1,lat_raise:1,rear_fly:1,bb_curl:2,db_curl:1,hammer_curl:1,rev_curl:2,
+const GRIP={incline_curl:1,db_preacher:1,ez_preacher:2,farmer_carry:1,neg_pullup:2,deadlift:2,rdl:2,db_rdl:1,bb_row:2,db_row:1,db_shrug:1,lat_raise:1,rear_fly:1,bb_curl:2,db_curl:1,hammer_curl:1,rev_curl:2,
  lunge:1,bss:1,step_up:1,db_calf:1,kb_swing:2,sumo_squat:2,side_bend:1,
  pullup:2,chinup:2,wide_pullup:2,archer_pullup:2,muscle_up:2,hanging_raise:2,knee_raise:2,toes_to_bar:2,oblique_raise:2,windshield_wipers:2,front_lever:2};
 const GRIP_ELITE=1.5;// elite = holding 1.5x body weight in each hand (a 3x body weight deadlift)
@@ -1022,7 +1083,7 @@ function rankHelp(){
   const bw=bodyW(),u=U(),fem=S.settings.sex==='f';
   const tiers=TH.map((t,k)=>`<div class="throw"><span style="color:${rankColor(k)}">${badge(k,22)} ${tr(rankName(k))}</span><b>${k?Math.round(t*100)+'%':L('any lift','cualquier ejercicio')}</b></div>`).reverse().join('');
   const std=ex=>{const el=eliteOf(ex)*ELITE_SCALE;if(!el)return'';
-    if(isLoad(ex)){const ph=ex.id==='sa_cable_ext'?L(' per arm',' por brazo'):ex.id==='dual_cable_ext'?L(' per side',' por lado'):ex.eq.includes('dumbbell')&&!ex.eq.includes('barbell')?L(' per hand',' por mano'):'';return`${n2(el)}× ${L('body weight','tu peso')}${ph}${bw?` ≈ ${rnd(el*bw)} ${u}`:''} ${L('1-rep max','1RM')}`;}
+    if(isLoad(ex)){const ph=['sa_cable_ext','sa_cable_row'].includes(ex.id)?L(' per arm',' por brazo'):['dual_cable_ext','dual_cable_row'].includes(ex.id)?L(' per side',' por lado'):ex.eq.includes('dumbbell')&&!ex.eq.includes('barbell')?L(' per hand',' por mano'):'';return`${n2(el)}× ${L('body weight','tu peso')}${ph}${bw?` ≈ ${rnd(el*bw)} ${u}`:''} ${L('1-rep max','1RM')}`;}
     return ex.inc==='sec'?`${Math.round(el)} ${L('sec','seg')}`:`${Math.round(el)} reps`;};
   const groups=Object.keys(MUSCLES).map(m=>{const list=BUILTIN.filter(ex=>ex.p[0]===m&&eliteOf(ex));
     const extra=m==='forearms'?`<div class="strow"><span>${L('Grip (heaviest weight held)','Agarre (peso más pesado sostenido)')}</span><b>${n2(GRIP_ELITE*ELITE_SCALE*(fem?.7:1))}× ${L('body weight per hand','tu peso por mano')}${bw?` ≈ ${rnd(GRIP_ELITE*ELITE_SCALE*(fem?.7:1)*bw)} ${u}`:''}</b></div>`:'';
@@ -1069,6 +1130,9 @@ function unlocked(ex){
 }
 function suggest(ex){
   const sc=scheme(ex),last=lastSets(ex.id);
+  if(ex.inc==='cardio'){const lm=last?Math.max(0,...last.sets.map(x=>+x.r||0)):0;return{w:'',r:lm||sc.lo,note:lm?'Last time: '+lm+' min. Go a little longer or a little harder':'Go at a pace where talking is possible but hard'};}
+  if(ex.inc==='run'&&DIST.has(ex.id)){const vals=last?last.sets.map(x=>runVal(ex,x,last.unit)).filter(v=>v>0):[],b=vals.length?Math.min(...vals):0,lw=last?last.sets.find(x=>x.w):null;
+    return{w:lw?lw.w:'',r:'',note:b?'Best pace last time: '+fmtPace(b)+'. Try to beat it':'First time: log the distance and your time (e.g. 2 and 18:30)'};}
   if(ex.inc==='run'){const b=last?Math.min(...last.sets.map(x=>tsec(x.r)).filter(v=>v>0)):0;
     return{w:'',r:'',note:b&&isFinite(b)?'Best last time: '+fmtT(b)+'. Try to beat it':'First time: log your time for each rep (e.g. 1:45)'};}
   if(!last){
@@ -1091,7 +1155,10 @@ function suggest(ex){
   if(minR>=sc.lo-1)return{w:top,r:sc.lo,note:'Same weight — get every set to '+sc.lo+' reps'};
   return{w:rnd(Math.max(0,top*0.9)),r:sc.lo,note:'Slightly lighter to rebuild your reps'};
 }
-function newEntry(ex){const sc=scheme(ex),sg=suggest(ex);return{exId:ex.id,note:sg.note,sets:Array.from({length:sc.sets},()=>({w:sg.w,r:sg.r,done:false}))};}
+// flak runs: the vest weight carries over from your last flak run (converted to your current units)
+function lastVest(){let best=null;for(const w of S.workouts)for(const e of w.exercises)if(DIST.has(e.exId)&&e.vest>0)best={v:e.vest,u:w.unit};return best?+conv(best.v,best.u):'';}
+const vestTxt=(v,u)=>{if(!(v>0))return'';const n=r1(+conv(v,u));return L(` · ${n} ${U()} vest`,` · chaleco de ${n} ${U()}`);};
+function newEntry(ex){const sc=scheme(ex),sg=suggest(ex);return{exId:ex.id,note:sg.note,...(DIST.has(ex.id)?{vest:lastVest()}:{}),sets:Array.from({length:sc.sets},()=>({w:sg.w,r:sg.r,done:false}))};}
 
 const TAU=30; // hours; fatigue decays exponentially
 function fatigue(){
@@ -1116,11 +1183,20 @@ function pickAuto(rec){
   return best;
 }
 // ---------- Marine PFT / CFT prep: solo sessions that rotate A, B, A, practice test ----------
-const PREP_ONLY=new Set(['run_400','run_800','run_tempo','run_3mi','run_880','shuttle_sprint','bear_crawl','ammo_press']);
+// Cardio: logged in minutes. MET values (Compendium of Physical Activities) estimate calories: MET × kg × hours.
+const CARDIO={walk:4.3,incline_walk:6.5,jog:7,bike:6.8,bike_intervals:8.5,rower:7,elliptical:5,stair_climber:9,jump_rope:11,arm_bike:4};
+const cardioKcal=(id,min)=>{const kg=U()==='lb'?bodyW()*0.45359237:bodyW();return kg&&min>0?Math.round(CARDIO[id]*kg*min/60):0;};
+const PREP_ONLY=new Set([...Object.keys(CARDIO),'flak_run','flak_run_side','run_400','run_800','run_tempo','run_3mi','run_880','shuttle_sprint','bear_crawl','ammo_press']);
 const tsec=v=>{v=String(v==null?'':v).trim();if(!v)return 0;let m,x;
   if(v.includes(':')){[m,x]=v.split(':');return(+m||0)*60+(+x||0);}
   if(v.includes('.')){[m,x]=v.split('.');return(+m||0)*60+(+(x+'0').slice(0,2)||0);}
   if(/^\d{3,4}$/.test(v))return Math.floor(+v/100)*60+(+v%100);return(+v||0)*60;};
+// Flak runs log distance and time; everything compares pace (seconds per mile).
+const DIST=new Set(['flak_run','flak_run_side']);
+const DU=u=>(u||U())==='kg'?'km':'mi';
+const runMi=(w,u)=>{w=parseFloat(String(w).replace(',','.'))||0;return(u||U())==='kg'?w/1.609344:w;};
+function runVal(ex,s,u){const t=tsec(s.r);if(!(t>0))return 0;if(!DIST.has(ex.id))return t;const mi=runMi(s.w,u);return mi>0?t/mi:0;}
+const fmtPace=spm=>fmtT(U()==='kg'?spm/1.609344:spm)+'/'+DU();
 const fmtT=t=>{t=Math.round(t);return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
 const PREP={
  pft:[
@@ -1230,7 +1306,46 @@ function usmcRows(){
 function usmcCard(f){
   const v=usmcLatest(),evs=USMC_EV[f];let tot=0,n=0,all=true;for(const [ev,,,kind] of evs){const p=v[ev]?usmcPts(ev,v[ev]):null;if(p!=null){n++;tot+=p;if(!p)all=false;}}
   const est=n===3&&S.settings.age>=17?(()=>{const [c,col]=usmcClass(tot,all);return`<div class="ustot" style="margin:0 0 10px"><span>${L('Latest estimate','Estimado más reciente')}</span><b>${tot}</b><span style="color:${col};font-weight:700">${c}</span></div>`;})():`<p class="muted small" style="margin-top:0">${L('Do a practice test session, or enter your numbers, to see your estimated score.','Haz una sesión de prueba de práctica, o ingresa tus números, para ver tu puntaje estimado.')}</p>`;
-  return`<div class="card" data-notr="1"><h3>🎖 ${f.toUpperCase()} ${L('score','puntaje')}</h3>${est}<button class="btn ghost" style="margin:0" data-a="usmccalc" data-t="${f}">${L('Score calculator','Calculadora de puntaje')}</button></div>`;
+  const wl=waistLatest(),wst=wl?whtrStatus(wl):null;
+  return`<div class="card" data-notr="1"><h3>🎖 ${f.toUpperCase()} ${L('score','puntaje')}</h3>${est}${wst?`<p class="small" style="margin:0 0 10px">📏 ${L('Waist-to-height','Cintura-estatura')}: <b class="${wst.ok?'good':'bad'}">${wst.r.toFixed(3)}</b> ${wst.ok?L('✓ within standard','✓ dentro del estándar'):L('over 0.52','arriba de 0.52')}</p>`:''}<button class="btn ghost" style="margin:0" data-a="usmccalc" data-t="${f}">${L('Score calculator','Calculadora de puntaje')}</button></div>`;
+}
+function cardioPick(ids,used){for(const id of ids){const ex=EX(id);if(ex&&!used.has(id)&&hasEq(ex)&&!injuryFor(ex))return ex;}return null;}
+function cardioEntry(ex,min,plan){return{exId:ex.id,note:'',plan,rest:0,sets:[{w:'',r:min,done:false}]};}
+const CARDIO_ORDER=['incline_walk','bike','elliptical','rower','stair_climber','bike_intervals','jog','jump_rope','walk','arm_bike'];
+// How long the finisher is: based on experience, then nudged by how far you are from your goal and how your weight is trending.
+function finisherPlan(){
+  let min=S.settings.exp==='beginner'?10:S.settings.exp==='advanced'?20:15,why=['Steady pace where talking is hard.','Ritmo constante en el que hablar cuesta.'];const i=wlInfo(),big=U()==='lb'?20:9;
+  if(i&&!i.reached){
+    if(i.rate!=null&&i.span>=10&&i.rate<-(i.bw*.0125)){min-=5;why=["You're losing fast, so a bit less cardio to protect your muscle.",'Estás bajando rápido, así que un poco menos de cardio para proteger tu músculo.'];}
+    else if(i.rate!=null&&i.span>=14&&i.rate>-(U()==='lb'?.25:.1)){min+=5;why=['Your weight has stalled, so a little more cardio.','Tu peso se estancó, así que un poco más de cardio.'];}
+    else if(i.left>big){min+=5;why=["You have a way to go, so a little extra cardio.",'Te falta un buen tramo, así que un poco más de cardio.'];}
+    else why=['On track. Keep it steady.','Vas bien. Mantén el ritmo.'];}
+  return{min:Math.max(10,Math.min(30,min)),why};
+}
+function finisher(used){const n=S.workouts.length,ord=CARDIO_ORDER.slice(n%CARDIO_ORDER.length).concat(CARDIO_ORDER.slice(0,n%CARDIO_ORDER.length));
+  const ex=cardioPick(ord,used||new Set());if(!ex)return null;const{min,why}=finisherPlan();
+  return cardioEntry(ex,min,[`Cardio finisher: ${min} minutes. ${why[0]}`,`Cardio final: ${min} minutos. ${why[1]}`]);}
+function generateCardio(){
+  const used=new Set(),out=[],n=S.workouts.filter(w=>w.focus==='cardio').length,rot=a=>a.slice(n%a.length).concat(a.slice(0,n%a.length));
+  const wu=cardioPick(['walk','bike','elliptical','incline_walk','arm_bike'],used);if(wu){used.add(wu.id);out.push(cardioEntry(wu,5,['5-minute easy warm-up.','Calentamiento suave de 5 minutos.']));}
+  const mainIds=rot(['bike_intervals','incline_walk','rower','stair_climber','jog','elliptical','jump_rope','bike','arm_bike','walk']);
+  const mn=cardioPick(mainIds,used),mm=S.settings.exp==='beginner'?15:S.settings.exp==='advanced'?30:20;
+  if(mn){used.add(mn.id);out.push(cardioEntry(mn,mm,mn.id==='bike_intervals'?[`${mm} minutes: 30 seconds hard, 90 seconds easy, repeat.`,`${mm} minutos: 30 segundos fuerte, 90 segundos suave, repite.`]:[`${mm} minutes at a pace where you can talk, but only in short sentences.`,`${mm} minutos a un ritmo en el que puedes hablar, pero solo con frases cortas.`]));}
+  const sc=cardioPick(rot(['rower','elliptical','bike','incline_walk','stair_climber','arm_bike','walk']),used);
+  if(sc){used.add(sc.id);out.push(cardioEntry(sc,10,['10 minutes steady to finish.','10 minutos constantes para terminar.']));}
+  return out;
+}
+function goalCard(){
+  const u=U(),i=wlInfo();
+  if(!goalW())return`<div class="card" data-notr="1"><h3>🎯 ${L('Goal weight','Peso meta')}</h3><p class="muted small" style="margin-top:0">${L('Set a goal weight so your workouts and food targets work toward it.','Pon un peso meta para que tus entrenamientos y metas de comida trabajen hacia él.')}</p><button class="btn ghost" style="margin:0" data-a="tab" data-t="settings">${L('Set goal weight','Poner peso meta')}</button></div>`;
+  if(!i)return`<div class="card" data-notr="1"><h3>🎯 ${L('Goal','Meta')}: ${r1(goalW())} ${u}</h3><p class="muted small" style="margin-top:0">${L('Log your weight so the app can track your progress.','Registra tu peso para que la app siga tu progreso.')}</p><button class="btn ghost" style="margin:0" data-a="logw">${L("Log today's weight","Registrar el peso de hoy")}</button></div>`;
+  if(i.reached)return`<div class="card" data-notr="1"><h3>🎉 ${L('You reached your goal weight!','¡Llegaste a tu peso meta!')}</h3><p class="muted small" style="margin-top:0">${L(`${r1(i.bw)} ${u} (goal ${r1(i.gw)} ${u}). Switch to maintaining so you keep it.`,`${r1(i.bw)} ${u} (meta ${r1(i.gw)} ${u}). Cambia a mantener para conservarlo.`)}</p><button class="btn primary" style="margin:0" data-a="goalmaint">${L('Switch to Maintain','Cambiar a Mantener')}</button></div>`;
+  const tot=Math.max(i.start-i.gw,i.left),pct=tot>0?Math.max(0,Math.min(100,Math.round((tot-i.left)/tot*100))):0,fin=finisherPlan();
+  const rate=i.rate==null?L('Log your weight most mornings to see your weekly trend.','Registra tu peso casi cada mañana para ver tu tendencia semanal.'):i.weeks?L(`Losing ${r1(-i.rate)} ${u}/week · about ${i.weeks} weeks to go`,`Bajando ${r1(-i.rate)} ${u}/semana · unas ${i.weeks} semanas más`):L('Your weight is holding about steady. If it stays this way for 2–3 weeks, eat 100–200 fewer calories a day.','Tu peso se mantiene casi igual. Si sigue así 2–3 semanas, come 100–200 calorías menos al día.');
+  return`<div class="card" data-notr="1"><h3>🎯 ${L('Goal weight','Peso meta')}: ${r1(i.gw)} ${u}</h3>
+  <div class="calrow"><div><div class="big">${r1(i.left)} <span class="muted small" style="font-weight:400">${u}</span></div><div class="muted small">${L('to go','faltan')}</div></div><div style="text-align:right"><div class="big" style="font-size:20px">${r1(i.bw)} ${u}</div><div class="muted small">${L('now','ahora')}</div></div></div>
+  <div class="track" style="height:10px;margin:10px 0"><div class="fill good" style="width:${pct}%"></div></div>
+  <p class="small" style="margin:0">${rate}</p><p class="muted small" style="margin:6px 0 0">${L(`Cardio finisher today: ${fin.min} min. ${fin.why[0]}`,`Cardio final de hoy: ${fin.min} min. ${fin.why[1]}`)}</p></div>`;
 }
 function generatePrep(f){
   const plans=PREP[f],done=S.workouts.filter(w=>w.focus===f).length,pl=plans[done%plans.length];
@@ -1280,7 +1395,7 @@ const fmtDate=t=>new Date(t).toLocaleDateString(LOC(),{weekday:'short',month:'sh
 const shortDate=t=>new Date(t).toLocaleDateString(LOC(),{month:'short',day:'numeric'});
 function fmtDur(ms){const s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return(h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0');}
 function ago(t){const h=(Date.now()-t)/36e5;if(h<1)return'just now';if(h<24)return Math.round(h)+'h ago';return Math.round(h/24)+'d ago';}
-function fmtSet(ex,s,unit){if(ex.inc==='run')return tsec(s.r)?fmtT(tsec(s.r)):'—';const w=conv(s.w,unit);if(ex.inc==='sec')return s.r+'s';if(ex.inc==='bw')return w?'+'+w+'×'+s.r:s.r+' reps';return w!==''?w+'×'+s.r:s.r+' reps';}
+function fmtSet(ex,s,unit){if(ex.inc==='cardio')return(+s.r||0)+' min';if(ex.inc==='run'){const t=tsec(s.r);if(!t)return'—';if(DIST.has(ex.id)){const v=runVal(ex,s,unit);return(s.w?s.w+' '+DU(unit)+' · ':'')+fmtT(t)+(v?' ('+fmtPace(v)+')':'');}return fmtT(t);}const w=conv(s.w,unit);if(ex.inc==='sec')return s.r+'s';if(ex.inc==='bw')return w?'+'+w+'×'+s.r:s.r+' reps';return w!==''?w+'×'+s.r:s.r+' reps';}
 function volume(w){let v=0;for(const e of w.exercises){const ex=EX(e.exId);if(!ex||!isLoad(ex))continue;for(const s of e.sets)v+=(+conv(s.w,w.unit)||0)*(+s.r||0);}return v;}
 const num=v=>Math.round(v).toLocaleString();
 function bar(m,r){return`<div class="mini"><span>${MUSCLES[m]}</span><div class="track"><div class="fill ${cls(r)}" style="width:${r}%"></div></div><span class="pct ${cls(r)}">${r}%</span></div>`;}
@@ -1312,7 +1427,7 @@ function vWorkout(){
   ${injuryChip()}
   <button class="btn primary big" data-a="gen">Generate workout</button>
   <button class="btn ghost" data-a="empty">Start empty workout</button></div>
-  ${PREP[focusSel]?usmcCard(focusSel):''}
+  ${PREP[focusSel]?usmcCard(focusSel):''}${S.settings.goal==='fatloss'?goalCard():''}
   <div class="card"><h3>Still recovering</h3>${tired.length?tired.map(m=>bar(m,rec[m])).join(''):'<p class="muted" style="margin:0">Everything is fully recovered.</p>'}</div>
   ${lw?`<div class="card"><h3>Last workout</h3><p class="muted" style="margin:0">${fmtDate(lw.end)} · ${esc(FOCUS_NAME[lw.focus]||'Workout')} · ${lw.exercises.length} exercises</p></div>`:''}`;
 }
@@ -1322,13 +1437,15 @@ function vActive(){
   const cards=a.exercises.map((e,i)=>{
     const ex=EX(e.exId);if(!ex)return'';
     const sc=scheme(ex),last=lastSets(ex.id);
-    const tm=ex.inc==='run',noW=tm||ex.id==='ammo_press',wh=noW?'':isLoad(ex)?U():'Extra '+U(),rh=tm?'Time':ex.inc==='sec'?'Sec':'Reps';
-    const rows=e.sets.map((s,j)=>`<div class="set ${s.done?'done':''}"><span class="n">${j+1}</span>${noW?'<span></span>':`<input type="text" inputmode="decimal" data-f="w" data-i="${i}" data-j="${j}" value="${esc(s.w)}" placeholder="${isLoad(ex)?'—':'+0'}">`}<input type="text" inputmode="${tm?'decimal':'numeric'}" data-f="r" data-i="${i}" data-j="${j}" value="${esc(s.r)}" placeholder="${tm?'m:ss':'0'}"><button class="tick" data-a="tick" data-i="${i}" data-j="${j}" aria-label="Complete set">✓</button></div>`).join('');
-    return`<div class="card"><div class="exhead"><div><h3>${esc(ex.name)}</h3><div class="muted small">${e.plan?'':tm?'Timed · ':`${sc.sets} × ${sc.lo}–${sc.hi}${ex.inc==='sec'?' sec':''} · `}${ex.p.map(m=>MUSCLES[m]).join(', ')}</div></div><div class="exbtns">${HOWTO[ex.id]?`<button class="icon" data-a="howto" data-id="${ex.id}" aria-label="How to do it">ⓘ</button>`:''}<button class="icon" data-a="swap" data-i="${i}" aria-label="Swap exercise">⇄</button><button class="icon" data-a="rmex" data-i="${i}" aria-label="Remove exercise">✕</button></div></div>
-    ${last?`<div class="last small">Last: ${last.sets.map(s=>fmtSet(ex,s,last.unit)).join(' · ')}</div>`:''}
+    const tm=ex.inc==='run',cd=ex.inc==='cardio',dist=DIST.has(ex.id),noW=(tm&&!dist)||cd||ex.id==='ammo_press',wh=dist?DU():noW?'':isLoad(ex)?U():'Extra '+U(),rh=tm?'Time':cd?'Min':ex.inc==='sec'?'Sec':'Reps';
+    const rows=e.sets.map((s,j)=>`<div class="set ${s.done?'done':''}"><span class="n">${j+1}</span>${noW?'<span></span>':`<input type="text" inputmode="decimal" data-f="w" data-i="${i}" data-j="${j}" value="${esc(s.w)}" placeholder="${dist?DU():isLoad(ex)?'—':'+0'}">`}<input type="text" inputmode="${tm?'decimal':'numeric'}" data-f="r" data-i="${i}" data-j="${j}" value="${esc(s.r)}" placeholder="${tm?'m:ss':'0'}"><button class="tick" data-a="tick" data-i="${i}" data-j="${j}" aria-label="Complete set">✓</button></div>`).join('');
+    return`<div class="card"><div class="exhead"><div><h3>${esc(ex.name)}</h3><div class="muted small">${e.plan?'':tm?'Timed · ':cd?'Cardio · ':`${sc.sets} × ${sc.lo}–${sc.hi}${ex.inc==='sec'?' sec':''} · `}${ex.p.map(m=>MUSCLES[m]).join(', ')}</div></div><div class="exbtns">${HOWTO[ex.id]?`<button class="icon" data-a="howto" data-id="${ex.id}" aria-label="How to do it">ⓘ</button>`:''}<button class="icon" data-a="swap" data-i="${i}" aria-label="Swap exercise">⇄</button><button class="icon" data-a="rmex" data-i="${i}" aria-label="Remove exercise">✕</button></div></div>
+    ${last?`<div class="last small">Last: ${last.sets.map(s=>fmtSet(ex,s,last.unit)).join(' · ')}${vestTxt(last.vest,last.unit)}</div>`:''}
+    ${dist?`<div class="vestrow"><label for="vest${i}">Vest weight</label><input type="text" inputmode="decimal" id="vest${i}" data-vest="${i}" value="${esc(e.vest==null?'':e.vest)}" placeholder="0"><span class="muted">${U()}</span></div>`:''}
     ${e.plan?`<div class="plan small" data-notr="1">🎯 ${esc(L(e.plan[0],e.plan[1]))}</div>`:''}
     ${e.note?`<div class="note small">${esc(e.note)}</div>`:''}
-    ${tm?'<div class="bwnote small">Type each time as minutes:seconds, like 1:45 (or 1.45).</div>':''}
+    ${cd?`<div class="bwnote small">Log the minutes you did${bodyW()?`. About ${cardioKcal(ex.id,e.sets.reduce((a,x)=>a+(+x.r||0),0))} kcal at this time`:''}.</div>`:''}
+    ${tm?(dist?`<div class="bwnote small">Enter the distance (${DU()}) and your time as minutes:seconds, like 18:30. Your pace is worked out for you.</div>`:'<div class="bwnote small">Type each time as minutes:seconds, like 1:45 (or 1.45).</div>'):''}
     ${injuryFor(ex)?`<div class="injwarn small">⚠️ Careful: this loads an injured area (${INJ_AREAS[injuryFor(ex).area]}). Skip it or go very light.</div>`:''}
     ${ex.inc==='bw'&&ex.id!=='ammo_press'?'<div class="bwnote small">Bodyweight exercise: your body weight is already counted. Only enter extra weight (dip belt, vest), or leave it blank.</div>':''}
     <div class="sethead"><span>Set</span><span>${wh}</span><span>${rh}</span><span></span></div>${rows}
@@ -1346,37 +1463,51 @@ const GOALS_DEF={cal:2000,p:150,c:200,f:65};
 const NGOAL={lose:'Lose fat',maintain:'Maintain weight',gain:'Build muscle'};
 const ACT=[[1.2,'Mostly sitting','Desk job, little exercise'],[1.375,'Lightly active','Training 1–3 days a week'],[1.55,'Active','Training 3–5 days a week'],[1.725,'Very active','Hard training 6–7 days a week'],[1.9,'Athlete','Hard training plus a physical job']];
 // Mifflin-St Jeor BMR x activity = maintenance calories; goal adjusts it.
+// goal weight, in the user's current units (0 = none)
+const goalW=()=>{const g=+S.settings.goalW;return g>0?+conv(g,S.settings.goalWU||U()):0;};
+const toU=lb=>U()==='lb'?lb:lb*0.45359237;
+function wlInfo(){const bw=bodyW(),gw=goalW();if(!bw||!gw)return null;const{rate,pts}=weightTrend(),left=bw-gw;
+  const span=pts.length>1?dayNum(pts[pts.length-1].d)-dayNum(pts[0].d):0;
+  return{bw,gw,left,reached:left<=0,rate,span,weeks:rate!=null&&rate<-(U()==='lb'?.25:.1)&&left>0?Math.ceil(left/-rate):null,start:+S.settings.goalStart>0?+conv(S.settings.goalStart,S.settings.goalWU||U()):bw};}
 function calcTargets(n,bwOverride){
   if(!n)return null;const bw=bwOverride!=null?bwOverride:bodyW();
   const kg=U()==='lb'?bw*0.45359237:bw,cm=+n.cm,age=+n.age;
   if(!(kg>25&&cm>100&&age>=13))return null;
-  const bmr=10*kg+6.25*cm-5*age+(n.sex==='f'?-161:5),tdee=bmr*(+n.act||1.375);
-  const mult={lose:.8,maintain:1,gain:1.1}[n.goal]||1;
-  let cal=Math.max(tdee*mult,n.sex==='f'?1200:1500);cal=Math.round(cal/10)*10;
-  const lbs=kg/0.45359237,p=Math.round(lbs*({lose:1,maintain:.8,gain:.9}[n.goal]||.8));
+  const sc=dexaRecent(),lbmKg=sc&&sc.bf>0?kg*(1-sc.bf/100):0;// Katch-McArdle when we know body fat from a DEXA scan
+  const bmr=lbmKg?370+21.6*lbmKg:10*kg+6.25*cm-5*age+(n.sex==='f'?-161:5),tdee=bmr*(+n.act||1.375);
+  const lbs=kg/0.45359237,floor=n.sex==='f'?1200:1500;
+  // Lose fat: a deficit sized to lose ~0.75% of body weight a week (0.5% in the last 5 lb), never more than 25% of maintenance.
+  const gwu=n.gw!=null?+n.gw:goalW(),glbs=gwu>0?(U()==='lb'?gwu:gwu/0.45359237):0,left=glbs?lbs-glbs:null;
+  let cal,deficit=0,pace=0;
+  if(n.goal==='lose'){pace=left!=null&&left<=0?0:left!=null&&left<=5?.005:.0075;deficit=Math.min(lbs*pace*3500/7,tdee*.25);cal=tdee-deficit;}
+  else cal=tdee*({maintain:1,gain:1.1}[n.goal]||1);
+  const floored=cal<floor;cal=Math.round(Math.max(cal,floor)/10)*10;
+  const pBase=n.goal==='lose'&&glbs>0&&glbs<lbs?glbs:lbs,p=Math.round(pBase*({lose:1,maintain:.8,gain:.9}[n.goal]||.8));
   const f=Math.round(cal*(n.goal==='maintain'?.3:.25)/9),c=Math.max(50,Math.round((cal-4*p-9*f)/4));
-  return{cal,p,c,f,tdee:Math.round(tdee/10)*10};
+  const wk=n.goal==='lose'?Math.max(0,(tdee-cal)*7/3500):0;// lb per week
+  return{cal,p,c,f,bmr,bmrSrc:lbmKg?'dexa':'msj',lbmKg,dexaBf:sc&&sc.bf,tdee:Math.round(tdee/10)*10,deficit:Math.round(tdee-cal),floored,wkLb:wk,leftLb:left,pBase:Math.round(pBase),goalLb:glbs};
 }
 const goals=()=>{const n=S.settings.nut;if(n&&n.auto){const t=calcTargets(n);if(t)return t;}return Object.assign({},GOALS_DEF,S.settings.goals||{});};
 function nutHelp(){
   const n=S.settings.nut,t=n&&calcTargets(n),bw=bodyW(),u=U(),kg=u==='lb'?bw*0.45359237:bw,f=v=>Math.round(v).toLocaleString(LOC());
   let mine='';
-  if(t){const bmr=10*kg+6.25*n.cm-5*n.age+(n.sex==='f'?-161:5),mult={lose:.8,maintain:1,gain:1.1}[n.goal]||1,pg={lose:1,maintain:.8,gain:.9}[n.goal]||.8,fs=n.goal==='maintain'?30:25;
+  if(t){const bmr=t.bmr,mult={maintain:1,gain:1.1}[n.goal]||1,pg={lose:1,maintain:.8,gain:.9}[n.goal]||.8,fs=n.goal==='maintain'?30:25;
     mine=`<h3 style="margin-top:16px">${L('Your numbers','Tus números')}</h3><div class="calcbox">
-    <div>${L('Resting burn (BMR)','Gasto en reposo (TMB)')}: 10×${r1(kg)} kg + 6.25×${n.cm} cm − 5×${n.age} ${n.sex==='f'?'− 161':'+ 5'} = <b>${f(bmr)}</b> kcal</div>
+    <div>${L('Resting burn (BMR)','Gasto en reposo (TMB)')}: ${t.bmrSrc==='dexa'?`370 + 21.6×${r1(t.lbmKg)} kg ${L('lean mass','masa magra')} <span class="muted">(DEXA ${t.dexaBf}% ${L('body fat','grasa')})</span>`:`10×${r1(kg)} kg + 6.25×${n.cm} cm − 5×${n.age} ${n.sex==='f'?'− 161':'+ 5'}`} = <b>${f(bmr)}</b> kcal</div>
     <div>${L('Maintenance','Mantenimiento')}: ${f(bmr)} × ${n.act} = <b>${f(t.tdee)}</b> kcal</div>
-    <div>${L('Goal','Meta')}: ${f(t.tdee)} × ${mult} = <b>${f(t.cal)}</b> kcal${t.cal>Math.round(t.tdee*mult/10)*10?L(' (minimum)',' (mínimo)'):''}</div>
-    <div>${L('Protein','Proteína')}: ${r1(kg/0.45359237)} lb × ${pg} g = <b>${t.p} g</b> (${f(t.p*4)} kcal)</div>
+    <div>${L('Goal','Meta')}: ${n.goal==='lose'?`${f(t.tdee)} − ${f(t.deficit)} ${L('deficit','de déficit')}`:`${f(t.tdee)} × ${mult}`} = <b>${f(t.cal)}</b> kcal${t.floored?L(' (minimum)',' (mínimo)'):''}</div>
+    ${n.goal==='lose'&&t.wkLb?`<div>${L('Expected loss','Pérdida esperada')}: ≈ <b>${r1(toU(t.wkLb))} ${u}/${L('week','semana')}</b>${t.leftLb>0?` · ${L('about','unas')} ${Math.ceil(t.leftLb/t.wkLb)} ${L('weeks to your goal','semanas para tu meta')}`:''}</div>`:''}
+    <div>${L('Protein','Proteína')}: ${t.pBase} lb${n.goal==='lose'&&t.goalLb&&t.goalLb<kg/0.45359237?L(' (goal weight)',' (peso meta)'):''} × ${pg} g = <b>${t.p} g</b> (${f(t.p*4)} kcal)</div>
     <div>${L('Fat','Grasa')}: ${fs}% × ${f(t.cal)} ÷ 9 = <b>${t.f} g</b> (${f(t.f*9)} kcal)</div>
     <div>${L('Carbs','Carbohidratos')}: (${f(t.cal)} − ${f(t.p*4)} − ${f(t.f*9)}) ÷ 4 = <b>${t.c} g</b></div></div>`;}
   else if(n&&!n.auto)mine=`<p class="muted small">${L('You set your own numbers, so these formulas aren\'t being used right now. Tap "Recalculate from my goal" to use them again.','Fijaste tus propios números, así que estas fórmulas no se están usando ahora. Toca "Recalcular desde mi objetivo" para volver a usarlas.')}</p>`;
   else mine=`<p class="muted small">${L('Tap "Calculate my targets" to see your own numbers here.','Toca "Calcular mis metas" para ver tus propios números aquí.')}</p>`;
   showModal(`<div data-notr="1"><div class="sheethead"><h3>${L('How your targets are calculated','Cómo se calculan tus metas')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
   <ol class="htsteps">
-  <li>${L('<b>Resting burn (BMR)</b>, the Mifflin-St Jeor formula dietitians use: 10 × weight (kg) + 6.25 × height (cm) − 5 × age, then +5 for men or −161 for women.','<b>Gasto en reposo (TMB)</b>, con la fórmula Mifflin-St Jeor que usan los nutriólogos: 10 × peso (kg) + 6.25 × estatura (cm) − 5 × edad, luego +5 para hombres o −161 para mujeres.')}</li>
+  <li>${L('<b>Resting burn (BMR)</b>, the Mifflin-St Jeor formula dietitians use: 10 × weight (kg) + 6.25 × height (cm) − 5 × age, then +5 for men or −161 for women.','<b>Gasto en reposo (TMB)</b>, con la fórmula Mifflin-St Jeor que usan los nutriólogos: 10 × peso (kg) + 6.25 × estatura (cm) − 5 × edad, luego +5 para hombres o −161 para mujeres.')}${dexaRecent()?' '+L('<b>You have a recent DEXA scan</b>, so the app uses the more accurate Katch-McArdle formula instead: 370 + 21.6 × lean mass (kg).','<b>Tienes un escaneo DEXA reciente</b>, así que la app usa la fórmula Katch-McArdle, más precisa: 370 + 21.6 × masa magra (kg).'):''}</li>
   <li>${L('<b>Maintenance calories</b> = BMR × activity level: mostly sitting 1.2, lightly active 1.375, active 1.55, very active 1.725, athlete 1.9.','<b>Calorías de mantenimiento</b> = TMB × nivel de actividad: mayormente sentado 1.2, poco activo 1.375, activo 1.55, muy activo 1.725, atleta 1.9.')}</li>
-  <li>${L('<b>Your goal</b>: lose fat = 80% of maintenance (about 0.5–1% of body weight a week), maintain = 100%, build muscle = 110%. Never below 1,200 kcal for women or 1,500 for men.','<b>Tu objetivo</b>: perder grasa = 80% del mantenimiento (aprox. 0.5–1% de tu peso por semana), mantener = 100%, ganar músculo = 110%. Nunca menos de 1,200 kcal para mujeres o 1,500 para hombres.')}</li>
-  <li>${L('<b>Protein</b> per pound of body weight: 1 g when losing fat (protects muscle), 0.9 g when building, 0.8 g when maintaining.','<b>Proteína</b> por libra de peso corporal: 1 g al perder grasa (protege el músculo), 0.9 g al ganar, 0.8 g al mantener.')}</li>
+  <li>${L('<b>Your goal</b>: lose fat = a daily deficit to lose about 0.75% of your body weight a week (0.5% in your last 5 lb), never more than 25% below maintenance. Maintain = 100%, build muscle = 110%. Never below 1,200 kcal for women or 1,500 for men.','<b>Tu objetivo</b>: perder grasa = un déficit diario para bajar cerca de 0.75% de tu peso por semana (0.5% en tus últimas 5 lb), nunca más de 25% por debajo del mantenimiento. Mantener = 100%, ganar músculo = 110%. Nunca menos de 1,200 kcal para mujeres o 1,500 para hombres.')}</li>
+  <li>${L('<b>Protein</b> per pound: 1 g when losing fat (of your goal weight, if you set one, which protects muscle), 0.9 g of body weight when building, 0.8 g when maintaining.','<b>Proteína</b> por libra: 1 g al perder grasa (de tu peso meta, si pusiste uno; protege el músculo), 0.9 g de tu peso al ganar, 0.8 g al mantener.')}</li>
   <li>${L('<b>Fat</b>: 25% of calories (30% when maintaining). 1 g of fat = 9 kcal.','<b>Grasa</b>: 25% de las calorías (30% al mantener). 1 g de grasa = 9 kcal.')}</li>
   <li>${L('<b>Carbs</b> fill the rest of your calories (at least 50 g). 1 g of protein or carbs = 4 kcal.','<b>Carbohidratos</b> completan el resto de tus calorías (mínimo 50 g). 1 g de proteína o carbohidratos = 4 kcal.')}</li>
   <li>${L('<b>Calories burned</b> only raise that day\'s goal if "Add calories burned to my goal" is on.','<b>Las calorías quemadas</b> solo suben la meta de ese día si "Sumar calorías quemadas a mi meta" está activado.')}</li>
@@ -1389,6 +1520,7 @@ function nutForm(){
   const opt=(v,l,cur)=>`<option value="${v}" ${String(v)===String(cur)?'selected':''}>${l}</option>`;
   showModal(`<div class="sheethead"><h3>Your daily targets</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
   <div class="field"><label class="lbl">Your goal</label><div class="seg">${Object.entries(NGOAL).map(([k,l])=>`<label><input type="radio" name="n_goal" id="n_goal_${k}" value="${k}" ${n.goal===k?'checked':''}><span>${l}</span></label>`).join('')}</div></div>
+  <div class="field" id="n_gwrow" ${n.goal==='lose'?'':'hidden'}><label class="lbl">Goal weight (${U()})</label><input type="text" inputmode="decimal" id="n_gw" value="${goalW()?r1(goalW()):''}" placeholder="${U()}"></div>
   <div class="grid2"><div class="field"><label class="lbl">Sex</label><select id="n_sex">${opt('m','Male',n.sex)}${opt('f','Female',n.sex)}</select></div>
   <div class="field"><label class="lbl">Age</label><input type="text" inputmode="numeric" id="n_age" value="${n.age}" placeholder="years"></div></div>
   <div class="grid2">${lb?`<div class="field"><label class="lbl">Height</label><div class="svrow"><input type="text" inputmode="numeric" id="n_ft" value="${ft}" placeholder="5"><span class="muted">ft</span><input type="text" inputmode="numeric" id="n_in" value="${inch}" placeholder="10"><span class="muted">in</span></div></div>`:`<div class="field"><label class="lbl">Height (cm)</label><input type="text" inputmode="numeric" id="n_cm" value="${n.cm?Math.round(n.cm):''}" placeholder="cm"></div>`}
@@ -1403,10 +1535,10 @@ function readNut(){
   const num=id=>{const el=$('#'+id);const v=el?parseFloat((el.value||'').replace(',','.')):NaN;return isFinite(v)?v:0;};
   const g=document.querySelector('input[name="n_goal"]:checked');
   const cm=U()==='lb'?(num('n_ft')*12+num('n_in'))*2.54:num('n_cm');
-  return{goal:g?g.value:'maintain',sex:$('#n_sex').value,age:num('n_age'),cm:Math.round(cm),act:+$('#n_act').value,bw:num('n_bw')};
+  return{goal:g?g.value:'maintain',sex:$('#n_sex').value,age:num('n_age'),cm:Math.round(cm),act:+$('#n_act').value,bw:num('n_bw'),gw:num('n_gw')};
 }
-function nutPreview(){const el=$('#n_res');if(!el)return;const x=readNut(),t=calcTargets(x,x.bw);
-  el.innerHTML=t?`<div class="muted small">Maintenance ≈ ${t.tdee.toLocaleString()} kcal/day</div><div class="big" style="margin:4px 0 8px">${t.cal.toLocaleString()} <span class="muted small" style="font-weight:400">kcal/day</span></div><div class="nutmac"><span><b>${t.p}g</b> protein</span><span><b>${t.c}g</b> carbs</span><span><b>${t.f}g</b> fat</span></div>`:'<p class="muted small" style="margin:0">Fill in your age, height and body weight to see your targets.</p>';}
+function nutPreview(){const el=$('#n_res');if(!el)return;const x=readNut(),t=calcTargets(x,x.bw),gr=$('#n_gwrow');if(gr)gr.hidden=x.goal!=='lose';
+  el.innerHTML=t?`<div class="muted small">Maintenance ≈ ${t.tdee.toLocaleString()} kcal/day</div><div class="big" style="margin:4px 0 8px">${t.cal.toLocaleString()} <span class="muted small" style="font-weight:400">kcal/day</span></div><div class="nutmac"><span><b>${t.p}g</b> protein</span><span><b>${t.c}g</b> carbs</span><span><b>${t.f}g</b> fat</span></div>${x.goal==='lose'&&t.wkLb?`<div class="muted small" data-notr="1" style="margin-top:8px">${L(`About ${r1(toU(t.wkLb))} ${U()} a week`,`Unas ${r1(toU(t.wkLb))} ${U()} por semana`)}${t.leftLb>0?L(`, roughly ${Math.ceil(t.leftLb/t.wkLb)} weeks to your goal`,`, unas ${Math.ceil(t.leftLb/t.wkLb)} semanas para tu meta`):''}.</div>`:''}`:'<p class="muted small" style="margin:0">Fill in your age, height and body weight to see your targets.</p>';}
 const dk=t=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
 let foodDay=dk(Date.now()),foodEdit=null,scanThumb='';
 const r1=v=>Math.round(v*10)/10;
@@ -1728,28 +1860,28 @@ const KNEE=ids('leg_curl lying_leg_curl nordic_curl pistol_squat jump_squat burp
 const ANKLE=ids('squat front_squat goblet kb_goblet sumo_squat bw_squat jump_squat pistol_squat cossack_squat wall_sit lunge bw_lunge bss step_up leg_press deadlift rdl db_rdl good_morning kb_swing farmer_carry cable_abduction cable_adduction band_walk copenhagen nordic_curl burpee mountain_climber bear_crawl calf_raise sl_calf db_calf lp_calf seated_calf');
 const HIPX=ids('leg_raise hanging_raise knee_raise toes_to_bar oblique_raise mountain_climber flutter_kick v_up sit_up decline_situp reverse_crunch bicycle_crunch hollow_hold l_sit dragon_flag windshield_wipers wall_sit bear_crawl farmer_carry ab_wheel');
 const NECK=ids('squat front_squat good_morning deadlift db_shrug farmer_carry sit_up decline_situp crunch cable_crunch machine_crunch weighted_crunch bicycle_crunch heel_taps russian_twist weighted_twist v_up hollow_hold dragon_flag hspu handstand_hold pike_pushup bb_row ohp db_ohp arnold shoulder_press_m ammo_press muscle_up burpee');
-const run=ex=>ex.inc==='run',sprint=ex=>['run_400','run_880','shuttle_sprint'].includes(ex.id);
+const run=ex=>ex.inc==='run'||['jog','walk','incline_walk','stair_climber','jump_rope','elliptical','bike','bike_intervals','rower'].includes(ex.id),sprint=ex=>['run_400','run_880','shuttle_sprint'].includes(ex.id);
 const isFree=ex=>['barbell','dumbbell','kettlebell','cable','bands'].some(e=>ex.eq.includes(e));
 function injuryHits(ex,area){
   const P=m=>ex.p.includes(m),Sx=m=>ex.s.includes(m),A=m=>P(m)||Sx(m),id=ex.id,in_=(...l)=>l.includes(id);
   switch(area){
     // presses, flies, raises, pulls, rows, hangs, push-ups, planks and anything overhead or held heavy at arm's length
-    case'shoulder':return A('shoulders')||A('chest')||A('lats')||P('traps')||HANG.has(id)||ONHANDS.has(id)||
-      in_('squat','front_squat','good_morning','oh_ext','dual_cable_ext','skull','deadlift','rdl','db_rdl','db_shrug','farmer_carry','kb_swing','ammo_press','hollow_hold');
+    case'shoulder':return A('shoulders')||A('chest')||A('lats')||P('traps')||HANG.has(id)||ONHANDS.has(id)||ex.eq.includes('armor')||
+      in_('squat','front_squat','good_morning','oh_ext','dual_cable_ext','skull','incline_curl','deadlift','rdl','db_rdl','db_shrug','farmer_carry','kb_swing','ammo_press','hollow_hold');
     // anything that bends or straightens the elbow under load, grips hard, hangs, or bears weight on the arms
-    case'elbow':return A('triceps')||A('biceps')||A('forearms')||HANG.has(id)||ONHANDS.has(id)||HEAVYHOLD.has(id)||
+    case'elbow':return ['jump_rope','rower','arm_bike'].includes(id)||A('triceps')||A('biceps')||A('forearms')||HANG.has(id)||ONHANDS.has(id)||HEAVYHOLD.has(id)||
       in_('face_pull','woodchop','pallof','db_fly','cable_fly','cable_crunch','squat','lat_raise','cable_lat_raise','rear_fly','band_pull_apart','good_morning','weighted_back_ext','weighted_crunch','machine_crunch');
     // anything held in the hands, pressed, gripped, hung from, or done on the hands
-    case'wrist':return A('forearms')||HANG.has(id)||ONHANDS.has(id)||HEAVYHOLD.has(id)||ex.eq.includes('pullup')||
+    case'wrist':return ['jump_rope','rower','arm_bike'].includes(id)||A('forearms')||HANG.has(id)||ONHANDS.has(id)||HEAVYHOLD.has(id)||ex.eq.includes('pullup')||
       (isFree(ex)&&!in_('hip_thrust','cable_adduction','cable_abduction','band_walk'))||
       in_('chest_press','shoulder_press_m','machine_row','preacher','pec_deck','good_morning','weighted_back_ext','weighted_crunch','machine_crunch');
     // load on the spine or traps, neck bending, overhead pressing, head-down or jarring moves
-    case'neck':return P('traps')||NECK.has(id)||in_('rdl','db_rdl','jump_squat','shuttle_sprint');
+    case'neck':return ['jump_rope','jog'].includes(id)||P('traps')||NECK.has(id)||ex.eq.includes('armor')||in_('rdl','db_rdl','jump_squat','shuttle_sprint');
     // rhomboids and mid back: rows, pulls, shrugs, rear delts, heavy bar on the back, overhead work
-    case'upperback':return A('traps')||A('lats')||HANG.has(id)||
+    case'upperback':return A('traps')||A('lats')||HANG.has(id)||ex.eq.includes('armor')||
       in_('deadlift','good_morning','squat','front_squat','rdl','db_rdl','kb_swing','rear_fly','ab_wheel','dragon_flag','farmer_carry','woodchop','russian_twist','weighted_twist');
     // spine loaded, bent, twisted or jarred
-    case'lowerback':return A('lowerback')||SPINE.has(id)||in_('cable_row','heel_taps');
+    case'lowerback':return ['jump_rope','jog','rower','stair_climber'].includes(id)||A('lowerback')||SPINE.has(id)||ex.eq.includes('armor')||in_('cable_row','sa_cable_row','dual_cable_row','heel_taps');
     // hip joint and hip flexors: leg drives, deep hip bending, lunges, kicks, hanging leg raises
     case'hip':return P('glutes')||P('adductors')||P('abductors')||P('hamstrings')||(P('quads')&&ex.c)||run(ex)||HIPX.has(id)||in_('bb_row','back_ext','weighted_back_ext','bird_dog','superman','russian_twist','woodchop','weighted_twist','muscle_up');
     // knee bending under load, kneeling, pressure across the knee, landing
@@ -1763,7 +1895,7 @@ function injuryHits(ex,area){
     // triceps: pressing, push-ups, dips, extensions, and straight-arm support
     case'triceps':return A('triceps')||ONHANDS.has(id)||in_('front_lever','dragon_flag','muscle_up');
     // abdominal wall and hernia: any core work, heavy compound lifts (bracing), hanging, carries, sprints
-    case'abs':return A('abs')||A('obliques')||ex.c||ex.inc==='big'||HANG.has(id)||ONHANDS.has(id)||sprint(ex)||
+    case'abs':return ['jump_rope','rower','bike_intervals','stair_climber','jog'].includes(id)||A('abs')||A('obliques')||ex.eq.includes('armor')||ex.c||ex.inc==='big'||HANG.has(id)||ONHANDS.has(id)||sprint(ex)||
       in_('farmer_carry','ammo_press','back_ext','weighted_back_ext','good_morning','db_shrug','nordic_curl');
     // quads and hip flexors (rectus femoris crosses the hip)
     case'quads':return A('quads')||run(ex)||HIPX.has(id)||in_('deadlift','kb_swing','nordic_curl','cable_crunch');
@@ -1953,7 +2085,7 @@ function vHistory(){
   const now=Date.now(),c7=S.workouts.filter(w=>now-w.end<7*864e5).length,c30=S.workouts.filter(w=>now-w.end<30*864e5).length;
   const list=S.workouts.slice().reverse().map(w=>{
     const mins=Math.round((w.end-w.start)/6e4),v=volume(w);
-    const body=w.exercises.map(e=>{const ex=EX(e.exId);return`<div class="hrow"><b>${esc(ex?ex.name:'Removed exercise')}</b><span class="muted">${ex?e.sets.map(s=>fmtSet(ex,s,w.unit)).join(' · '):''}</span></div>`;}).join('');
+    const body=w.exercises.map(e=>{const ex=EX(e.exId);return`<div class="hrow"><b>${esc(ex?ex.name:'Removed exercise')}</b><span class="muted">${ex?e.sets.map(s=>fmtSet(ex,s,w.unit)).join(' · ')+vestTxt(e.vest,w.unit):''}</span></div>`;}).join('');
     return`<details class="card"><summary class="lp" data-wid="${esc(w.id)}"><b>${fmtDate(w.end)}</b><div class="muted small">${esc(FOCUS_NAME[w.focus]||'Workout')} · ${mins} min · ${w.exercises.length} exercises${v?' · '+num(v)+' '+U():''}</div></summary><div style="margin-top:10px">${body}</div><button class="btn danger-ghost sm" style="margin-top:12px" data-a="delw" data-id="${esc(w.id)}">Delete workout</button></details>`;
   }).join('');
   return`<h1>History</h1><p class="muted small" style="margin-top:-6px">Tip: press and hold a workout to remove it.</p><div class="stats"><div><b>${c7}</b><span>last 7 days</span></div><div><b>${c30}</b><span>last 30 days</span></div><div><b>${S.workouts.length}</b><span>total</span></div></div>${list}`;
@@ -1968,26 +2100,199 @@ function chart(pts){
   const area=x(0).toFixed(1)+','+(H-pb)+' '+line+' '+x(pts.length-1).toFixed(1)+','+(H-pb);
   return`<svg viewBox="0 0 ${W} ${H}" class="chart"><defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6b35" stop-opacity=".35"/><stop offset="1" stop-color="#ff6b35" stop-opacity="0"/></linearGradient></defs><polygon points="${area}" fill="url(#cg)"/><polyline points="${line}" fill="none" stroke="#ff6b35" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>${pts.map((p,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="3.5" fill="#ff6b35"/>`).join('')}<text x="${pl}" y="${H-6}" class="ct">${shortDate(pts[0].t)}</text><text x="${W-pr}" y="${H-6}" class="ct" text-anchor="end">${shortDate(pts[pts.length-1].t)}</text></svg>`;
 }
-function vProgress(){return'<h1>Progress</h1>'+weightCard()+'<h2 style="font-size:20px;margin:18px 0 10px">Lifts</h2>'+vLifts();}
+// ================= Waist-to-height (Marine Corps standard, MARADMIN 066/26) =================
+// Waist measured at the navel ÷ height must be 0.52 or less. The Marine table = height × 0.52, rounded down to the half inch.
+const WHTR=.52,isMetric=()=>U()==='kg',lenU=()=>isMetric()?'cm':'in';
+const toIn=v=>isMetric()?v/2.54:v,fromIn=v=>isMetric()?v*2.54:v;
+const maxWaistIn=hIn=>Math.floor(Math.round(Math.floor(hIn*2)/2*WHTR*2*1e6)/1e6)/2;// height counted to the half inch below
+const fmtLen=inch=>isMetric()?r1(inch*2.54)+' cm':(Math.round(inch*10)/10)+'"';
+function waistLatest(){return(S.waists||[]).slice().sort((a,b)=>a.d<b.d?-1:1).pop()||null;}
+function whtrStatus(w){const mx=maxWaistIn(w.h),r=w.w/w.h;return{r,mx,ok:w.w<=mx,over:Math.max(0,w.w-mx)};}
+function waistCard(){
+  const w=waistLatest(),all=(S.waists||[]).slice().sort((a,b)=>a.d<b.d?-1:1);
+  if(!w)return`<div class="card" data-notr="1"><h3>📏 ${L('Waist-to-height','Cintura-estatura')}</h3><p class="muted small" style="margin-top:0">${L('The Marine Corps screens body composition with waist ÷ height: 0.52 or less is within standard. It\'s a good health check for anyone, too.','Los Marines evalúan la composición corporal con cintura ÷ estatura: 0.52 o menos está dentro del estándar. También es un buen indicador de salud para cualquiera.')}</p><button class="btn primary" style="margin:0" data-a="waistform">+ ${L('Measure my waist','Medir mi cintura')}</button></div>`;
+  const st=whtrStatus(w),prev=all.length>1?all[all.length-2]:null,dw=prev?w.w-prev.w:0;
+  return`<div class="card" data-notr="1"><h3>📏 ${L('Waist-to-height','Cintura-estatura')}</h3>
+  <div class="calrow"><div><div class="big">${st.r.toFixed(3)}</div><div class="muted small">${L('ratio','proporción')} · ${shortDate(new Date(w.d+'T12:00').getTime())}</div></div>
+  <div style="text-align:right"><span class="whtrchip ${st.ok?'ok':'bad'}">${st.ok?L('✓ Within Marine standard','✓ Dentro del estándar Marine'):L('Over the 0.52 standard','Arriba del estándar 0.52')}</span></div></div>
+  <div class="stats" style="margin-top:10px"><div><b>${fmtLen(w.w)}</b><span>${L('your waist','tu cintura')}${dw?` <span class="${dw<0?'good':'warn'}">${dw>0?'+':''}${fmtLen(dw).replace('"','')}${isMetric()?'':'"'}</span>`:''}</span></div><div><b>${fmtLen(st.mx)}</b><span>${L('max for','máx. para')} ${fmtLen(Math.floor(w.h*2)/2)}</span></div></div>
+  <p class="small" style="margin:10px 0 0">${st.ok?L(`${fmtLen(st.mx-w.w)} of room under the max.`,`${fmtLen(st.mx-w.w)} de margen bajo el máximo.`):L(`${fmtLen(st.over)} over the max. A Marine over 0.52 gets a body fat evaluation (tape or BIA) next.`,`${fmtLen(st.over)} sobre el máximo. Un Marine arriba de 0.52 pasa a evaluación de grasa corporal (cinta o BIA).`)}</p>
+  ${st.ok?'':`<p class="muted small" style="margin:6px 0 0">${L('Marines with 285+ on both the PFT and CFT get a body fat allowance up to 26% (men) or 36% (women).','Los Marines con 285+ en el PFT y el CFT tienen una tolerancia de grasa corporal de hasta 26% (hombres) o 36% (mujeres).')}</p>`}
+  ${all.length>1?`<details style="margin-top:10px"><summary class="muted small" style="cursor:pointer">${L('All measurements','Todas las medidas')} (${all.length})</summary>${all.slice().reverse().map(x=>{const t=whtrStatus(x);return`<div class="hrow" style="flex-direction:row;justify-content:space-between;align-items:center"><span>${shortDate(new Date(x.d+'T12:00').getTime())}</span><span>${fmtLen(x.w)} · <b class="${t.ok?'good':'bad'}">${t.r.toFixed(3)}</b> <button class="icon" style="margin-left:8px" data-a="waistdel" data-d="${x.d}" aria-label="Delete">✕</button></span></div>`;}).join('')}</details>`:''}
+  <button class="btn ghost" data-a="waistform">+ ${L('New measurement','Nueva medida')}</button></div>`;
+}
+function waistForm(){
+  const w=waistLatest(),hIn=w?w.h:heightCm()?heightCm()/2.54:'';
+  showModal(`<div data-notr="1" id="waistsheet"><div class="sheethead"><h3>${L('Waist-to-height','Cintura-estatura')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
+  <p class="muted small" style="margin-top:0">${L('Stand relaxed and measure around your waist at the navel, tape level all the way around. Don\'t suck in.','Párate relajado y mide alrededor de la cintura a la altura del ombligo, con la cinta nivelada todo alrededor. No metas la panza.')}</p>
+  <div class="grid2"><div class="field"><label class="lbl">${L('Height','Estatura')} (${lenU()})</label><input type="text" inputmode="decimal" id="wh_h" value="${hIn?r1(fromIn(hIn)):''}" placeholder="${lenU()}"></div>
+  <div class="field"><label class="lbl">${L('Waist at navel','Cintura al ombligo')} (${lenU()})</label><input type="text" inputmode="decimal" id="wh_w" placeholder="${lenU()}"></div></div>
+  <div id="wh_res" class="calcbox" style="margin-bottom:12px"></div>
+  <button class="btn primary" data-a="waistsave">${L('Save','Guardar')}</button>
+  <p class="muted small" style="margin-bottom:0">${L('Height counts to the half inch below, like the Marine table. Your unit\'s official measurement is the one that counts.','La estatura cuenta al medio pulgada inferior, como en la tabla Marine. La medida oficial de tu unidad es la que cuenta.')}</p></div>`);
+  waistPreview();const i=$('#wh_w');if(i)i.focus();
+}
+function waistRead(){const g=id=>{const v=parseFloat((($('#'+id)||{}).value||'').replace(',','.'));return v>0?toIn(v):0;};return{h:g('wh_h'),w:g('wh_w')};}
+function waistPreview(){const el=$('#wh_res');if(!el)return;const x=waistRead();
+  if(!(x.h>=48&&x.h<=90)){el.innerHTML=L('Enter your height to see your max waist.','Ingresa tu estatura para ver tu cintura máxima.');return;}
+  const mx=maxWaistIn(x.h);let h=`${L('Max waist for','Cintura máxima para')} ${fmtLen(Math.floor(x.h*2)/2)}: <b>${fmtLen(mx)}</b>`;
+  if(x.w>0){const r=x.w/x.h,ok=x.w<=mx;h+=`<br>${L('Your ratio','Tu proporción')}: <b class="${ok?'good':'bad'}">${r.toFixed(3)}</b> · ${ok?L('✓ within standard','✓ dentro del estándar'):L(`${fmtLen(x.w-mx)} over`,`${fmtLen(x.w-mx)} arriba`)}`;}
+  el.innerHTML=h;}
+// ================= DEXA body composition =================
+// Masses are stored in the units the scan was saved in (s.u = 'lb' | 'kg'); bf is %.
+const DX=[['weight','Total weight','Peso total','m'],['bf','Body fat %','Grasa corporal %','%'],['fat','Fat mass','Masa grasa','m'],['lean','Lean mass','Masa magra','m'],['bmc','Bone mineral content (BMC)','Contenido mineral óseo (BMC)','m'],
+ ['vat','Visceral fat (VAT) mass','Grasa visceral (VAT)','m'],['ag','Android/Gynoid (A/G) ratio','Relación androide/ginoide (A/G)','r'],['t','Bone density T-score','T-score densidad ósea','z'],['z','Bone density Z-score','Z-score densidad ósea','z'],['rmr','Resting metabolic rate (RMR)','Tasa metabólica en reposo (RMR)','k']];
+const scanDays=sc=>Math.round((Date.now()-new Date(sc.d+'T12:00').getTime())/864e5);
+function dexaLatest(){return(S.scans||[]).slice().sort((a,b)=>a.d<b.d?-1:1).pop()||null;}
+function dexaRecent(){const sc=dexaLatest();return sc&&scanDays(sc)<=183?sc:null;}
+const dxm=(sc,k)=>sc[k]===''||sc[k]==null?null:+conv(sc[k],sc.u);// mass in current units
+const heightCm=()=>{const n=S.settings.nut;return(n&&+n.cm)||+S.settings.heightCm||0;};
+function bmiOf(wt){const cm=heightCm();if(!cm||!wt)return null;const kg=U()==='lb'?wt*0.45359237:wt;return kg/((cm/100)**2);}
+// ACE body-fat categories
+function bfCat(bf,sex){const f=sex==='f',c=f?[13,20,24,31]:[5,13,17,24],n=[['Essential fat','Grasa esencial'],['Athlete','Atleta'],['Fit','En forma'],['Average','Promedio'],['High','Alto']];
+  let i=0;while(i<4&&bf>c[i])i++;return{name:n[i],i};}
+// Suggest a goal from body fat %
+function dexaPlan(sc){
+  if(!sc||!(sc.bf>0))return null;const f=S.settings.sex==='f',bf=+sc.bf,wt=dxm(sc,'weight')||bodyW();if(!wt)return null;
+  const ffm=wt*(1-bf/100),tgt=f?(bf>=32?25:23):(bf>=25?18:15),lose=f?bf>=26:bf>=19,gw=Math.round(ffm/(1-tgt/100)*2)/2;
+  if(lose)return{goal:'fatloss',food:'lose',gw,tgt,txt:[`At ${bf}% body fat, losing fat is the best next step. Reaching about ${tgt}% while keeping your muscle means a goal weight near ${r1(gw)} ${U()}.`,`Con ${bf}% de grasa, perder grasa es el mejor siguiente paso. Llegar a cerca de ${tgt}% conservando tu músculo significa un peso meta cerca de ${r1(gw)} ${U()}.`]};
+  return{goal:'hypertrophy',food:bf<(f?18:10)?'gain':'maintain',txt:bf<(f?18:10)?[`At ${bf}% body fat you're lean. Building muscle with a small calorie surplus is the best next step.`,`Con ${bf}% de grasa estás delgado. Ganar músculo con un pequeño superávit de calorías es el mejor siguiente paso.`]:[`At ${bf}% body fat you're in a good range. Build muscle at maintenance calories to keep getting leaner and stronger.`,`Con ${bf}% de grasa estás en buen rango. Gana músculo con calorías de mantenimiento para seguir más definido y fuerte.`]};
+}
+function dexaApplyPlan(){const sc=dexaLatest(),pl=dexaPlan(sc);if(!pl)return;S.settings.goal=pl.goal;if(pl.gw)setGoalW(pl.gw);
+  const n=S.settings.nut;if(n){n.goal=pl.food;n.auto=true;}save();render();
+  toast(n?L('Goal, goal weight and food targets updated','Objetivo, peso meta y metas de comida actualizados'):L('Goal updated. Set your food targets on the Food tab','Objetivo actualizado. Pon tus metas de comida en Comida'));}
+function dexaCard(){
+  const sc=dexaLatest(),u=U(),all=(S.scans||[]).slice().sort((a,b)=>a.d<b.d?-1:1);
+  const btns=`<div class="row" style="margin-top:0"><button class="btn primary" style="margin:0" data-a="dexascan">📷 ${L('Scan report','Escanear reporte')}</button><button class="btn ghost" style="margin:0" data-a="dexaadd">+ ${L('Enter numbers','Ingresar números')}</button></div><input type="file" id="dexafile" accept="image/*" capture="environment" hidden>`;
+  if(!sc)return`<div class="card" data-notr="1"><h3>${L('Body composition (DEXA)','Composición corporal (DEXA)')}</h3><p class="muted small" style="margin-top:0">${L('Had a DEXA scan? Add it to see your body fat, lean mass and bone density, get a goal recommendation, and make your calorie targets more accurate.','¿Te hiciste un escaneo DEXA? Agrégalo para ver tu grasa corporal, masa magra y densidad ósea, recibir una recomendación de objetivo y hacer más precisas tus metas de calorías.')}</p>${btns}</div>`;
+  const prev=all.length>1?all[all.length-2]:null,dl=(k,goodDown)=>{if(!prev||sc[k]===''||prev[k]===''||sc[k]==null||prev[k]==null)return'';const d=(k==='bf'?+sc.bf-+prev.bf:dxm(sc,k)-dxm(prev,k));if(Math.abs(d)<.05)return'';const good=goodDown?d<0:d>0;return` <span class="${good?'good':'warn'} small">${d>0?'+':''}${r1(d)}${k==='bf'?'%':''}</span>`;};
+  const cat=sc.bf>0?bfCat(+sc.bf,S.settings.sex):null,wt=dxm(sc,'weight'),bmi=bmiOf(wt),pl=dexaPlan(sc),stat=(v,l)=>`<div><b>${v}</b><span>${l}</span></div>`;
+  const tCat=sc.t===''||sc.t==null?null:+sc.t>=-1?[L('normal','normal'),'good']:+sc.t>-2.5?[L('low bone density: worth mentioning to your doctor','densidad ósea baja: coméntalo con tu médico'),'warn']:[L('in the osteoporosis range: talk to your doctor','en rango de osteoporosis: habla con tu médico'),'bad'];
+  const zLow=sc.z!==''&&sc.z!=null&&+sc.z<=-2;
+  const hist=all.length>1?`<details style="margin-top:10px"><summary class="muted small" style="cursor:pointer">${L('All scans','Todos los escaneos')} (${all.length})</summary>${all.filter(x=>x.bf>0).length>1?chart(all.filter(x=>x.bf>0).map(x=>({t:x.d,v:+x.bf}))):''}${all.slice().reverse().map(x=>`<div class="hrow" style="flex-direction:row;justify-content:space-between;align-items:center" data-a="dexaedit" data-id="${esc(x.id)}"><span>${shortDate(new Date(x.d+'T12:00').getTime())}</span><span>${x.bf>0?x.bf+'% · ':''}${dxm(x,'weight')!=null?r1(dxm(x,'weight'))+' '+u:''}</span></div>`).join('')}</details>`:'';
+  return`<div class="card" data-notr="1"><div class="hdr"><h3 style="margin:0">${L('Body composition (DEXA)','Composición corporal (DEXA)')}</h3><button class="helpbtn" data-a="dexaedit" data-id="${esc(sc.id)}">${L('Edit','Editar')}</button></div>
+  <p class="muted small" style="margin:4px 0 10px">${L('Latest scan','Último escaneo')}: ${shortDate(new Date(sc.d+'T12:00').getTime())}${scanDays(sc)>183?' · '+L('over 6 months old','de hace más de 6 meses'):''}</p>
+  ${sc.bf>0?`<div class="calrow"><div><div class="big">${sc.bf}%${dl('bf',1)}</div><div class="muted small">${L('body fat','grasa corporal')} · ${L(cat.name[0],cat.name[1])}</div></div>${bmi?`<div style="text-align:right"><div class="big" style="font-size:20px">${r1(bmi)}</div><div class="muted small">${L('BMI','IMC')}</div></div>`:''}</div>`:''}
+  <div class="stats" style="margin-top:10px">${dxm(sc,'fat')!=null?stat(r1(dxm(sc,'fat'))+' '+u+dl('fat',1),L('fat mass','masa grasa')):''}${dxm(sc,'lean')!=null?stat(r1(dxm(sc,'lean'))+' '+u+dl('lean',0),L('lean mass','masa magra')):''}${dxm(sc,'vat')!=null?stat(Math.round(dxm(sc,'vat')*100)/100+' '+u+dl('vat',1),L('visceral fat','grasa visceral')):''}</div>
+  ${tCat?`<p class="small" style="margin:8px 0 0">${L('Bone density T-score','T-score densidad ósea')}: <b>${sc.t}</b> <span class="${tCat[1]}">${tCat[0]}</span></p>`:''}${zLow?`<p class="small warn" style="margin:4px 0 0">${L('Your Z-score is lower than expected for your age. Worth talking to your doctor.','Tu Z-score es más bajo de lo esperado para tu edad. Vale la pena hablar con tu médico.')}</p>`:''}
+  ${bmi?`<p class="muted small" style="margin:8px 0 0">${L('BMI only uses height and weight, so muscular people can read as "overweight". Your DEXA body fat is the better number.','El IMC solo usa estatura y peso, así que las personas musculosas pueden salir con "sobrepeso". Tu grasa corporal DEXA es el mejor número.')}</p>`:''}
+  ${pl?`<div class="plan small" style="margin-top:12px">💡 ${L(pl.txt[0],pl.txt[1])}${S.settings.goal===pl.goal&&(!pl.gw||Math.abs(goalW()-pl.gw)<1)?`<div class="muted" style="margin-top:6px">✓ ${L('Your goal already matches.','Tu objetivo ya coincide.')}</div>`:`<button class="btn primary sm" style="margin:8px 0 0" data-a="dexaplan">${L(pl.goal==='fatloss'?`Use this plan: Lose weight to ${r1(pl.gw)} ${u}`:'Use this plan: Build muscle',pl.goal==='fatloss'?`Usar este plan: bajar a ${r1(pl.gw)} ${u}`:'Usar este plan: Ganar músculo')}</button>`}</div>`:''}
+  ${sc.bf>0&&dexaRecent()?`<p class="muted small" style="margin:8px 0 0">${L('Your calorie targets now use your lean mass from this scan, which is more accurate than height and weight alone.','Tus metas de calorías ahora usan tu masa magra de este escaneo, más precisa que solo estatura y peso.')}</p>`:''}
+  ${hist}${btns}</div>`;
+}
+let dexaDraft=null;
+function dexaForm(sc,msg){
+  const u=U(),edit=!!(sc&&sc.id),v=k=>{if(!sc||sc[k]===''||sc[k]==null)return'';const d=DX.find(x=>x[0]===k);return d&&d[3]==='m'&&sc.u?(k==='vat'?Math.round(+conv(sc[k],sc.u)*100)/100:r1(+conv(sc[k],sc.u))):sc[k];};
+  dexaDraft=sc||null;
+  showModal(`<div data-notr="1" id="dexaform"><div class="sheethead"><h3>${edit?L('Edit DEXA scan','Editar escaneo DEXA'):L('DEXA scan results','Resultados del escaneo DEXA')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
+  ${msg?`<div class="${msg.ok?'okmsg':'warnmsg'} small">${msg.t}</div>`:''}
+  <p class="muted small" style="margin-top:0">${L('Copy the numbers from the summary page of your report. Leave anything you don\'t have blank. Masses in','Copia los números de la página de resumen de tu reporte. Deja en blanco lo que no tengas. Pesos en')} ${u}.</p>
+  <div class="field"><label class="lbl">${L('Scan date','Fecha del escaneo')}</label><input type="date" id="dx_d" value="${sc&&sc.d?sc.d:dk(Date.now())}" max="${dk(Date.now())}"></div>
+  <div class="grid2">${DX.map(([k,en,es,ty])=>`<div class="field"><label class="lbl">${L(en,es)}${ty==='m'?' ('+u+')':ty==='k'?' (kcal)':''}</label><input type="text" inputmode="${ty==='z'?'text':'decimal'}" id="dx_${k}" value="${esc(v(k))}" placeholder="${ty==='%'?'%':ty==='m'?u:''}"></div>`).join('')}</div>
+  ${heightCm()?'':`<div class="field"><label class="lbl">${L('Height (for BMI)','Estatura (para IMC)')}</label><input type="text" inputmode="decimal" id="dx_h" placeholder="${u==='lb'?'in':'cm'}"></div>`}
+  <div id="dxcheck" class="small"></div>
+  <label class="ebrow" style="border:0;padding-top:4px;margin-top:6px"><span><b>${L('Log the scan weight in my weight log','Registrar el peso del escaneo en mi registro de peso')}</b></span><input type="checkbox" id="dx_log" ${edit?'':'checked'} style="width:22px;height:22px"></label>
+  <button class="btn primary" data-a="dexasave">${L('Save scan','Guardar escaneo')}</button>${edit?`<button class="btn danger-ghost" data-a="dexadel" data-id="${esc(sc.id)}">${L('Delete scan','Eliminar escaneo')}</button>`:''}
+  <p class="muted small">${L('For tracking only, not medical advice. Ask your doctor about anything on your report that worries you.','Solo para seguimiento, no es consejo médico. Pregunta a tu médico sobre cualquier cosa de tu reporte que te preocupe.')}</p></div>`);
+  dexaCheck();
+}
+function dexaRead(){const g=k=>{const el=$('#dx_'+k);if(!el)return'';const t=String(el.value||'').trim().replace(',','.').replace(/[−–]/g,'-');if(t==='')return'';const n=parseFloat(t);return isFinite(n)?n:'';};
+  const o={d:($('#dx_d')||{}).value||dk(Date.now())};for(const [k] of DX)o[k]=g(k);o.h=g('h');return o;}
+// fill in what can be worked out, and flag numbers that don't add up
+function dexaCheck(fill){
+  const x=dexaRead(),el=$('#dxcheck');if(!el)return;const msgs=[],set=(k,v)=>{const i=$('#dx_'+k);if(i&&i.value===''&&v>0){i.value=r1(v);i.classList.add('filled');}};
+  if(fill===true){if(x.weight&&x.bf&&x.fat==='')set('fat',x.weight*x.bf/100);
+  if(x.weight&&x.fat&&x.bf==='')set('bf',x.fat/x.weight*100);}
+  const y=dexaRead();
+  if(y.bf!==''&&(y.bf<2||y.bf>70))msgs.push(['warn',L('Body fat % looks off. It\'s usually between 5 and 60.','La grasa corporal % se ve rara. Normalmente está entre 5 y 60.')]);
+  if(y.weight&&y.fat&&y.lean){const tot=y.fat+y.lean+(y.bmc||0),off=Math.abs(tot-y.weight)/y.weight;
+    if(off>.04&&!(y.bmc===''&&Math.abs(y.fat+y.lean-y.weight)/y.weight<.06))msgs.push(['warn',L(`Fat + lean${y.bmc?' + bone':''} = ${r1(tot)}, but total weight is ${r1(y.weight)}. Double-check these.`,`Grasa + magra${y.bmc?' + hueso':''} = ${r1(tot)}, pero el peso total es ${r1(y.weight)}. Revísalos.`)]);
+    else msgs.push(['good',L('✓ Fat, lean and bone add up to your total weight.','✓ Grasa, magra y hueso suman tu peso total.')]);}
+  if(y.weight&&y.fat&&y.bf){const bf2=y.fat/y.weight*100;if(Math.abs(bf2-y.bf)>2)msgs.push(['warn',L(`Fat mass ÷ total weight = ${r1(bf2)}%, but body fat says ${y.bf}%. Double-check these.`,`Masa grasa ÷ peso total = ${r1(bf2)}%, pero la grasa corporal dice ${y.bf}%. Revísalos.`)]);}
+  if(y.t!==''&&(y.t<-6||y.t>6))msgs.push(['warn',L('T-score is usually between -4 and +4.','El T-score normalmente está entre -4 y +4.')]);
+  el.innerHTML=msgs.map(([c,t])=>`<p class="${c}" style="margin:4px 0">${t}</p>`).join('');
+}
+function dexaSave(){
+  const x=dexaRead();if(!(x.bf>0)&&!(x.weight>0)&&!(x.fat>0)){toast(L('Enter at least your body fat % or weight','Ingresa al menos tu grasa corporal % o peso'));return;}
+  if(x.bf===''&&x.weight&&x.fat)x.bf=Math.round(x.fat/x.weight*1000)/10;
+  if(x.h>0&&!heightCm())S.settings.heightCm=U()==='lb'?x.h*2.54:x.h;
+  const rec={id:dexaDraft&&dexaDraft.id||uid(),d:x.d,u:U(),src:dexaDraft&&dexaDraft.src||'manual'};for(const [k] of DX)rec[k]=x[k];
+  S.scans=(S.scans||[]).filter(s=>s.id!==rec.id);S.scans.push(rec);
+  if(($('#dx_log')||{}).checked&&rec.weight>0)logWeight(rec.weight,rec.d);
+  save();closeModal();if(tab!=='progress')tab='progress';render();toast(L('Scan saved','Escaneo guardado'));
+}
+// ---------- read a DEXA report photo ----------
+async function scanDexa(file){
+  showModal(`<div class="sheethead"><h3>${L('Reading report…','Leyendo reporte…')}</h3></div><p class="muted small" id="scanmsg">${L('Preparing photo','Preparando foto')}</p><div class="track" style="height:10px"><div class="fill" id="scanbar" style="width:3%;background:var(--acc);transition:width .3s"></div></div>`);
+  modalLocked=true;let canvas;
+  try{canvas=await fileToCanvas(file);}catch(e){modalLocked=false;dexaForm(null,{t:L("Couldn't open that photo. Enter the numbers below.",'No se pudo abrir la foto. Ingresa los números abajo.')});return;}
+  try{
+    scanStatus(L('Loading reader…','Cargando lector…'),.08);await loadTess();
+    if(!tessWorker)tessWorker=await Tesseract.createWorker('eng',1,{logger:m=>{if(m.status==='recognizing text')scanStatus(L('Reading the numbers…','Leyendo los números…'),.3+.7*m.progress);}});
+    scanStatus(L('Reading the numbers…','Leyendo los números…'),.3);
+    const {data}=await tessWorker.recognize(canvas);modalLocked=false;
+    const r=parseDexa(data.text||''),n=DX.filter(([k])=>r[k]!=='').length;
+    dexaForm(Object.assign({u:U(),src:'scan'},r,{id:null}),n?{ok:n>=3,t:L(`Found ${n} values. Check every number against your report before saving.`,`Se encontraron ${n} valores. Revisa cada número con tu reporte antes de guardar.`)}:{t:L("Couldn't find the numbers on that photo. Try a sharper, flat photo of the summary page, or type them in.",'No se encontraron los números en la foto. Intenta una foto más nítida y plana de la página de resumen, o escríbelos.')});
+  }catch(e){modalLocked=false;dexaForm(null,{t:L("Couldn't load the reader. Check your internet connection, or type the numbers in.",'No se pudo cargar el lector. Revisa tu internet o escribe los números.')});}
+}
+// Pull values out of report text. Handles common Hologic, GE Lunar, BodySpec and DexaFit wording; masses converted to the user's units.
+function parseDexa(text){
+  const out={};for(const [k] of DX)out[k]='';
+  const lines=String(text).split(/\r?\n/).map(l=>l.replace(/[|]/g,' ').replace(/\s+/g,' ').trim()).filter(Boolean);
+  const fixNum=t=>t.replace(/(\d)[Oo]/g,(m,a)=>a+'0').replace(/[Oo](\d)/g,(m,a)=>'0'+a).replace(/(\d),(\d{3})\b/g,(m,a,b)=>a+b);
+  const nums=l=>[...fixNum(l).matchAll(/([-−–]?\d+(?:[.,]\d+)?)\s*(lbs?|kg|g\b|%|kcal|cal)?/gi)].map(m=>({v:parseFloat(m[1].replace(/[−–]/,'-').replace(',','.')),u:(m[2]||'').toLowerCase()}));
+  const lineUnit=l=>/\(\s*g\s*\)|\bgrams?\b/i.test(l)?'g':/\bkg\b/i.test(l)?'kg':/\blbs?\b/i.test(l)?'lb':'';
+  const toUser=(v,unit)=>{if(unit==='g')v=v/1000,unit='kg';if(!unit)unit=v>400?'g':U();if(unit==='g'){v=v/1000;unit='kg';}return U()===unit?v:unit==='kg'?v/0.45359237:v*0.45359237;};
+  const find=(re,not,pick)=>{for(let i=0;i<lines.length;i++){const l=lines[i];if(!re.test(l)||(not&&not.test(l)))continue;
+    const cand=nums(l.replace(re,' ')).concat(i+1<lines.length&&!/[a-z]{4}/i.test(lines[i+1])?nums(lines[i+1]):[]);const hit=pick(cand,l);if(hit!=null)return hit;}return null;};
+  const after=(re,lo,hi)=>{for(const l0 of lines){const l=fixNum(l0),m=l.match(new RegExp('(?:'+re.source+')[^\\d\\-−–]{0,24}([-−–]?\\d+(?:[.,]\\d+)?)','i'));if(m){const v=parseFloat(m[m.length-1].replace(/[−–]/,'-').replace(',','.'));if(v>=lo&&v<=hi)return v;}}return null;};
+  const mass=(re,not,lo,hi)=>find(re,not,(c,l)=>{for(const x of c){if(x.u==='%')continue;const unit=x.u.startsWith('lb')?'lb':x.u==='kg'?'kg':x.u==='g'?'g':lineUnit(l);const v=toUser(x.v,unit);const vl=U()==='lb'?v:v/0.45359237;if(vl>=lo&&vl<=hi)return Math.round(v*10)/10;}return null;});
+  const bf=find(/(total\s*(body\s*)?)?(%\s*fat|fat\s*%|body\s*fat(\s*%|\s*percent)?|percent\s*fat|%\s*body\s*fat)/i,/visceral|android|gynoid|trunk|arm|leg|region|tissue\s*%\s*fat\s*\(/i,c=>{const p=c.find(x=>x.u==='%'&&x.v>=2&&x.v<=70)||c.find(x=>x.v>=2&&x.v<=70&&!x.u);return p?p.v:null;});
+  if(bf!=null)out.bf=Math.round(bf*10)/10;
+  const w=mass(/total\s*(body\s*)?(mass|weight)|^total\b(?!.*fat)|body\s*weight|^weight\b/i,/fat\s*mass|lean|bmc|bone|%/i,60,700);if(w!=null)out.weight=w;
+  const fat=mass(/fat\s*(tissue|mass)|\bfat\s*\((lbs?|kg|g)\)|^fat\b/i,/%|visceral|vat|android|gynoid|free|lean|percent|index/i,3,400);if(fat!=null)out.fat=fat;
+  const lean=mass(/lean\s*(tissue|mass|\+\s*bmc)?|fat[\s-]*free\s*mass/i,/index|almi|%|appendicular/i,30,500);if(lean!=null)out.lean=lean;
+  const bmc=mass(/\bbmc\b|bone\s*mineral\s*content|bone\s*mass/i,/bmd|density|t-?\s*score|z-?\s*score/i,1,25);if(bmc!=null)out.bmc=bmc;
+  const vat=mass(/\bvat\b|visceral/i,/volume|area|in3|cm3|cm2|in2/i,0,30);if(vat!=null)out.vat=vat;
+  if(out.vat!==''){const raw=find(/\bvat\b|visceral/i,/volume|area|in3|cm3|cm2|in2/i,(c,l)=>{for(const x of c){if(x.u==='%')continue;const unit=x.u.startsWith('lb')?'lb':x.u==='kg'?'kg':x.u==='g'?'g':lineUnit(l);const v=toUser(x.v,unit);if(v>=0&&v<=30)return Math.round(v*100)/100;}return null;});if(raw!=null)out.vat=raw;}
+  const ag=after(/\ba\s*[\/jl1|i]\s*g\b(\s*ratio)?|android\s*\/?\s*gynoid(\s*ratio)?/,.3,2.5);if(ag!=null)out.ag=ag;
+  const ts=after(/\bt[\s-]*score/,-6,6);if(ts!=null)out.t=ts;
+  const zs=after(/\bz[\s-]*score/,-6,6);if(zs!=null)out.z=zs;
+  const rmr=after(/\brmr\b\)?|resting\s*metabolic\s*rate(\s*\(rmr\))?/,800,5000);if(rmr!=null)out.rmr=Math.round(rmr);
+  for(let i=0;i<lines.length;i++){const h=lines[i].toLowerCase();if(!(/fat\s*mass/.test(h)&&/total\s*mass/.test(h)))continue;
+    const cols=[['fat',h.search(/fat\s*mass/)],['lean',h.search(/lean/)],['weight',h.search(/total\s*mass/)],['bf',h.search(/%\s*fat|fat\s*%/)]].filter(c=>c[1]>=0).sort((a,b)=>a[1]-b[1]);
+    const g=/\(\s*g\s*\)/.test(h);
+    for(let j=i+1;j<Math.min(lines.length,i+40);j++){if(!/^total\b/i.test(lines[j]))continue;const v=nums(lines[j].replace(/^total/i,'')).map(x=>x.v);if(v.length<cols.length)break;
+      cols.forEach(([k],ix)=>{const x=v[ix];if(k==='bf'){if(x>=2&&x<=70)out.bf=Math.round(x*10)/10;}else{const m=toUser(x,g?'g':lineUnit(h));out[k]=Math.round(m*10)/10;if(k==='lean'&&/lean\s*\+\s*bmc/.test(h))out._leanBmc=1;}});break;}
+    break;}
+  // a lean figure that includes bone (Hologic "Lean + BMC") -> subtract BMC so lean is soft tissue only
+  if(out.lean!==''&&out.bmc!==''&&(out._leanBmc||lines.some(l=>/lean\s*\+\s*bmc/i.test(l))))out.lean=Math.round((out.lean-out.bmc)*10)/10;delete out._leanBmc;
+  if(out.weight===''&&out.fat!==''&&out.lean!=='')out.weight=Math.round((out.fat+out.lean+(out.bmc||0))*10)/10;
+  const dm=fixNum(String(text)).match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);
+  if(dm){let y=+dm[3];if(y<100)y+=2000;const m=+dm[1],d=+dm[2];if(m>=1&&m<=12&&d>=1&&d<=31&&y>=2000){const iso=y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');if(iso<=dk(Date.now()))out.d=iso;}}
+  return out;
+}
+function vProgress(){return'<h1>Progress</h1>'+weightCard()+waistCard()+dexaCard()+'<h2 style="font-size:20px;margin:18px 0 10px">Lifts</h2>'+vLifts();}
 function vLifts(){
   const ids=[...new Set(S.workouts.flatMap(w=>w.exercises.map(e=>e.exId)))].filter(id=>EX(id));
   if(!ids.length)return`<div class="card"><p class="muted" style="margin:0">Log a few workouts and your charts will appear here.</p></div>`;
   ids.sort((a,b)=>EX(a).name.localeCompare(EX(b).name));
   if(!ids.includes(progEx)){const lw=S.workouts[S.workouts.length-1];const f=lw.exercises.find(e=>EX(e.exId));progEx=f?f.exId:ids[0];}
-  const ex=EX(progEx),h=history(progEx),kind=ex.inc==='run'?'time':ex.inc==='sec'?'sec':isLoad(ex)?'1rm':'reps';
-  const pts=kind==='time'?h.map(x=>({t:x.date,v:Math.min(...x.sets.map(s=>tsec(s.r)).filter(v=>v>0))})).filter(p=>isFinite(p.v)):h.map(x=>({t:x.date,v:Math.max(...x.sets.map(s=>metric(ex,+conv(s.w,x.unit)||0,+s.r||0)))}));
+  const ex=EX(progEx),h=history(progEx),kind=ex.inc==='cardio'?'min':ex.inc==='run'?'time':ex.inc==='sec'?'sec':isLoad(ex)?'1rm':'reps';
+  const pts=kind==='time'?h.map(x=>({t:x.date,v:Math.min(...x.sets.map(s=>runVal(ex,s,x.unit)).filter(v=>v>0))})).filter(p=>isFinite(p.v)):kind==='min'?h.map(x=>({t:x.date,v:x.sets.reduce((a,s)=>a+(+s.r||0),0)})):h.map(x=>({t:x.date,v:Math.max(...x.sets.map(s=>metric(ex,+conv(s.w,x.unit)||0,+s.r||0)))}));
   if(!pts.length)return`<div class="card"><select id="progsel">${ids.map(id=>`<option value="${esc(id)}" ${id===progEx?'selected':''}>${esc(EX(id).name)}</option>`).join('')}</select><p class="muted small">No times logged yet.</p></div>`;
   const best=kind==='time'?Math.min(...pts.map(p=>p.v)):Math.max(...pts.map(p=>p.v)),first=pts[0].v,lastv=pts[pts.length-1].v;
-  const fv=v=>kind==='time'?fmtT(v):kind==='1rm'?Math.round(v)+' '+U():kind==='sec'?v+'s':v+' reps';
+  const fv=v=>kind==='min'?v+' min':kind==='time'?(DIST.has(ex.id)?fmtPace(v):fmtT(v)):kind==='1rm'?Math.round(v)+' '+U():kind==='sec'?v+'s':v+' reps';
   const heavy=kind==='1rm'?Math.max(...h.flatMap(x=>x.sets.map(s=>+conv(s.w,x.unit)||0))):null;
   const change=pts.length>1&&first?Math.round((kind==='time'?first-lastv:lastv-first)/first*100):null;
   return`<div class="card"><select id="progsel">${ids.map(id=>`<option value="${esc(id)}" ${id===progEx?'selected':''}>${esc(EX(id).name)}</option>`).join('')}</select>
-  <div class="muted small" style="margin-top:12px">${kind==='time'?'Fastest time per session (lower is better)':kind==='1rm'?'Estimated 1-rep max per session':kind==='sec'?'Longest hold per session (added weight counts extra)':'Best set per session (added weight counts as extra reps)'}</div>${chart(pts)}
+  <div class="muted small" style="margin-top:12px">${kind==='min'?'Minutes per session':kind==='time'?(DIST.has(ex.id)?'Best pace per session (lower is better)':'Fastest time per session (lower is better)'):kind==='1rm'?'Estimated 1-rep max per session':kind==='sec'?'Longest hold per session (added weight counts extra)':'Best set per session (added weight counts as extra reps)'}</div>${chart(pts)}
   <div class="stats"><div><b>${fv(best)}</b><span>best</span></div>${heavy!=null?`<div><b>${heavy} ${U()}</b><span>heaviest set</span></div>`:''}<div><b>${h.length}</b><span>sessions</span></div>${change!=null?`<div><b>${change>0?'+':''}${change}%</b><span>since first</span></div>`:''}</div></div>
-  <div class="card"><h3>Recent sessions</h3>${h.slice(-6).reverse().map(x=>`<div class="hrow"><span class="muted">${shortDate(x.date)}</span><span>${x.sets.map(s=>fmtSet(ex,s,x.unit)).join(' · ')}</span></div>`).join('')}</div>`;
+  <div class="card"><h3>Recent sessions</h3>${h.slice(-6).reverse().map(x=>`<div class="hrow"><span class="muted">${shortDate(x.date)}</span><span>${x.sets.map(s=>fmtSet(ex,s,x.unit)).join(' · ')}${vestTxt(x.vest,x.unit)}</span></div>`).join('')}</div>`;
 }
 
 function sel(key,opts){return`<select data-s="${key}">${opts.map(([v,l])=>`<option value="${v}" ${String(S.settings[key])===String(v)?'selected':''}>${l}</option>`).join('')}</select>`;}
+function setGoalW(v){S.settings.goalW=+v;S.settings.goalWU=U();S.settings.goalStart=bodyW()||'';const n=S.settings.nut;if(n&&n.goal==='lose')n.auto=true;}
 function profileFields(){
   return`<div class="grid2"><div class="field"><label class="lbl">Sex</label><select data-s="sex">${[['','Choose'],['m','Male'],['f','Female']].map(([v,l])=>`<option value="${v}" ${(S.settings.sex||'')===v?'selected':''} ${v===''?'disabled':''}>${l}</option>`).join('')}</select></div>
   <div class="field"><label class="lbl">Age</label><input type="text" inputmode="numeric" data-s="age" value="${S.settings.age||''}" placeholder="years"></div></div>`;
@@ -1996,7 +2301,8 @@ const profileDone=()=>!!(S.settings.sex&&+S.settings.age>=13);
 function profileAsk(){showModal(`<h2>Two quick questions</h2><p class="muted">Your sex and age make your calorie targets more accurate. You can change them anytime in Settings.</p>${profileFields()}<button class="btn primary big" data-a="profiledone">Save</button><button class="btn ghost" data-a="profileskip">Not now</button>`);}
 function prefsForm(){
   return`${profileFields()}
-  <div class="field"><label class="lbl">Goal</label>${sel('goal',[['strength','Strength — heavy, low reps'],['hypertrophy','Build muscle'],['endurance','Endurance — lighter, more reps']])}</div>
+  <div class="field"><label class="lbl">Goal</label>${sel('goal',[['strength','Strength — heavy, low reps'],['hypertrophy','Build muscle'],['endurance','Endurance — lighter, more reps'],['fatloss','Lose weight — strength + cardio']])}</div>
+  ${S.settings.goal==='fatloss'?`<div class="field"><label class="lbl">Goal weight (${U()})</label><input type="text" inputmode="decimal" data-s="goalW" value="${goalW()?r1(goalW()):''}" placeholder="${U()}"><p class="muted small" style="margin:6px 0 0">Workouts and food targets work toward this.</p></div>`:''}
   <div class="field"><label class="lbl">Experience</label>${sel('exp',[['beginner','Beginner'],['intermediate','Intermediate'],['advanced','Advanced']])}</div>
   <div class="field"><label class="lbl">Body weight (for strength ranks)</label><input type="text" inputmode="decimal" data-s="bw" value="${bodyW()||''}" placeholder="${U()}"></div>
   <div class="grid2"><div class="field"><label class="lbl">Units</label>${sel('unit',[['lb','lb'],['kg','kg']])}</div><div class="field"><label class="lbl">Exercises</label>${sel('count',[3,4,5,6,7,8].map(n=>[n,n+' per workout']))}</div></div>
@@ -2083,13 +2389,14 @@ function tick(){
 // ---------- actions ----------
 function finish(){
   const a=S.active;
-  const exs=a.exercises.map(e=>({exId:e.exId,sets:e.sets.filter(s=>s.done).map(s=>({w:s.w===''||s.w==null?'':(parseFloat(s.w)||0),r:(EX(e.exId)||{}).inc==='run'?fmtT(tsec(s.r)):(parseInt(s.r,10)||0)}))})).filter(e=>e.sets.length);
+  const exs=a.exercises.map(e=>({exId:e.exId,...(DIST.has(e.exId)&&parseFloat(e.vest)>0?{vest:parseFloat(String(e.vest).replace(',','.'))}:{}),sets:e.sets.filter(s=>s.done).map(s=>({w:s.w===''||s.w==null?'':(parseFloat(s.w)||0),r:(EX(e.exId)||{}).inc==='run'?fmtT(tsec(s.r)):(parseInt(s.r,10)||0)}))})).filter(e=>e.sets.length);
   if(!exs.length){if(ask('No sets are checked off. Discard this workout?')){S.active=null;stopRest();save();render();}return;}
   const prs=[],before=muscleRanks(),stkBefore=streakInfo().cur.len;
   for(const e of exs){
     const ex=EX(e.exId);if(!ex)continue;
-    if(ex.inc==='run'){let b0=Infinity;for(const h of history(e.exId))for(const s of h.sets){const v=tsec(s.r);if(v>0)b0=Math.min(b0,v);}
-      const n0=Math.min(...e.sets.map(s=>tsec(s.r)).filter(v=>v>0));if(isFinite(b0)&&isFinite(n0)&&n0<b0)prs.push(esc(ex.name)+' — '+fmtT(n0));continue;}
+    if(ex.inc==='cardio')continue;
+    if(ex.inc==='run'){let b0=Infinity;for(const h of history(e.exId))for(const s of h.sets){const v=runVal(ex,s,h.unit);if(v>0)b0=Math.min(b0,v);}
+      const n0=Math.min(...e.sets.map(s=>runVal(ex,s,a.unit)).filter(v=>v>0));if(isFinite(b0)&&isFinite(n0)&&n0<b0)prs.push(esc(ex.name)+' — '+(DIST.has(ex.id)?fmtPace(n0):fmtT(n0)));continue;}
     let before=0;
     for(const h of history(e.exId))for(const s of h.sets)before=Math.max(before,metric(ex,+conv(s.w,h.unit)||0,+s.r||0));
     let now=0,bs=null;for(const s of e.sets){const v=metric(ex,+conv(s.w,a.unit)||0,s.r);if(v>now){now=v;bs=s;}}
@@ -2107,7 +2414,9 @@ function finish(){
     const inW=evs.filter(([ev])=>exs.some(e=>e.exId===ids[ev]));if(!inW.length)return'';
     const ps=inW.map(([ev])=>usmcPts(ev,v[ev])),tot=ps.reduce((x,y)=>x+(y||0),0),full=inW.length===3&&ps.every(x=>x!=null);
     return`<div data-notr="1"><h3>🎖 ${L('Estimated test points','Puntos estimados de la prueba')}</h3>${inW.map(([ev,en,es],k)=>{const p=ps[k];return`<div class="pr">${L(en,es)}: <b>${p==null?'—':p===0?L('below min','bajo mín.'):p}</b></div>`;}).join('')}${full?(()=>{const [c,col]=usmcClass(tot,ps.every(x=>x>0));return`<div class="ustot"><span>${L('Total','Total')}</span><b>${tot}</b><span style="color:${col};font-weight:700">${c}</span></div>`;})():''}</div>`;})():'';
-  showModal(`<div class="sheethead"><h3>Workout saved 💪</h3></div>${stkHtml}${usHtml}<div class="stats"><div><b>${fmtDur(w.end-w.start)}</b><span>time</span></div><div><b>${sets}</b><span>sets</span></div>${v?`<div><b>${num(v)}</b><span>${U()} lifted</span></div>`:''}</div>${prs.length?'<h3>New records 🏆</h3>'+prs.map(p=>`<div class="pr">${p}</div>`).join(''):''}${upHtml}<button class="btn primary" data-a="close">Done</button>`);
+  const ckcal=exs.reduce((a,e)=>a+(EX(e.exId)&&EX(e.exId).inc==='cardio'?cardioKcal(e.exId,e.sets.reduce((x,s)=>x+(+s.r||0),0)):0),0);
+  const cHtml=ckcal?`<div class="ustot" style="margin:0 0 12px"><span>🔥 ${L('Cardio','Cardio')}</span><b>≈ ${ckcal}</b><span class="muted small">kcal</span></div><button class="btn ghost" style="margin:0 0 12px" data-a="addburn" data-k="${ckcal}">${L("Add to today's calories burned","Sumar a las calorías quemadas de hoy")}</button>`:'';
+  showModal(`<div class="sheethead"><h3>Workout saved 💪</h3></div>${stkHtml}${cHtml}${usHtml}<div class="stats"><div><b>${fmtDur(w.end-w.start)}</b><span>time</span></div><div><b>${sets}</b><span>sets</span></div>${v?`<div><b>${num(v)}</b><span>${U()} lifted</span></div>`:''}</div>${prs.length?'<h3>New records 🏆</h3>'+prs.map(p=>`<div class="pr">${p}</div>`).join(''):''}${upHtml}<button class="btn primary" data-a="close">Done</button>`);
 }
 async function exportData(){
   const name='forge-backup-'+new Date().toISOString().slice(0,10)+'.json';
@@ -2154,12 +2463,15 @@ document.addEventListener('click',e=>{
   const i=+b.dataset.i,j=+b.dataset.j,A=S.active;
   switch(b.dataset.a){
     case'tab':tab=b.dataset.t;render();window.scrollTo(0,0);break;
-    case'gen':{if(PREP[focusSel]){const g=generatePrep(focusSel);if(!g.entries.length){toast('No safe exercises for that focus with your injury. Try another focus.');break;}
+    case'gen':{if(focusSel==='cardio'){const en=generateCardio();if(!en.length){toast(activeInjuries().length?'No safe cardio for your injury with your equipment. An arm bike works with most leg injuries; tick it in Settings if you have one':'Add cardio equipment in Settings, or try Brisk Walk');break;}
+        S.active={start:Date.now(),focus:'cardio',unit:U(),exercises:en};save();render();window.scrollTo(0,0);break;}
+      if(PREP[focusSel]){const g=generatePrep(focusSel);if(!g.entries.length){toast('No safe exercises for that focus with your injury. Try another focus.');break;}
         if(g.skipped)setTimeout(()=>toast('🩹 Skipped '+g.skipped+' exercises to protect your injury'),400);
         S.active={start:Date.now(),focus:g.focus,unit:U(),title:g.title,exercises:g.entries};save();render();window.scrollTo(0,0);break;}
       const g=generate(focusSel);if(!g.list.length){toast(g.skipped?'No safe exercises for that focus with your injury. Try another focus.':'No exercises match your equipment for that focus');break;}
       if(g.skipped)setTimeout(()=>toast('🩹 Skipped '+g.skipped+' exercises to protect your injury'),400);
-      S.active={start:Date.now(),focus:g.focus,unit:U(),exercises:g.list.map(newEntry)};save();render();window.scrollTo(0,0);break;}
+      const ents=g.list.map(newEntry);if(S.settings.goal==='fatloss'){const fin=finisher(new Set(g.list.map(x=>x.id)));if(fin)ents.push(fin);}
+      S.active={start:Date.now(),focus:g.focus,unit:U(),exercises:ents};save();render();window.scrollTo(0,0);break;}
     case'empty':S.active={start:Date.now(),focus:'custom',unit:U(),exercises:[]};save();render();openPicker('add');break;
     case'tick':{const en=A.exercises[i],s=en.sets[j];s.done=!s.done;if(s.done&&en.rest!==0)startRest(en.rest);save();render();break;}
     case'addset':{const sets=A.exercises[i].sets,l=sets[sets.length-1]||{w:'',r:''};sets.push({w:l.w,r:l.r,done:false});save();render();break;}
@@ -2175,6 +2487,19 @@ document.addEventListener('click',e=>{
     case'rest+':restEnd+=15000;restTotal+=15;tick();break;
     case'restskip':stopRest();break;
     case'rankhelp':rankHelp();break;
+    case'dexascan':$('#dexafile').click();break;
+    case'waistform':waistForm();break;
+    case'waistsave':{const x=waistRead();if(!(x.h>=48&&x.h<=90)||!(x.w>=15&&x.w<=80)){toast(L('Enter your height and waist','Ingresa tu estatura y cintura'));break;}
+      const d=dk(Date.now());S.waists=(S.waists||[]).filter(w=>w.d!==d);S.waists.push({d,h:Math.round(x.h*10)/10,w:Math.round(x.w*10)/10});if(!heightCm())S.settings.heightCm=Math.round(x.h*2.54);
+      save();closeModal();render();toast(x.w<=maxWaistIn(x.h)?L('Saved: within standard ✓','Guardado: dentro del estándar ✓'):L('Saved: over the 0.52 standard','Guardado: arriba del estándar 0.52'));break;}
+    case'waistdel':{if(ask('Delete this measurement?')){S.waists=S.waists.filter(w=>w.d!==b.dataset.d);save();render();}break;}
+    case'dexaadd':dexaForm();break;
+    case'dexaedit':{const sc=S.scans.find(x=>x.id===b.dataset.id);if(sc)dexaForm(sc);break;}
+    case'dexadel':{if(ask('Delete this scan?')){S.scans=S.scans.filter(x=>x.id!==b.dataset.id);save();closeModal();render();}break;}
+    case'dexasave':dexaSave();break;
+    case'dexaplan':dexaApplyPlan();break;
+    case'goalmaint':{S.settings.goal='hypertrophy';const n=S.settings.nut;if(n){n.goal='maintain';n.auto=true;}save();render();toast(L('Switched to maintain. Nice work!','Cambiaste a mantener. ¡Buen trabajo!'));break;}
+    case'addburn':{const k=+b.dataset.k||0,d=dk(Date.now());S.burn=S.burn||{};S.burn[d]=(+S.burn[d]||0)+k;save();b.disabled=true;b.textContent=L('Added ✓','Agregado ✓');toast(L(`Added ${k} kcal to Food`,`Se sumaron ${k} kcal en Comida`));break;}
     case'rankshare':shareRanks();break;
     case'rankcopy':copyRanks();break;
     case'usmccalc':usmcVals=null;usmcCalc(b.dataset.t);break;
@@ -2234,7 +2559,7 @@ document.addEventListener('click',e=>{
     case'nutform':nutForm();break;
     case'nutauto':if(S.settings.nut){S.settings.nut.auto=true;save();render();toast('Targets recalculated');}break;
     case'savenut':{const x=readNut();if(!calcTargets(x,x.bw)){toast('Fill in your age, height and body weight');break;}
-      logWeight(x.bw);if(x.sex)S.settings.sex=x.sex;if(x.age>=13)S.settings.age=Math.round(x.age);S.settings.nut={goal:x.goal,sex:x.sex,age:x.age,cm:x.cm,act:x.act,auto:true};save();closeModal();render();toast('Targets set');break;}
+      logWeight(x.bw);if(x.goal==='lose'&&x.gw>0)setGoalW(x.gw);if(x.sex)S.settings.sex=x.sex;if(x.age>=13)S.settings.age=Math.round(x.age);S.settings.nut={goal:x.goal,sex:x.sex,age:x.age,cm:x.cm,act:x.act,auto:true};save();closeModal();render();toast('Targets set');break;}
     case'picklang':{const l=b.dataset.l;S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;modalLocked=false;closeModal();render();if(!S.settings.onboarded)onboarding();break;}
     case'onboarded':{const a=$('[data-s="age"]');if(a)a.dispatchEvent(new Event('change',{bubbles:true}));if(!profileDone()){toast('Add your sex and age');break;}S.settings.onboarded=true;S.settings.askedProfile=true;modalLocked=false;save();closeModal();render();break;}
     case'profiledone':{const a=$('[data-s="age"]');if(a)a.dispatchEvent(new Event('change',{bubbles:true}));if(!profileDone()){toast('Add your sex and age');break;}S.settings.askedProfile=true;save();closeModal();render();toast('Saved');break;}
@@ -2249,6 +2574,9 @@ document.addEventListener('input',e=>{
     if(f==='w')for(let k=j+1;k<sets.length;k++){if(!sets[k].done&&String(sets[k].w)===String(old)){sets[k].w=sets[j].w;const el=document.querySelector(`input[data-f="w"][data-i="${ii}"][data-j="${k}"]`);if(el)el.value=sets[k].w;}}
     save();return;
   }
+  if(t.dataset&&t.dataset.vest!=null&&S.active){const en=S.active.exercises[+t.dataset.vest];if(en){en.vest=t.value.replace(',','.');save();}return;}
+  if(t.closest&&t.closest('#waistsheet')){waistPreview();return;}
+  if(t.closest&&t.closest('#dexaform')){dexaCheck(t.id);return;}
   if(t.dataset&&t.dataset.usmc){usmcVals[t.dataset.usmc]=t.value;const pos=t.selectionStart,ev=t.dataset.usmc;usmcRows();const n=document.querySelector(`[data-usmc="${ev}"]`);if(n){n.focus();try{n.setSelectionRange(pos,pos);}catch(e){}}return;}
   if(t.id==='pq')renderPickerList();
   if(t.id==='injtext'&&injDraft){injDraft.text=t.value;if(!injDraft.manual){injDraft.areas=detectAreas(t.value);}injAreasRender();}
@@ -2263,12 +2591,18 @@ document.addEventListener('change',e=>{
   if(t.id==='progsel'){progEx=t.value;render();return;}
   if(t.id==='importfile'){importFile(t.files[0]);t.value='';return;}
   if(t.id==='bcfile'){const f=t.files[0];t.value='';if(f)decodeStill(f);return;}
+  if(t.closest&&t.closest('#dexaform')){dexaCheck(true);return;}
+  if(t.id==='dexafile'){const f=t.files[0];t.value='';if(f)scanDexa(f);return;}
   if(t.id==='scanfile'){const f=t.files[0];t.value='';if(f)scanLabel(f);return;}
   if(t.dataset.goal){const v=parseFloat(t.value);S.settings.goals=Object.assign(goals(),{[t.dataset.goal]:v>0?Math.round(v):GOALS_DEF[t.dataset.goal]});if(S.settings.nut)S.settings.nut.auto=false;save();render();return;}
   if(t.closest&&t.closest('#sheet')&&/^n_/.test(t.id||t.name)){nutPreview();return;}
   if(t.dataset.s==='sex'||t.dataset.s==='age'){let v=t.value;if(t.dataset.s==='age'){v=parseInt(v,10);v=v>=13&&v<=110?v:'';if(t.value&&v===''){toast('Enter an age between 13 and 110');}}
     S.settings[t.dataset.s]=v;if(S.settings.nut&&v!==''){S.settings.nut[t.dataset.s]=v;}save();if(tab==='food')render();return;}
   if(t.dataset.s==='bw'){const v=parseFloat(t.value.replace(',','.'));if(v>0)logWeight(v);else S.settings.bw='';save();if(tab==='ranks')render();return;}
+  if(t.dataset.s==='goalW'){const v=parseFloat(t.value.replace(',','.'));if(v>0){setGoalW(v);if(bodyW()&&v>=bodyW())toast('Your goal weight is at or above your current weight');}else{S.settings.goalW='';}save();return;}
+  if(t.dataset.s==='goal'){S.settings.goal=t.value;const n=S.settings.nut;
+    if(t.value==='fatloss'){if(n&&n.goal!=='lose'){n.goal='lose';n.auto=true;toast('Food targets switched to Lose fat');}else if(!n)toast('Set your food targets on the Food tab to match');}
+    save();if($('#sheet [data-a="onboarded"]'))onboarding();else render();return;}
   if(t.dataset.s){let v=t.value;if(t.dataset.s==='count'||t.dataset.s==='rest'||t.dataset.s==='weekGoal')v=+v;S.settings[t.dataset.s]=v;save();return;}
   if(t.dataset.eq){const set=new Set(S.settings.equip);t.checked?set.add(t.dataset.eq):set.delete(t.dataset.eq);S.settings.equip=[...set];save();}
 });
