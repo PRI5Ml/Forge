@@ -222,7 +222,7 @@ const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const sp=s=>s?s.split(' '):[];
 
 const MUSCLES={chest:'Chest',shoulders:'Shoulders',triceps:'Triceps',biceps:'Biceps',forearms:'Forearms',lats:'Lats',traps:'Upper back',lowerback:'Lower back',abs:'Abs',obliques:'Obliques',quads:'Quads',hamstrings:'Hamstrings',adductors:'Inner thighs',abductors:'Outer hips',glutes:'Glutes',calves:'Calves'};
-const EQUIP={treadmill:'Treadmill',bike:'Exercise bike',rower:'Rowing machine',elliptical:'Elliptical',stairs:'Stair climber',jumprope:'Jump rope',armbike:'Arm bike',armor:'Flak / plate carrier',barbell:'Barbell',rack:'Squat rack',bench:'Bench',dumbbell:'Dumbbells',kettlebell:'Kettlebell',cable:'Cable machine',machine:'Weight machines',pullup:'Pull-up / dip bar',bands:'Resistance bands',abwheel:'Ab wheel'};
+const EQUIP={pool:'Pool',treadmill:'Treadmill',bike:'Exercise bike',rower:'Rowing machine',elliptical:'Elliptical',stairs:'Stair climber',jumprope:'Jump rope',armbike:'Arm bike',armor:'Flak / plate carrier',barbell:'Barbell',rack:'Squat rack',bench:'Bench',dumbbell:'Dumbbells',kettlebell:'Kettlebell',cable:'Cable machine',machine:'Weight machines',pullup:'Pull-up / dip bar',bands:'Resistance bands',abwheel:'Ab wheel'};
 const WEIGHT_EQ=['barbell','dumbbell','kettlebell','cable','machine'];
 const GROUPS={push:['chest','shoulders','triceps'],pull:['lats','traps','biceps','forearms'],legs:['quads','hamstrings','glutes','adductors','abductors','calves','lowerback']};
 GROUPS.upper=GROUPS.push.concat(GROUPS.pull);
@@ -230,8 +230,8 @@ GROUPS.lower=GROUPS.legs.concat(['abs','obliques']);
 GROUPS.core=['abs','obliques','lowerback'];
 GROUPS.calis=Object.keys(MUSCLES);
 GROUPS.full=Object.keys(MUSCLES);
-const FOCUS={auto:'Auto (most recovered)',cardio:'Cardio (burn calories)',push:'Push',pull:'Pull',legs:'Legs',upper:'Upper body',lower:'Lower body',core:'Core',calis:'Calisthenics',full:'Full body',pft:'PFT Prep (Marine PFT)',cft:'CFT Prep (Marine CFT)'};
-const FOCUS_NAME={push:'Push day',pull:'Pull day',legs:'Leg day',upper:'Upper body',lower:'Lower body',core:'Core day',calis:'Calisthenics day',full:'Full body',custom:'Custom workout',cardio:'Cardio day',pft:'PFT prep',cft:'CFT prep'};
+const FOCUS={auto:'Auto (most recovered)',cardio:'Cardio (burn calories)',swim:'Swim (pool workout)',push:'Push',pull:'Pull',legs:'Legs',upper:'Upper body',lower:'Lower body',core:'Core',calis:'Calisthenics',full:'Full body',pft:'PFT Prep (Marine PFT)',cft:'CFT Prep (Marine CFT)'};
+const FOCUS_NAME={push:'Push day',pull:'Pull day',legs:'Leg day',upper:'Upper body',lower:'Lower body',core:'Core day',calis:'Calisthenics day',full:'Full body',custom:'Custom workout',cardio:'Cardio day',swim:'Swim day',pft:'PFT prep',cft:'CFT prep'};
 
 // id, name, equipment needed, primary muscles, secondary muscles, compound?, progression type
 const RAW=[
@@ -392,6 +392,13 @@ const RAW=[
 ['stair_climber','Stair Climber','stairs','quads glutes','calves hamstrings',0,'cardio'],
 ['jump_rope','Jump Rope','jumprope','calves','shoulders forearms',0,'cardio'],
 ['arm_bike','Arm Bike','armbike','shoulders','triceps biceps',0,'cardio'],
+['swim_free','Freestyle Swim','pool','lats shoulders','triceps abs',0,'run'],
+['swim_breast','Breaststroke Swim','pool','chest lats','adductors quads shoulders',0,'run'],
+['swim_intervals','Freestyle Intervals','pool','lats shoulders','triceps abs',0,'run'],
+['kickboard','Kickboard Kicks','pool','quads hamstrings','glutes calves abs',0,'run'],
+['pull_buoy','Pull Buoy Swim','pool','lats shoulders','triceps',0,'run'],
+['tread','Treading Water','pool','shoulders','quads adductors abs',0,'cardio'],
+['aqua_jog','Deep-Water Running','pool','quads hamstrings','glutes abs',0,'cardio'],
 ['flak_run','Flak Run (Front & Back Plates)','armor','quads hamstrings calves','glutes traps abs',0,'run'],
 ['flak_run_side','Flak Run (Front, Back & Side Plates)','armor','quads hamstrings calves','glutes traps abs',0,'run'],
 ['bear_crawl','Bear Crawl','','shoulders abs','quads triceps',0,'run'],
@@ -448,7 +455,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.10.29h';
+const APP_VERSION='2026.10.29j';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -497,6 +504,13 @@ run_tempo:[["Warm up with 5 minutes of easy jogging.","Run 2 miles at a comforta
 run_3mi:[["Warm up with 5–10 minutes of easy jogging and a few short strides.","Run 3 miles as fast as you can hold for the whole distance.","Cool down by walking.","Log your total time."],"Start a little slower than you think and finish fast. Practice tests show you where you stand."],
 run_880:[["Warm up with easy jogging and a few short sprints.","Run 880 yards (half a mile, two laps of a track) as fast as you can, like Movement to Contact.","Walk for 3 minutes.","Repeat for every set. Log each rep's time."],"Run it in your boots and utilities sometimes, like the real test."],
 shuttle_sprint:[["Mark two lines 25 yards apart.","Sprint to the far line and back 6 times (300 yards total). Touch the line with your foot or hand each turn.","Rest about 3 minutes.","Repeat for every set. Log each set's time."],"Stay low on the turns. Fast changes of direction win the Maneuver Under Fire course."],
+swim_free:[["Push off the wall and swim freestyle (front crawl) at a steady pace.","Reach long with each arm, roll your body side to side and breathe to the side.","Kick steadily from your hips with loose ankles.","Log the distance and your total time; the app works out your pace per 100."],"Breathe out under water so you're ready to breathe in when you turn your head."],
+swim_breast:[["Push off the wall and glide with arms straight in front.","Pull your hands out and back to your chest, then shoot them forward again.","Kick like a frog: heels toward your seat, feet out, then squeeze together.","Pull, breathe, kick, glide. Log the distance and your total time."],"The glide is where you rest and gain speed. Don't rush it. This is the stroke used in Marine water survival."],
+swim_intervals:[["Swim each rep freestyle at the pace the plan gives.","Rest at the wall for the time listed.","Start the next rep on time.","Log the time for each rep."],"Try to keep every rep within a few seconds of the first one."],
+kickboard:[["Hold a kickboard out in front with straight arms.","Kick from your hips with straight-ish legs and pointed, loose ankles.","Keep the kicks small and fast; your feet should just break the surface.","Log the time for each rep."],"Kicking hard from the knees tires you out fast. Drive from your hips."],
+pull_buoy:[["Put a pull buoy between your thighs so your legs float without kicking.","Swim freestyle using only your arms.","Focus on a long reach and a strong pull back to your hip.","Log the time for each rep."],"Great for building arm and back endurance, and easy on injured legs."],
+tread:[["In deep water, stay upright with your head above water.","Sweep your hands back and forth in front of you.","Kick with a slow eggbeater or flutter kick.","Stay calm and steady for the full time. Log your minutes."],"Relaxed breathing makes this much easier. Panic burns energy fast."],
+aqua_jog:[["In deep water (a flotation belt helps), stay upright.","Run in place: drive your knees up and swing your arms like on land.","Keep a steady effort; you'll barely move forward.","Keep it going for the full time. Log your minutes."],"Athletes use this to keep their fitness while injured: all the running motion, none of the impact."],
 walk:[["Walk outside or on a track at a fast pace, swinging your arms.","Aim for a pace where you're breathing harder but can still talk.","Keep it going for the full time.","Log your minutes."],"Walking is easy on the joints and one of the best ways to burn extra calories every day."],
 incline_walk:[["Set a treadmill to a walking speed (about 3 mph / 5 km/h) and a 8–12% incline.","Walk tall without holding the rails.","Keep a steady pace for the full time.","Log your minutes."],"Holding the rails cuts the calories you burn. Lower the incline before you grab them."],
 jog:[["Jog at an easy, conversational pace, outside or on a treadmill.","Land softly under your hips with short, quick steps.","Keep it going for the full time; walk breaks are fine.","Log your minutes."],"Easy means you could hold a conversation. Most of your running should feel like this."],
@@ -640,7 +654,7 @@ const HOWTO_IMG={"diamond_pushup":"Push-Ups_-_Close_Triceps_Position","decline_p
 // ---------- Spanish translations ----------
 // Names that can appear inside longer text (exercise names, muscles, tiers, focus, equipment)
 const ES_PHR={
-"Brisk Walk":"Caminata rápida","Incline Treadmill Walk":"Caminata inclinada en caminadora","Easy Jog":"Trote suave","Stationary Bike":"Bicicleta fija","Bike Intervals":"Intervalos en bicicleta","Rowing Machine":"Remadora","Elliptical":"Elíptica","Stair Climber":"Escaladora","Jump Rope":"Saltar la cuerda","Arm Bike":"Bicicleta de brazos","Treadmill":"Caminadora","Exercise bike":"Bicicleta fija","Rowing machine":"Remadora","Jump rope":"Cuerda para saltar","Arm bike":"Bicicleta de brazos","Cardio (burn calories)":"Cardio (quemar calorías)","Cardio day":"Día de cardio","Lose weight — strength + cardio":"Bajar de peso — fuerza + cardio","needs":"requiere","Flak Run (Front & Back Plates)":"Carrera con chaleco (placas frontal y trasera)","Flak Run (Front, Back & Side Plates)":"Carrera con chaleco (placas frontal, trasera y laterales)","Flak / plate carrier":"Chaleco / portaplacas","Single-Arm Cable Row":"Remo en polea a una mano","Dual Cable Row":"Remo con doble polea","Incline Dumbbell Curl":"Curl inclinado con mancuernas","Dumbbell Preacher Curl":"Curl predicador con mancuerna","EZ-Bar Preacher Curl":"Curl predicador con barra Z","400 m Repeats":"Repeticiones de 400 m","800 m Repeats":"Repeticiones de 800 m","2-Mile Tempo Run":"Carrera a ritmo de 2 millas","3-Mile Run":"Carrera de 3 millas","880-Yard Sprint":"Sprint de 880 yardas","300-Yard Shuttle Sprint":"Sprint de ida y vuelta de 300 yardas","Bear Crawl":"Gateo de oso","Ammo Can Press (30 lb)":"Press con caja de munición (30 lb)","Farmer's Carry":"Caminata del granjero","Negative Pull-Up":"Dominada negativa","PFT prep":"Preparación PFT","CFT prep":"Preparación CFT","PFT Prep (Marine PFT)":"Preparación PFT (Marines)","CFT Prep (Marine CFT)":"Preparación CFT (Marines)","also works":"también trabaja","hang with":"cuélgate con","hang on":"cuélgate","hold":"sostén","per hand":"por mano","Barbell Bench Press":"Press de banca con barra","Incline Barbell Bench Press":"Press inclinado con barra","Dumbbell Bench Press":"Press de banca con mancuernas","Incline Dumbbell Press":"Press inclinado con mancuernas",
+"Freestyle Swim":"Natación estilo libre","Breaststroke Swim":"Natación de pecho","Freestyle Intervals":"Intervalos de estilo libre","Kickboard Kicks":"Patada con tabla","Pull Buoy Swim":"Nado con pull buoy","Treading Water":"Flotar en el agua","Deep-Water Running":"Correr en agua profunda","Pool":"Alberca","Swim (pool workout)":"Natación (entrenamiento en alberca)","Swim day":"Día de natación","Brisk Walk":"Caminata rápida","Incline Treadmill Walk":"Caminata inclinada en caminadora","Easy Jog":"Trote suave","Stationary Bike":"Bicicleta fija","Bike Intervals":"Intervalos en bicicleta","Rowing Machine":"Remadora","Elliptical":"Elíptica","Stair Climber":"Escaladora","Jump Rope":"Saltar la cuerda","Arm Bike":"Bicicleta de brazos","Treadmill":"Caminadora","Exercise bike":"Bicicleta fija","Rowing machine":"Remadora","Jump rope":"Cuerda para saltar","Arm bike":"Bicicleta de brazos","Cardio (burn calories)":"Cardio (quemar calorías)","Cardio day":"Día de cardio","Lose weight — strength + cardio":"Bajar de peso — fuerza + cardio","needs":"requiere","Flak Run (Front & Back Plates)":"Carrera con chaleco (placas frontal y trasera)","Flak Run (Front, Back & Side Plates)":"Carrera con chaleco (placas frontal, trasera y laterales)","Flak / plate carrier":"Chaleco / portaplacas","Single-Arm Cable Row":"Remo en polea a una mano","Dual Cable Row":"Remo con doble polea","Incline Dumbbell Curl":"Curl inclinado con mancuernas","Dumbbell Preacher Curl":"Curl predicador con mancuerna","EZ-Bar Preacher Curl":"Curl predicador con barra Z","400 m Repeats":"Repeticiones de 400 m","800 m Repeats":"Repeticiones de 800 m","2-Mile Tempo Run":"Carrera a ritmo de 2 millas","3-Mile Run":"Carrera de 3 millas","880-Yard Sprint":"Sprint de 880 yardas","300-Yard Shuttle Sprint":"Sprint de ida y vuelta de 300 yardas","Bear Crawl":"Gateo de oso","Ammo Can Press (30 lb)":"Press con caja de munición (30 lb)","Farmer's Carry":"Caminata del granjero","Negative Pull-Up":"Dominada negativa","PFT prep":"Preparación PFT","CFT prep":"Preparación CFT","PFT Prep (Marine PFT)":"Preparación PFT (Marines)","CFT Prep (Marine CFT)":"Preparación CFT (Marines)","also works":"también trabaja","hang with":"cuélgate con","hang on":"cuélgate","hold":"sostén","per hand":"por mano","Barbell Bench Press":"Press de banca con barra","Incline Barbell Bench Press":"Press inclinado con barra","Dumbbell Bench Press":"Press de banca con mancuernas","Incline Dumbbell Press":"Press inclinado con mancuernas",
 "Dumbbell Fly":"Aperturas con mancuernas","Cable Fly":"Aperturas en polea","Pec Deck":"Pec deck (contractor de pecho)","Machine Chest Press":"Press de pecho en máquina","Push-Up":"Flexiones","Dip":"Fondos en paralelas",
 "Overhead Press":"Press militar","Seated Dumbbell Shoulder Press":"Press de hombros sentado con mancuernas","Arnold Press":"Press Arnold","Machine Shoulder Press":"Press de hombros en máquina",
 "Dumbbell Lateral Raise":"Elevaciones laterales con mancuernas","Cable Lateral Raise":"Elevación lateral en polea","Rear Delt Fly":"Pájaros (deltoide posterior)","Face Pull":"Face pull (jalón a la cara)",
@@ -737,7 +751,7 @@ const ES_BASE={
 "Looking up food…":"Buscando alimento…","You've had this before. Check the servings, then add.":"Ya lo has comido antes. Revisa las porciones y luego agrega.",
 "Couldn't reach the food database. Check your connection, or scan the nutrition label.":"No se pudo conectar con la base de datos de alimentos. Revisa tu conexión o escanea la etiqueta nutricional.",
 "This barcode isn't in the food database yet. Scan the nutrition label instead, or type the numbers in.":"Este código aún no está en la base de datos de alimentos. Escanea la etiqueta nutricional o escribe los números.",
-"Your daily targets":"Tus metas diarias","Your goal":"Tu objetivo","Lose fat":"Perder grasa","Maintain weight":"Mantener peso","Sex":"Sexo","Male":"Hombre","Delete this measurement?":"¿Eliminar esta medida?","Workouts and food targets work toward this.":"Los entrenamientos y metas de comida trabajan hacia esto.","Your goal weight is at or above your current weight":"Tu peso meta es igual o mayor que tu peso actual","Food targets switched to Lose fat":"Metas de comida cambiadas a Perder grasa","Set your food targets on the Food tab to match":"Pon tus metas de comida en Comida para que coincidan","Min":"Min","Cardio ·":"Cardio ·","Go at a pace where talking is possible but hard":"Ve a un ritmo en el que puedas hablar, pero cueste","Minutes per session":"Minutos por sesión","No safe cardio for your injury with your equipment. An arm bike works with most leg injuries; tick it in Settings if you have one":"No hay cardio seguro para tu lesión con tu equipo. La bicicleta de brazos funciona con la mayoría de lesiones de pierna; márcala en Ajustes si tienes una","Add cardio equipment in Settings, or try Brisk Walk":"Agrega equipo de cardio en Ajustes, o prueba Caminata rápida","Vest weight":"Peso del chaleco","First time: log the distance and your time (e.g. 2 and 18:30)":"Primera vez: registra la distancia y tu tiempo (ej. 2 y 18:30)","Best pace per session (lower is better)":"Mejor ritmo por sesión (menos es mejor)","DoD prohibited supplement ingredients":"Ingredientes de suplementos prohibidos por el DoD","📤 Share my ranks":"📤 Compartir mis rangos","📋 Copy as text":"📋 Copiar como texto","Share my ranks":"Compartir mis rangos","Press and hold the picture to save or share it.":"Mantén presionada la imagen para guardarla o compartirla.","Download picture":"Descargar imagen","Ranks copied. Paste them in a message":"Rangos copiados. Pégalos en un mensaje","Couldn't make the picture. Try Copy as text":"No se pudo crear la imagen. Prueba Copiar como texto","Copy as text":"Copiar como texto","Time":"Tiempo","Type each time as minutes:seconds, like 1:45 (or 1.45).":"Escribe cada tiempo en minutos:segundos, como 1:45 (o 1.45).","First time: log your time for each rep (e.g. 1:45)":"Primera vez: registra tu tiempo en cada repetición (ej. 1:45)","Fastest time per session (lower is better)":"Mejor tiempo por sesión (menos es mejor)","No times logged yet.":"Aún no hay tiempos registrados.","Workout removed":"Entrenamiento eliminado","Undo":"Deshacer","Workout restored":"Entrenamiento restaurado","Remove workout":"Eliminar entrenamiento","Cancel":"Cancelar","Tip: press and hold a workout to remove it.":"Consejo: mantén presionado un entrenamiento para eliminarlo.","ⓘ How ranks work":"ⓘ Cómo funcionan los rangos","ⓘ How it's calculated":"ⓘ Cómo se calcula","Suggest an idea":"Sugerir una idea","What would make Forge better for you? A new exercise, a feature, something that bugs you. Every message is read.":"¿Qué haría que Forge fuera mejor para ti? Un ejercicio nuevo, una función, algo que te moleste. Se leen todos los mensajes.","Your idea":"Tu idea","e.g. Add a timer for planks":"p. ej. Agregar un temporizador para planchas","Name (optional)":"Nombre (opcional)","Email (optional)":"Correo (opcional)","for a reply":"para responderte","Send":"Enviar","Sending…":"Enviando…","Type your idea first":"Escribe tu idea primero","The idea box isn't set up yet":"El buzón de ideas aún no está listo","You're offline. Your idea is saved here, send it when you're back online":"No tienes conexión. Tu idea queda guardada aquí; envíala cuando vuelvas a tener internet","Thanks! Your idea was sent 💡":"¡Gracias! Tu idea fue enviada 💡","Couldn't send. Check your internet and try again":"No se pudo enviar. Revisa tu internet e inténtalo de nuevo","Choose":"Elegir","Two quick questions":"Dos preguntas rápidas","Your sex and age make your calorie targets more accurate. You can change them anytime in Settings.":"Tu sexo y edad hacen que tus metas de calorías sean más precisas. Puedes cambiarlos cuando quieras en Ajustes.","Not now":"Ahora no","Add your sex and age":"Agrega tu sexo y edad","Enter an age between 13 and 110":"Ingresa una edad entre 13 y 110","Female":"Mujer","Age":"Edad","years":"años","Height":"Estatura",
+"Your daily targets":"Tus metas diarias","Your goal":"Tu objetivo","Lose fat":"Perder grasa","Maintain weight":"Mantener peso","Sex":"Sexo","Male":"Hombre","First time: log the distance and your time (e.g. 500 and 10:30)":"Primera vez: registra la distancia y tu tiempo (ej. 500 y 10:30)","Delete this measurement?":"¿Eliminar esta medida?","Workouts and food targets work toward this.":"Los entrenamientos y metas de comida trabajan hacia esto.","Your goal weight is at or above your current weight":"Tu peso meta es igual o mayor que tu peso actual","Food targets switched to Lose fat":"Metas de comida cambiadas a Perder grasa","Set your food targets on the Food tab to match":"Pon tus metas de comida en Comida para que coincidan","Min":"Min","Cardio ·":"Cardio ·","Go at a pace where talking is possible but hard":"Ve a un ritmo en el que puedas hablar, pero cueste","Minutes per session":"Minutos por sesión","No safe cardio for your injury with your equipment. An arm bike works with most leg injuries; tick it in Settings if you have one":"No hay cardio seguro para tu lesión con tu equipo. La bicicleta de brazos funciona con la mayoría de lesiones de pierna; márcala en Ajustes si tienes una","Add cardio equipment in Settings, or try Brisk Walk":"Agrega equipo de cardio en Ajustes, o prueba Caminata rápida","Vest weight":"Peso del chaleco","First time: log the distance and your time (e.g. 2 and 18:30)":"Primera vez: registra la distancia y tu tiempo (ej. 2 y 18:30)","Best pace per session (lower is better)":"Mejor ritmo por sesión (menos es mejor)","DoD prohibited supplement ingredients":"Ingredientes de suplementos prohibidos por el DoD","📤 Share my ranks":"📤 Compartir mis rangos","📋 Copy as text":"📋 Copiar como texto","Share my ranks":"Compartir mis rangos","Press and hold the picture to save or share it.":"Mantén presionada la imagen para guardarla o compartirla.","Download picture":"Descargar imagen","Ranks copied. Paste them in a message":"Rangos copiados. Pégalos en un mensaje","Couldn't make the picture. Try Copy as text":"No se pudo crear la imagen. Prueba Copiar como texto","Copy as text":"Copiar como texto","Time":"Tiempo","Type each time as minutes:seconds, like 1:45 (or 1.45).":"Escribe cada tiempo en minutos:segundos, como 1:45 (o 1.45).","First time: log your time for each rep (e.g. 1:45)":"Primera vez: registra tu tiempo en cada repetición (ej. 1:45)","Fastest time per session (lower is better)":"Mejor tiempo por sesión (menos es mejor)","No times logged yet.":"Aún no hay tiempos registrados.","Workout removed":"Entrenamiento eliminado","Undo":"Deshacer","Workout restored":"Entrenamiento restaurado","Remove workout":"Eliminar entrenamiento","Cancel":"Cancelar","Tip: press and hold a workout to remove it.":"Consejo: mantén presionado un entrenamiento para eliminarlo.","ⓘ How ranks work":"ⓘ Cómo funcionan los rangos","ⓘ How it's calculated":"ⓘ Cómo se calcula","Suggest an idea":"Sugerir una idea","What would make Forge better for you? A new exercise, a feature, something that bugs you. Every message is read.":"¿Qué haría que Forge fuera mejor para ti? Un ejercicio nuevo, una función, algo que te moleste. Se leen todos los mensajes.","Your idea":"Tu idea","e.g. Add a timer for planks":"p. ej. Agregar un temporizador para planchas","Name (optional)":"Nombre (opcional)","Email (optional)":"Correo (opcional)","for a reply":"para responderte","Send":"Enviar","Sending…":"Enviando…","Type your idea first":"Escribe tu idea primero","The idea box isn't set up yet":"El buzón de ideas aún no está listo","You're offline. Your idea is saved here, send it when you're back online":"No tienes conexión. Tu idea queda guardada aquí; envíala cuando vuelvas a tener internet","Thanks! Your idea was sent 💡":"¡Gracias! Tu idea fue enviada 💡","Couldn't send. Check your internet and try again":"No se pudo enviar. Revisa tu internet e inténtalo de nuevo","Choose":"Elegir","Two quick questions":"Dos preguntas rápidas","Your sex and age make your calorie targets more accurate. You can change them anytime in Settings.":"Tu sexo y edad hacen que tus metas de calorías sean más precisas. Puedes cambiarlos cuando quieras en Ajustes.","Not now":"Ahora no","Add your sex and age":"Agrega tu sexo y edad","Enter an age between 13 and 110":"Ingresa una edad entre 13 y 110","Female":"Mujer","Age":"Edad","years":"años","Height":"Estatura",
 "Activity level":"Nivel de actividad","Mostly sitting — Desk job, little exercise":"Mayormente sentado: trabajo de oficina, poco ejercicio","Lightly active — Training 1–3 days a week":"Poco activo: entrenas 1–3 días por semana",
 "Active — Training 3–5 days a week":"Activo: entrenas 3–5 días por semana","Very active — Hard training 6–7 days a week":"Muy activo: entrenamiento intenso 6–7 días por semana","Athlete — Hard training plus a physical job":"Atleta: entrenamiento intenso y trabajo físico",
 "kcal/day":"kcal/día","protein":"proteína","carbs":"carbohidratos","fat":"grasa","Fill in your age, height and body weight to see your targets.":"Completa tu edad, estatura y peso corporal para ver tus metas.",
@@ -756,6 +770,7 @@ const ES_BASE={
 };
 // Text with numbers or names in it
 const ES_RX=[
+[/^Best pace last time: (\d+:\d\d\/100 (?:yd|m))\. Try to beat it$/,'Mejor ritmo la última vez: $1. Intenta superarlo'],[/^Enter the distance \((yd|m)\) and your time as minutes:seconds, like 10:30\. Your pace is worked out for you\.$/,'Escribe la distancia ($1) y tu tiempo en minutos:segundos, como 10:30. La app calcula tu ritmo.'],
 [/^Goal weight \((lb|kg)\)$/,'Peso meta ($1)'],
 [/^Log the minutes you did\. About (\d+) kcal at this time\.$/,'Registra los minutos que hiciste. Unas $1 kcal con este tiempo.'],[/^Log the minutes you did\.$/,'Registra los minutos que hiciste.'],[/^Last time: (\d+) min\. Go a little longer or a little harder$/,'La última vez: $1 min. Haz un poco más de tiempo o un poco más fuerte'],[/^(\d+) min$/,'$1 min'],
 [/^Best pace last time: (\d+:\d\d\/(?:mi|km))\. Try to beat it$/,'Mejor ritmo la última vez: $1. Intenta superarlo'],
@@ -842,6 +857,13 @@ run_tempo:[["Calienta con 5 minutos de trote suave.","Corre 2 millas a un ritmo 
 run_3mi:[["Calienta con 5–10 minutos de trote suave y unos sprints cortos.","Corre 3 millas lo más rápido que puedas mantener toda la distancia.","Enfría caminando.","Registra tu tiempo total."],"Empieza un poco más lento de lo que crees y termina fuerte. Las pruebas de práctica te muestran dónde estás."],
 run_880:[["Calienta con trote suave y unos sprints cortos.","Corre 880 yardas (media milla, dos vueltas a la pista) lo más rápido que puedas, como en Movement to Contact.","Camina 3 minutos.","Repite en cada serie. Registra el tiempo de cada una."],"A veces hazlo con botas y uniforme, como en la prueba real."],
 shuttle_sprint:[["Marca dos líneas a 25 yardas de distancia.","Corre a la línea lejana y regresa 6 veces (300 yardas en total). Toca la línea con el pie o la mano en cada vuelta.","Descansa unos 3 minutos.","Repite en cada serie. Registra el tiempo de cada una."],"Mantente bajo en los giros. Los cambios de dirección rápidos ganan el circuito Maneuver Under Fire."],
+swim_free:[["Impúlsate de la pared y nada estilo libre (crol) a ritmo constante.","Estira cada brazo largo, rota el cuerpo de lado a lado y respira de lado.","Patea constante desde la cadera con los tobillos sueltos.","Registra la distancia y tu tiempo total; la app calcula tu ritmo por 100."],"Saca el aire bajo el agua para estar listo para respirar al girar la cabeza."],
+swim_breast:[["Impúlsate de la pared y deslízate con los brazos estirados al frente.","Abre las manos hacia afuera y atrás hasta el pecho, luego llévalas al frente otra vez.","Patea como rana: talones hacia los glúteos, pies afuera y luego júntalos.","Brazada, respira, patada, deslízate. Registra la distancia y tu tiempo total."],"El deslizamiento es donde descansas y ganas velocidad. No lo apresures. Es el estilo de supervivencia acuática de los Marines."],
+swim_intervals:[["Nada cada repetición en estilo libre al ritmo que indica el plan.","Descansa en la pared el tiempo indicado.","Empieza la siguiente repetición a tiempo.","Registra el tiempo de cada una."],"Intenta que cada repetición esté a pocos segundos de la primera."],
+kickboard:[["Sostén una tabla al frente con los brazos estirados.","Patea desde la cadera con las piernas casi rectas y los tobillos sueltos y en punta.","Haz patadas pequeñas y rápidas; los pies apenas deben salir del agua.","Registra el tiempo de cada una."],"Patear fuerte desde las rodillas cansa rápido. Impulsa desde la cadera."],
+pull_buoy:[["Pon un pull buoy entre los muslos para que las piernas floten sin patear.","Nada estilo libre usando solo los brazos.","Enfócate en estirarte largo y jalar fuerte hasta la cadera.","Registra el tiempo de cada una."],"Excelente para resistencia de brazos y espalda, y suave con piernas lesionadas."],
+tread:[["En agua profunda, mantente vertical con la cabeza fuera del agua.","Mueve las manos de lado a lado frente a ti.","Patea lento tipo batidora o patada de crol.","Mantente tranquilo y constante todo el tiempo. Registra tus minutos."],"Respirar relajado lo hace mucho más fácil. El pánico gasta energía rápido."],
+aqua_jog:[["En agua profunda (un cinturón de flotación ayuda), mantente vertical.","Corre en el lugar: sube las rodillas y mueve los brazos como en tierra.","Mantén un esfuerzo constante; casi no avanzarás.","Mantente todo el tiempo. Registra tus minutos."],"Los atletas lo usan para mantener su condición lesionados: todo el movimiento de correr, sin impacto."],
 walk:[["Camina afuera o en una pista a paso rápido, moviendo los brazos.","Busca un ritmo en el que respires más fuerte pero aún puedas hablar.","Mantente así todo el tiempo.","Registra tus minutos."],"Caminar es suave para las articulaciones y una de las mejores formas de quemar calorías extra cada día."],
 incline_walk:[["Pon la caminadora a paso de caminata (unos 5 km/h / 3 mph) con 8–12% de inclinación.","Camina erguido sin agarrarte de los barandales.","Mantén un ritmo constante todo el tiempo.","Registra tus minutos."],"Agarrarte de los barandales reduce las calorías que quemas. Baja la inclinación antes de agarrarte."],
 jog:[["Trota a un ritmo suave en el que puedas platicar, afuera o en caminadora.","Pisa suave debajo de la cadera con pasos cortos y rápidos.","Mantente todo el tiempo; está bien caminar ratos.","Registra tus minutos."],"Suave significa que podrías platicar. La mayoría de tus carreras deben sentirse así."],
@@ -1132,7 +1154,7 @@ function suggest(ex){
   const sc=scheme(ex),last=lastSets(ex.id);
   if(ex.inc==='cardio'){const lm=last?Math.max(0,...last.sets.map(x=>+x.r||0)):0;return{w:'',r:lm||sc.lo,note:lm?'Last time: '+lm+' min. Go a little longer or a little harder':'Go at a pace where talking is possible but hard'};}
   if(ex.inc==='run'&&DIST.has(ex.id)){const vals=last?last.sets.map(x=>runVal(ex,x,last.unit)).filter(v=>v>0):[],b=vals.length?Math.min(...vals):0,lw=last?last.sets.find(x=>x.w):null;
-    return{w:lw?lw.w:'',r:'',note:b?'Best pace last time: '+fmtPace(b)+'. Try to beat it':'First time: log the distance and your time (e.g. 2 and 18:30)'};}
+    return{w:lw?lw.w:'',r:'',note:b?'Best pace last time: '+fmtPace(b,ex)+'. Try to beat it':SWIMD.has(ex.id)?'First time: log the distance and your time (e.g. 500 and 10:30)':'First time: log the distance and your time (e.g. 2 and 18:30)'};}
   if(ex.inc==='run'){const b=last?Math.min(...last.sets.map(x=>tsec(x.r)).filter(v=>v>0)):0;
     return{w:'',r:'',note:b&&isFinite(b)?'Best last time: '+fmtT(b)+'. Try to beat it':'First time: log your time for each rep (e.g. 1:45)'};}
   if(!last){
@@ -1158,7 +1180,7 @@ function suggest(ex){
 // flak runs: the vest weight carries over from your last flak run (converted to your current units)
 function lastVest(){let best=null;for(const w of S.workouts)for(const e of w.exercises)if(DIST.has(e.exId)&&e.vest>0)best={v:e.vest,u:w.unit};return best?+conv(best.v,best.u):'';}
 const vestTxt=(v,u)=>{if(!(v>0))return'';const n=r1(+conv(v,u));return L(` · ${n} ${U()} vest`,` · chaleco de ${n} ${U()}`);};
-function newEntry(ex){const sc=scheme(ex),sg=suggest(ex);return{exId:ex.id,note:sg.note,...(DIST.has(ex.id)?{vest:lastVest()}:{}),sets:Array.from({length:sc.sets},()=>({w:sg.w,r:sg.r,done:false}))};}
+function newEntry(ex){const sc=scheme(ex),sg=suggest(ex);return{exId:ex.id,note:sg.note,...(DIST.has(ex.id)&&ex.eq.includes('armor')?{vest:lastVest()}:{}),sets:Array.from({length:sc.sets},()=>({w:sg.w,r:sg.r,done:false}))};}
 
 const TAU=30; // hours; fatigue decays exponentially
 function fatigue(){
@@ -1184,19 +1206,25 @@ function pickAuto(rec){
 }
 // ---------- Marine PFT / CFT prep: solo sessions that rotate A, B, A, practice test ----------
 // Cardio: logged in minutes. MET values (Compendium of Physical Activities) estimate calories: MET × kg × hours.
-const CARDIO={walk:4.3,incline_walk:6.5,jog:7,bike:6.8,bike_intervals:8.5,rower:7,elliptical:5,stair_climber:9,jump_rope:11,arm_bike:4};
+const SWIM=new Set(['swim_free','swim_breast','swim_intervals','kickboard','pull_buoy','tread','aqua_jog']),SWIMD=new Set(['swim_free','swim_breast']);
+const CARDIO={tread:4,aqua_jog:8,walk:4.3,incline_walk:6.5,jog:7,bike:6.8,bike_intervals:8.5,rower:7,elliptical:5,stair_climber:9,jump_rope:11,arm_bike:4};
 const cardioKcal=(id,min)=>{const kg=U()==='lb'?bodyW()*0.45359237:bodyW();return kg&&min>0?Math.round(CARDIO[id]*kg*min/60):0;};
-const PREP_ONLY=new Set([...Object.keys(CARDIO),'flak_run','flak_run_side','run_400','run_800','run_tempo','run_3mi','run_880','shuttle_sprint','bear_crawl','ammo_press']);
+const PREP_ONLY=new Set([...SWIM,...Object.keys(CARDIO),'flak_run','flak_run_side','run_400','run_800','run_tempo','run_3mi','run_880','shuttle_sprint','bear_crawl','ammo_press']);
 const tsec=v=>{v=String(v==null?'':v).trim();if(!v)return 0;let m,x;
   if(v.includes(':')){[m,x]=v.split(':');return(+m||0)*60+(+x||0);}
   if(v.includes('.')){[m,x]=v.split('.');return(+m||0)*60+(+(x+'0').slice(0,2)||0);}
   if(/^\d{3,4}$/.test(v))return Math.floor(+v/100)*60+(+v%100);return(+v||0)*60;};
 // Flak runs log distance and time; everything compares pace (seconds per mile).
-const DIST=new Set(['flak_run','flak_run_side']);
+const DIST=new Set(['flak_run','flak_run_side','swim_free','swim_breast']);
+// Swims: yards (or meters for kg users); pace per 100. Rep swims (intervals, kicks, pull) log a time per rep.
+const SWIM_MET=8;const su=u=>(u||U())==='kg'?'m':'yd';
+const dUnit=(ex,u)=>SWIMD.has(ex.id)?su(u):DU(u);
 const DU=u=>(u||U())==='kg'?'km':'mi';
 const runMi=(w,u)=>{w=parseFloat(String(w).replace(',','.'))||0;return(u||U())==='kg'?w/1.609344:w;};
-function runVal(ex,s,u){const t=tsec(s.r);if(!(t>0))return 0;if(!DIST.has(ex.id))return t;const mi=runMi(s.w,u);return mi>0?t/mi:0;}
-const fmtPace=spm=>fmtT(U()==='kg'?spm/1.609344:spm)+'/'+DU();
+function runVal(ex,s,u){const t=tsec(s.r);if(!(t>0))return 0;if(!DIST.has(ex.id))return t;
+  if(SWIMD.has(ex.id)){const d=parseFloat(String(s.w).replace(',','.'))||0,m=(u||U())==='kg'?d:d*0.9144;return m>0?t/m*100:0;}// sec per 100 m
+  const mi=runMi(s.w,u);return mi>0?t/mi:0;}
+const fmtPace=(spm,ex)=>ex&&SWIMD.has(ex.id)?fmtT(U()==='kg'?spm:spm*0.9144)+'/100 '+su():fmtT(U()==='kg'?spm/1.609344:spm)+'/'+DU();
 const fmtT=t=>{t=Math.round(t);return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
 const PREP={
  pft:[
@@ -1309,6 +1337,47 @@ function usmcCard(f){
   const wl=waistLatest(),wst=wl?whtrStatus(wl):null;
   return`<div class="card" data-notr="1"><h3>🎖 ${f.toUpperCase()} ${L('score','puntaje')}</h3>${est}${wst?`<p class="small" style="margin:0 0 10px">📏 ${L('Waist-to-height','Cintura-estatura')}: <b class="${wst.ok?'good':'bad'}">${wst.r.toFixed(3)}</b> ${wst.ok?L('✓ within standard','✓ dentro del estándar'):L('over 0.52','arriba de 0.52')}</p>`:''}<button class="btn ghost" style="margin:0" data-a="usmccalc" data-t="${f}">${L('Score calculator','Calculadora de puntaje')}</button></div>`;
 }
+// Pool sessions rotate: endurance, speed, easy. Each slot lists options in order; injuries and equipment pick the first safe one.
+// Plans: [kind, value, en, es]. kinds: d = one distance swim, r = n reps of a distance (time per rep), m = minutes.
+const SWIM_PLANS=[
+ {t:['Endurance','Resistencia'],slots:[
+  [['swim_free','swim_breast','pull_buoy','aqua_jog'],{d:200,m:5},['Warm-up: {d} easy.','Calentamiento: {d} suave.'],0],
+  [['kickboard','pull_buoy','aqua_jog'],{r:[4,50],m:8},['{n} × {e} kick, 20 s rest between.','{n} × {e} de patada, 20 s de descanso.'],20],
+  [['swim_intervals','pull_buoy','swim_breast','aqua_jog'],{r:[8,50],d:400,m:15},['Main set: {n} × {e} at a strong, steady pace, 20 s rest.','Serie principal: {n} × {e} a ritmo fuerte y constante, 20 s de descanso.'],20],
+  [['pull_buoy','swim_intervals','aqua_jog'],{r:[4,100],m:8},['{n} × {e} with a pull buoy (arms only), 30 s rest.','{n} × {e} con pull buoy (solo brazos), 30 s de descanso.'],30],
+  [['tread','aqua_jog'],{m:3},['Tread water for {m} minutes, staying calm and steady.','Flota en el agua {m} minutos, tranquilo y constante.'],0],
+  [['swim_free','swim_breast','pull_buoy','aqua_jog'],{d:100,m:5},['Cool-down: {d} easy.','Enfriamiento: {d} suave.'],0]]},
+ {t:['Speed','Velocidad'],slots:[
+  [['swim_free','swim_breast','pull_buoy','aqua_jog'],{d:200,m:5},['Warm-up: {d} easy.','Calentamiento: {d} suave.'],0],
+  [['swim_intervals','pull_buoy','aqua_jog'],{r:[10,25],m:10},['Sprints: {n} × {e} fast, 30 s rest.','Sprints: {n} × {e} rápido, 30 s de descanso.'],30],
+  [['swim_intervals','pull_buoy','swim_breast','aqua_jog'],{r:[6,50],d:300,m:10},['{n} × {e} at a hard pace, 30 s rest.','{n} × {e} a ritmo duro, 30 s de descanso.'],30],
+  [['kickboard','pull_buoy','aqua_jog'],{r:[4,25],m:5},['{n} × {e} fast kick, 20 s rest.','{n} × {e} de patada rápida, 20 s de descanso.'],20],
+  [['swim_free','swim_breast','pull_buoy','aqua_jog'],{d:100,m:5},['Cool-down: {d} easy.','Enfriamiento: {d} suave.'],0]]},
+ {t:['Easy, low impact','Suave, bajo impacto'],slots:[
+  [['aqua_jog','tread','pull_buoy'],{m:20,r:[6,100]},['Deep-water running {m} minutes at a steady effort. Easy on your joints.','Correr en agua profunda {m} minutos a esfuerzo constante. Suave para tus articulaciones.'],0],
+  [['kickboard','pull_buoy','tread'],{r:[6,25],m:5},['{n} × {e} easy kick, 20 s rest.','{n} × {e} de patada suave, 20 s de descanso.'],20],
+  [['pull_buoy','swim_free','swim_breast','tread'],{r:[4,50],d:200,m:5},['{n} × {e} easy, focus on long, smooth strokes.','{n} × {e} suave, con brazadas largas y fluidas.'],20],
+  [['tread','aqua_jog'],{m:3},['Tread water for {m} minutes.','Flota en el agua {m} minutos.'],0]]}];
+function generateSwim(){
+  const n=S.workouts.filter(w=>w.focus==='swim').length,pl=SWIM_PLANS[n%SWIM_PLANS.length],used=new Set(),out=[],u=su();let skipped=0;
+  for(const [ids,spec,txt,rest] of pl.slots){
+    const ok=ids.map(EX).filter(ex=>ex&&!used.has(ex.id)&&hasEq(ex)),safe=ok.filter(ex=>!injuryFor(ex));
+    if(ok.length&&!safe.length){skipped++;continue;}const ex=safe[0];if(!ex)continue;used.add(ex.id);
+    let kind=ex.inc==='cardio'?'m':SWIMD.has(ex.id)?'d':'r';if(kind==='r'&&!spec.r)kind=spec.d?'d':'m';if(kind==='d'&&!spec.d)kind=spec.r?'r':'m';
+    if(kind==='d'&&!SWIMD.has(ex.id)){kind=spec.r?'r':'m';}
+    const fill=t=>t.replace('{d}',(spec.d||'')+' '+u).replace('{n}',spec.r?spec.r[0]:'').replace('{e}',spec.r?spec.r[1]+' '+u:'').replace('{m}',spec.m||'');
+    let plan=[fill(txt[0]),fill(txt[1])];
+    if(kind==='m'&&ex.inc==='cardio'&&!/\{m\}/.test(txt[0]))plan=[`${spec.m} minutes of ${ex.name.toLowerCase()} instead (easier on your injury).`,`${spec.m} minutos de ${tr(ex.name).toLowerCase()} en su lugar (más suave para tu lesión).`];
+    if(kind==='m')out.push(cardioEntry(ex,spec.m,plan));
+    else if(kind==='d')out.push({exId:ex.id,note:'',plan,rest:0,sets:[{w:spec.d,r:'',done:false}]});
+    else out.push({exId:ex.id,note:'',plan:[plan[0]+" Log each rep's time.",plan[1]+' Registra el tiempo de cada una.'],rest,sets:Array.from({length:spec.r[0]},()=>({w:'',r:'',done:false}))});
+  }
+  // an injury can leave only short pieces: make sure it's still a real session
+  const mins=out.filter(e=>EX(e.exId).inc==='cardio').reduce((q,e)=>q+(+e.sets[0].r||0),0);
+  if(out.length&&out.every(e=>EX(e.exId).inc==='cardio')&&mins<20){const e=out[out.length===1?0:out.findIndex(x=>x.exId==='aqua_jog')>=0?out.findIndex(x=>x.exId==='aqua_jog'):0],ex=EX(e.exId);
+    e.sets[0].r=Math.max(10,20-(mins-(+e.sets[0].r||0)));e.plan=[`${e.sets[0].r} minutes of ${ex.name.toLowerCase()} at a steady effort. With your injury this is the safest way to train in the pool.`,`${e.sets[0].r} minutos de ${tr(ex.name).toLowerCase()} a esfuerzo constante. Con tu lesión es la forma más segura de entrenar en la alberca.`];}
+  return{entries:out,title:pl.t,skipped};
+}
 function cardioPick(ids,used){for(const id of ids){const ex=EX(id);if(ex&&!used.has(id)&&hasEq(ex)&&!injuryFor(ex))return ex;}return null;}
 function cardioEntry(ex,min,plan){return{exId:ex.id,note:'',plan,rest:0,sets:[{w:'',r:min,done:false}]};}
 const CARDIO_ORDER=['incline_walk','bike','elliptical','rower','stair_climber','bike_intervals','jog','jump_rope','walk','arm_bike'];
@@ -1395,7 +1464,7 @@ const fmtDate=t=>new Date(t).toLocaleDateString(LOC(),{weekday:'short',month:'sh
 const shortDate=t=>new Date(t).toLocaleDateString(LOC(),{month:'short',day:'numeric'});
 function fmtDur(ms){const s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return(h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0');}
 function ago(t){const h=(Date.now()-t)/36e5;if(h<1)return'just now';if(h<24)return Math.round(h)+'h ago';return Math.round(h/24)+'d ago';}
-function fmtSet(ex,s,unit){if(ex.inc==='cardio')return(+s.r||0)+' min';if(ex.inc==='run'){const t=tsec(s.r);if(!t)return'—';if(DIST.has(ex.id)){const v=runVal(ex,s,unit);return(s.w?s.w+' '+DU(unit)+' · ':'')+fmtT(t)+(v?' ('+fmtPace(v)+')':'');}return fmtT(t);}const w=conv(s.w,unit);if(ex.inc==='sec')return s.r+'s';if(ex.inc==='bw')return w?'+'+w+'×'+s.r:s.r+' reps';return w!==''?w+'×'+s.r:s.r+' reps';}
+function fmtSet(ex,s,unit){if(ex.inc==='cardio')return(+s.r||0)+' min';if(ex.inc==='run'){const t=tsec(s.r);if(!t)return'—';if(DIST.has(ex.id)){const v=runVal(ex,s,unit);return(s.w?s.w+' '+dUnit(ex,unit)+' · ':'')+fmtT(t)+(v?' ('+fmtPace(v,ex)+')':'');}return fmtT(t);}const w=conv(s.w,unit);if(ex.inc==='sec')return s.r+'s';if(ex.inc==='bw')return w?'+'+w+'×'+s.r:s.r+' reps';return w!==''?w+'×'+s.r:s.r+' reps';}
 function volume(w){let v=0;for(const e of w.exercises){const ex=EX(e.exId);if(!ex||!isLoad(ex))continue;for(const s of e.sets)v+=(+conv(s.w,w.unit)||0)*(+s.r||0);}return v;}
 const num=v=>Math.round(v).toLocaleString();
 function bar(m,r){return`<div class="mini"><span>${MUSCLES[m]}</span><div class="track"><div class="fill ${cls(r)}" style="width:${r}%"></div></div><span class="pct ${cls(r)}">${r}%</span></div>`;}
@@ -1437,15 +1506,15 @@ function vActive(){
   const cards=a.exercises.map((e,i)=>{
     const ex=EX(e.exId);if(!ex)return'';
     const sc=scheme(ex),last=lastSets(ex.id);
-    const tm=ex.inc==='run',cd=ex.inc==='cardio',dist=DIST.has(ex.id),noW=(tm&&!dist)||cd||ex.id==='ammo_press',wh=dist?DU():noW?'':isLoad(ex)?U():'Extra '+U(),rh=tm?'Time':cd?'Min':ex.inc==='sec'?'Sec':'Reps';
-    const rows=e.sets.map((s,j)=>`<div class="set ${s.done?'done':''}"><span class="n">${j+1}</span>${noW?'<span></span>':`<input type="text" inputmode="decimal" data-f="w" data-i="${i}" data-j="${j}" value="${esc(s.w)}" placeholder="${dist?DU():isLoad(ex)?'—':'+0'}">`}<input type="text" inputmode="${tm?'decimal':'numeric'}" data-f="r" data-i="${i}" data-j="${j}" value="${esc(s.r)}" placeholder="${tm?'m:ss':'0'}"><button class="tick" data-a="tick" data-i="${i}" data-j="${j}" aria-label="Complete set">✓</button></div>`).join('');
+    const tm=ex.inc==='run',cd=ex.inc==='cardio',dist=DIST.has(ex.id),noW=(tm&&!dist)||cd||ex.id==='ammo_press',wh=dist?dUnit(ex):noW?'':isLoad(ex)?U():'Extra '+U(),rh=tm?'Time':cd?'Min':ex.inc==='sec'?'Sec':'Reps';
+    const rows=e.sets.map((s,j)=>`<div class="set ${s.done?'done':''}"><span class="n">${j+1}</span>${noW?'<span></span>':`<input type="text" inputmode="decimal" data-f="w" data-i="${i}" data-j="${j}" value="${esc(s.w)}" placeholder="${dist?dUnit(ex):isLoad(ex)?'—':'+0'}">`}<input type="text" inputmode="${tm?'decimal':'numeric'}" data-f="r" data-i="${i}" data-j="${j}" value="${esc(s.r)}" placeholder="${tm?'m:ss':'0'}"><button class="tick" data-a="tick" data-i="${i}" data-j="${j}" aria-label="Complete set">✓</button></div>`).join('');
     return`<div class="card"><div class="exhead"><div><h3>${esc(ex.name)}</h3><div class="muted small">${e.plan?'':tm?'Timed · ':cd?'Cardio · ':`${sc.sets} × ${sc.lo}–${sc.hi}${ex.inc==='sec'?' sec':''} · `}${ex.p.map(m=>MUSCLES[m]).join(', ')}</div></div><div class="exbtns">${HOWTO[ex.id]?`<button class="icon" data-a="howto" data-id="${ex.id}" aria-label="How to do it">ⓘ</button>`:''}<button class="icon" data-a="swap" data-i="${i}" aria-label="Swap exercise">⇄</button><button class="icon" data-a="rmex" data-i="${i}" aria-label="Remove exercise">✕</button></div></div>
     ${last?`<div class="last small">Last: ${last.sets.map(s=>fmtSet(ex,s,last.unit)).join(' · ')}${vestTxt(last.vest,last.unit)}</div>`:''}
-    ${dist?`<div class="vestrow"><label for="vest${i}">Vest weight</label><input type="text" inputmode="decimal" id="vest${i}" data-vest="${i}" value="${esc(e.vest==null?'':e.vest)}" placeholder="0"><span class="muted">${U()}</span></div>`:''}
+    ${dist&&ex.eq.includes('armor')?`<div class="vestrow"><label for="vest${i}">Vest weight</label><input type="text" inputmode="decimal" id="vest${i}" data-vest="${i}" value="${esc(e.vest==null?'':e.vest)}" placeholder="0"><span class="muted">${U()}</span></div>`:''}
     ${e.plan?`<div class="plan small" data-notr="1">🎯 ${esc(L(e.plan[0],e.plan[1]))}</div>`:''}
     ${e.note?`<div class="note small">${esc(e.note)}</div>`:''}
     ${cd?`<div class="bwnote small">Log the minutes you did${bodyW()?`. About ${cardioKcal(ex.id,e.sets.reduce((a,x)=>a+(+x.r||0),0))} kcal at this time`:''}.</div>`:''}
-    ${tm?(dist?`<div class="bwnote small">Enter the distance (${DU()}) and your time as minutes:seconds, like 18:30. Your pace is worked out for you.</div>`:'<div class="bwnote small">Type each time as minutes:seconds, like 1:45 (or 1.45).</div>'):''}
+    ${tm?(dist?`<div class="bwnote small">Enter the distance (${dUnit(ex)}) and your time as minutes:seconds, like ${SWIMD.has(ex.id)?'10:30':'18:30'}. Your pace is worked out for you.</div>`:'<div class="bwnote small">Type each time as minutes:seconds, like 1:45 (or 1.45).</div>'):''}
     ${injuryFor(ex)?`<div class="injwarn small">⚠️ Careful: this loads an injured area (${INJ_AREAS[injuryFor(ex).area]}). Skip it or go very light.</div>`:''}
     ${ex.inc==='bw'&&ex.id!=='ammo_press'?'<div class="bwnote small">Bodyweight exercise: your body weight is already counted. Only enter extra weight (dip belt, vest), or leave it blank.</div>':''}
     <div class="sethead"><span>Set</span><span>${wh}</span><span>${rh}</span><span></span></div>${rows}
@@ -1860,10 +1929,17 @@ const KNEE=ids('leg_curl lying_leg_curl nordic_curl pistol_squat jump_squat burp
 const ANKLE=ids('squat front_squat goblet kb_goblet sumo_squat bw_squat jump_squat pistol_squat cossack_squat wall_sit lunge bw_lunge bss step_up leg_press deadlift rdl db_rdl good_morning kb_swing farmer_carry cable_abduction cable_adduction band_walk copenhagen nordic_curl burpee mountain_climber bear_crawl calf_raise sl_calf db_calf lp_calf seated_calf');
 const HIPX=ids('leg_raise hanging_raise knee_raise toes_to_bar oblique_raise mountain_climber flutter_kick v_up sit_up decline_situp reverse_crunch bicycle_crunch hollow_hold l_sit dragon_flag windshield_wipers wall_sit bear_crawl farmer_carry ab_wheel');
 const NECK=ids('squat front_squat good_morning deadlift db_shrug farmer_carry sit_up decline_situp crunch cable_crunch machine_crunch weighted_crunch bicycle_crunch heel_taps russian_twist weighted_twist v_up hollow_hold dragon_flag hspu handstand_hold pike_pushup bb_row ohp db_ohp arnold shoulder_press_m ammo_press muscle_up burpee');
-const run=ex=>ex.inc==='run'||['jog','walk','incline_walk','stair_climber','jump_rope','elliptical','bike','bike_intervals','rower'].includes(ex.id),sprint=ex=>['run_400','run_880','shuttle_sprint'].includes(ex.id);
+const run=ex=>(ex.inc==='run'&&!SWIM.has(ex.id))||['jog','walk','incline_walk','stair_climber','jump_rope','elliptical','bike','bike_intervals','rower'].includes(ex.id),sprint=ex=>['run_400','run_880','shuttle_sprint'].includes(ex.id);
 const isFree=ex=>['barbell','dumbbell','kettlebell','cable','bands'].some(e=>ex.eq.includes(e));
+// Swimming is low impact, but strokes and kicks still load specific joints:
+const SWIMX={shoulder:'swim_free swim_breast swim_intervals pull_buoy kickboard tread',neck:'swim_free swim_breast swim_intervals pull_buoy kickboard',
+ upperback:'swim_free swim_breast swim_intervals pull_buoy',lowerback:'swim_breast kickboard',hip:'swim_breast kickboard tread aqua_jog',knee:'swim_breast tread kickboard',
+ ankle:'swim_free swim_breast swim_intervals kickboard tread aqua_jog',groin:'swim_breast tread kickboard',calves:'swim_free swim_intervals kickboard tread aqua_jog',
+ quads:'kickboard aqua_jog swim_breast',hamstrings:'kickboard aqua_jog',chest:'swim_free swim_breast swim_intervals pull_buoy',elbow:'swim_free swim_breast swim_intervals pull_buoy',
+ triceps:'swim_free swim_intervals pull_buoy',biceps:'swim_free swim_intervals pull_buoy swim_breast',wrist:'',abs:''};
 function injuryHits(ex,area){
   const P=m=>ex.p.includes(m),Sx=m=>ex.s.includes(m),A=m=>P(m)||Sx(m),id=ex.id,in_=(...l)=>l.includes(id);
+  if(SWIM.has(id))return(SWIMX[area]||'').split(' ').includes(id);
   switch(area){
     // presses, flies, raises, pulls, rows, hangs, push-ups, planks and anything overhead or held heavy at arm's length
     case'shoulder':return A('shoulders')||A('chest')||A('lats')||P('traps')||HANG.has(id)||ONHANDS.has(id)||ex.eq.includes('armor')||
@@ -2031,6 +2107,18 @@ let NEWS=null,newsErr=false;
 try{NEWS=JSON.parse(localStorage.getItem('forge-news'))||null;}catch(e){}
 const pickLang=s=>{const i=s.indexOf(' || ');return i<0?s:(LANG()==='es'?s.slice(i+4):s.slice(0,i)).trim();};
 function parseNews(t){const posts=[];let cur=null;for(const raw of t.split(/\r?\n/)){const l=raw.trim();if(l.startsWith('## ')){cur={title:l.slice(3).trim(),lines:[]};posts.push(cur);}else if(cur&&l)cur.lines.push(l);}return posts;}
+// ---------- anonymous usage counts (GoatCounter: no cookies, no personal or workout data) ----------
+const GC_URL='https://forge-app.goatcounter.com/count';
+const standalone=()=>{try{return navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;}catch(e){return false;}};
+function stat(path,ev){if(S.settings.noStats||!navigator.onLine)return;
+  try{const q='p='+encodeURIComponent(path)+'&t='+encodeURIComponent(path)+(ev?'&e=true':'')+'&s='+screen.width+','+screen.height+'&rnd='+Math.random().toString(36).slice(2);
+    const i=new Image();i.referrerPolicy='no-referrer-when-downgrade';i.src=GC_URL+'?'+q;}catch(e){}}
+function statStart(){
+  // one "install" per phone: the first time Forge is opened from the home screen (kept outside backups so a restored backup on a new phone still counts)
+  let done=false;try{done=localStorage.getItem('forge-installed')==='1';}catch(e){}
+  if(standalone()&&!done){stat('install',true);try{localStorage.setItem('forge-installed','1');}catch(e){}}
+  stat(standalone()?'/app':'/browser');
+}
 const BUBBLE='<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>';
 // ---------- idea box: messages go to the app owner's email through Web3Forms (free, no server needed) ----------
 const FEEDBACK_KEY='001c8915-091d-464c-9c92-cc253d0b95d5';
@@ -2057,7 +2145,7 @@ async function ideaSend(btn){
         name:d.name.trim()||'Anonymous',...(d.email.trim()?{email:d.email.trim()}:{}),message:msg,app_version:APP_VERSION,language:LANG(),botcheck:false})});
     const j=await r.json().catch(()=>({}));
     if(!r.ok||j.success===false)throw new Error(j.message||r.status);
-    ideaDraft={msg:'',name:d.name,email:d.email};closeModal();toast('Thanks! Your idea was sent 💡');
+    ideaDraft={msg:'',name:d.name,email:d.email};closeModal();stat('idea-sent',true);toast('Thanks! Your idea was sent 💡');
   }catch(e){toast("Couldn't send. Check your internet and try again");if(btn){btn.disabled=false;btn.textContent=tr('Send');}}
   ideaSending=false;
 }
@@ -2282,7 +2370,7 @@ function vLifts(){
   const pts=kind==='time'?h.map(x=>({t:x.date,v:Math.min(...x.sets.map(s=>runVal(ex,s,x.unit)).filter(v=>v>0))})).filter(p=>isFinite(p.v)):kind==='min'?h.map(x=>({t:x.date,v:x.sets.reduce((a,s)=>a+(+s.r||0),0)})):h.map(x=>({t:x.date,v:Math.max(...x.sets.map(s=>metric(ex,+conv(s.w,x.unit)||0,+s.r||0)))}));
   if(!pts.length)return`<div class="card"><select id="progsel">${ids.map(id=>`<option value="${esc(id)}" ${id===progEx?'selected':''}>${esc(EX(id).name)}</option>`).join('')}</select><p class="muted small">No times logged yet.</p></div>`;
   const best=kind==='time'?Math.min(...pts.map(p=>p.v)):Math.max(...pts.map(p=>p.v)),first=pts[0].v,lastv=pts[pts.length-1].v;
-  const fv=v=>kind==='min'?v+' min':kind==='time'?(DIST.has(ex.id)?fmtPace(v):fmtT(v)):kind==='1rm'?Math.round(v)+' '+U():kind==='sec'?v+'s':v+' reps';
+  const fv=v=>kind==='min'?v+' min':kind==='time'?(DIST.has(ex.id)?fmtPace(v,ex):fmtT(v)):kind==='1rm'?Math.round(v)+' '+U():kind==='sec'?v+'s':v+' reps';
   const heavy=kind==='1rm'?Math.max(...h.flatMap(x=>x.sets.map(s=>+conv(s.w,x.unit)||0))):null;
   const change=pts.length>1&&first?Math.round((kind==='time'?first-lastv:lastv-first)/first*100):null;
   return`<div class="card"><select id="progsel">${ids.map(id=>`<option value="${esc(id)}" ${id===progEx?'selected':''}>${esc(EX(id).name)}</option>`).join('')}</select>
@@ -2317,6 +2405,7 @@ function vSettings(){
   ${injuryCard()}
   <div class="card">${prefsForm()}</div>
   <div class="card"><h3>Custom exercises</h3>${cust||'<p class="muted small">Add exercises the built-in list is missing.</p>'}<button class="btn ghost" data-a="newcustom">+ Add custom exercise</button></div>
+  <div class="card" data-notr="1"><h3>${L('Privacy','Privacidad')}</h3><label class="ebrow" style="border:0;margin-top:0;padding-top:0"><span><b>${L('Send anonymous usage counts','Enviar conteos de uso anónimos')}</b><span class="muted small">${L('Counts installs, app opens and which features get used, to help improve Forge. No names, workouts, food, weight or health data are ever sent.','Cuenta instalaciones, aperturas y qué funciones se usan, para mejorar Forge. Nunca se envían nombres, entrenamientos, comida, peso ni datos de salud.')}</span></span><button class="tog ${S.settings.noStats?'':'on'}" data-a="statstog" aria-label="Send anonymous usage counts"><i></i></button></label></div>
   <div class="card"><h3>Backup</h3><p class="muted small">Your data lives only on this phone. Removing the app from your Home Screen deletes it. To move to a new phone, tap Copy backup, paste the text somewhere safe (Notes, a text or email to yourself), then use Paste backup on the new phone.</p><button class="btn primary" data-a="copybk">Copy backup</button><button class="btn ghost" data-a="pastebk">Paste backup</button><p class="muted small" style="margin:14px 0 0">Or save it as a file:</p><button class="btn ghost" data-a="export">Export backup</button><button class="btn ghost" data-a="import">Import backup</button><input type="file" id="importfile" accept="application/json,.json" hidden></div>
   <div class="card"><button class="btn danger-ghost" style="margin-top:0" data-a="reset">Erase all data</button></div>
   <p class="muted small" style="text-align:center">Forge version ${APP_VERSION}</p>`;
@@ -2396,7 +2485,7 @@ function finish(){
     const ex=EX(e.exId);if(!ex)continue;
     if(ex.inc==='cardio')continue;
     if(ex.inc==='run'){let b0=Infinity;for(const h of history(e.exId))for(const s of h.sets){const v=runVal(ex,s,h.unit);if(v>0)b0=Math.min(b0,v);}
-      const n0=Math.min(...e.sets.map(s=>runVal(ex,s,a.unit)).filter(v=>v>0));if(isFinite(b0)&&isFinite(n0)&&n0<b0)prs.push(esc(ex.name)+' — '+(DIST.has(ex.id)?fmtPace(n0):fmtT(n0)));continue;}
+      const n0=Math.min(...e.sets.map(s=>runVal(ex,s,a.unit)).filter(v=>v>0));if(isFinite(b0)&&isFinite(n0)&&n0<b0)prs.push(esc(ex.name)+' — '+(DIST.has(ex.id)?fmtPace(n0,ex):fmtT(n0)));continue;}
     let before=0;
     for(const h of history(e.exId))for(const s of h.sets)before=Math.max(before,metric(ex,+conv(s.w,h.unit)||0,+s.r||0));
     let now=0,bs=null;for(const s of e.sets){const v=metric(ex,+conv(s.w,a.unit)||0,s.r);if(v>now){now=v;bs=s;}}
@@ -2414,7 +2503,8 @@ function finish(){
     const inW=evs.filter(([ev])=>exs.some(e=>e.exId===ids[ev]));if(!inW.length)return'';
     const ps=inW.map(([ev])=>usmcPts(ev,v[ev])),tot=ps.reduce((x,y)=>x+(y||0),0),full=inW.length===3&&ps.every(x=>x!=null);
     return`<div data-notr="1"><h3>🎖 ${L('Estimated test points','Puntos estimados de la prueba')}</h3>${inW.map(([ev,en,es],k)=>{const p=ps[k];return`<div class="pr">${L(en,es)}: <b>${p==null?'—':p===0?L('below min','bajo mín.'):p}</b></div>`;}).join('')}${full?(()=>{const [c,col]=usmcClass(tot,ps.every(x=>x>0));return`<div class="ustot"><span>${L('Total','Total')}</span><b>${tot}</b><span style="color:${col};font-weight:700">${c}</span></div>`;})():''}</div>`;})():'';
-  const ckcal=exs.reduce((a,e)=>a+(EX(e.exId)&&EX(e.exId).inc==='cardio'?cardioKcal(e.exId,e.sets.reduce((x,s)=>x+(+s.r||0),0)):0),0);
+  const ckcal=exs.reduce((a,e)=>{const x=EX(e.exId);if(!x)return a;if(x.inc==='cardio')return a+cardioKcal(e.exId,e.sets.reduce((q,s)=>q+(+s.r||0),0));
+    if(SWIM.has(x.id)){const kg=U()==='lb'?bodyW()*0.45359237:bodyW(),min=e.sets.reduce((q,s)=>q+tsec(s.r),0)/60;return a+(kg?Math.round(SWIM_MET*kg*min/60):0);}return a;},0);
   const cHtml=ckcal?`<div class="ustot" style="margin:0 0 12px"><span>🔥 ${L('Cardio','Cardio')}</span><b>≈ ${ckcal}</b><span class="muted small">kcal</span></div><button class="btn ghost" style="margin:0 0 12px" data-a="addburn" data-k="${ckcal}">${L("Add to today's calories burned","Sumar a las calorías quemadas de hoy")}</button>`:'';
   showModal(`<div class="sheethead"><h3>Workout saved 💪</h3></div>${stkHtml}${cHtml}${usHtml}<div class="stats"><div><b>${fmtDur(w.end-w.start)}</b><span>time</span></div><div><b>${sets}</b><span>sets</span></div>${v?`<div><b>${num(v)}</b><span>${U()} lifted</span></div>`:''}</div>${prs.length?'<h3>New records 🏆</h3>'+prs.map(p=>`<div class="pr">${p}</div>`).join(''):''}${upHtml}<button class="btn primary" data-a="close">Done</button>`);
 }
@@ -2463,7 +2553,10 @@ document.addEventListener('click',e=>{
   const i=+b.dataset.i,j=+b.dataset.j,A=S.active;
   switch(b.dataset.a){
     case'tab':tab=b.dataset.t;render();window.scrollTo(0,0);break;
-    case'gen':{if(focusSel==='cardio'){const en=generateCardio();if(!en.length){toast(activeInjuries().length?'No safe cardio for your injury with your equipment. An arm bike works with most leg injuries; tick it in Settings if you have one':'Add cardio equipment in Settings, or try Brisk Walk');break;}
+    case'gen':{stat('generate-'+focusSel,true);if(focusSel==='swim'){const g=generateSwim();if(!g.entries.length){toast(hasEq({eq:['pool']})?L('No safe swim workout with your injury. Try another focus.','No hay natación segura con tu lesión. Prueba otro enfoque.'):L('Tick Pool in Settings → Equipment to get swim workouts','Marca Alberca en Ajustes → Equipo para tener entrenamientos de natación'));break;}
+        if(g.skipped)setTimeout(()=>toast('🩹 Skipped '+g.skipped+' exercises to protect your injury'),400);
+        S.active={start:Date.now(),focus:'swim',unit:U(),title:g.title,exercises:g.entries};save();render();window.scrollTo(0,0);break;}
+      if(focusSel==='cardio'){const en=generateCardio();if(!en.length){toast(activeInjuries().length?'No safe cardio for your injury with your equipment. An arm bike works with most leg injuries; tick it in Settings if you have one':'Add cardio equipment in Settings, or try Brisk Walk');break;}
         S.active={start:Date.now(),focus:'cardio',unit:U(),exercises:en};save();render();window.scrollTo(0,0);break;}
       if(PREP[focusSel]){const g=generatePrep(focusSel);if(!g.entries.length){toast('No safe exercises for that focus with your injury. Try another focus.');break;}
         if(g.skipped)setTimeout(()=>toast('🩹 Skipped '+g.skipped+' exercises to protect your injury'),400);
@@ -2487,6 +2580,7 @@ document.addEventListener('click',e=>{
     case'rest+':restEnd+=15000;restTotal+=15;tick();break;
     case'restskip':stopRest();break;
     case'rankhelp':rankHelp();break;
+    case'statstog':S.settings.noStats=!S.settings.noStats;save();render();break;
     case'dexascan':$('#dexafile').click();break;
     case'waistform':waistForm();break;
     case'waistsave':{const x=waistRead();if(!(x.h>=48&&x.h<=90)||!(x.w>=15&&x.w<=80)){toast(L('Enter your height and waist','Ingresa tu estatura y cintura'));break;}
@@ -2496,11 +2590,11 @@ document.addEventListener('click',e=>{
     case'dexaadd':dexaForm();break;
     case'dexaedit':{const sc=S.scans.find(x=>x.id===b.dataset.id);if(sc)dexaForm(sc);break;}
     case'dexadel':{if(ask('Delete this scan?')){S.scans=S.scans.filter(x=>x.id!==b.dataset.id);save();closeModal();render();}break;}
-    case'dexasave':dexaSave();break;
+    case'dexasave':stat('dexa-save',true);dexaSave();break;
     case'dexaplan':dexaApplyPlan();break;
     case'goalmaint':{S.settings.goal='hypertrophy';const n=S.settings.nut;if(n){n.goal='maintain';n.auto=true;}save();render();toast(L('Switched to maintain. Nice work!','Cambiaste a mantener. ¡Buen trabajo!'));break;}
     case'addburn':{const k=+b.dataset.k||0,d=dk(Date.now());S.burn=S.burn||{};S.burn[d]=(+S.burn[d]||0)+k;save();b.disabled=true;b.textContent=L('Added ✓','Agregado ✓');toast(L(`Added ${k} kcal to Food`,`Se sumaron ${k} kcal en Comida`));break;}
-    case'rankshare':shareRanks();break;
+    case'rankshare':stat('share-ranks',true);shareRanks();break;
     case'rankcopy':copyRanks();break;
     case'usmccalc':usmcVals=null;usmcCalc(b.dataset.t);break;
     case'usmcca':S.settings.combatArms=!S.settings.combatArms;save();usmcCalc();break;
@@ -2524,7 +2618,7 @@ document.addEventListener('click',e=>{
       if(ask('Delete this custom exercise?')){S.custom=S.custom.filter(c=>c.id!==id);rebuild();save();render();}break;}
     case'day-':shiftDay(-1);render();break;
     case'day+':shiftDay(1);render();break;
-    case'scanfood':$('#scanfile').click();break;
+    case'scanfood':stat('scan-label',true);$('#scanfile').click();break;
     case'addfood':scanThumb='';foodForm(null);break;
     case'sv-':case'sv+':{const el=$('#fsv');let v=parseFloat((el.value||'1').replace(',','.'))||1;v=b.dataset.a==='sv+'?(v<1?Math.min(1,v+.25):v+.5):(v<=1?Math.max(.25,v-.25):v-.5);el.value=r1(v);foodTotal();break;}
     case'savefood':{const x=readFoodForm();if(!x.cal&&!x.p&&!x.c&&!x.f){toast('Enter at least the calories');break;}
@@ -2544,7 +2638,7 @@ document.addEventListener('click',e=>{
     case'w8-':case'w8+':{const i=$('#w8in');const v=parseFloat((i.value||'0').replace(',','.'))||bodyW()||0;i.value=r1(v+(b.dataset.a==='w8+'?1:-1)*(U()==='lb'?.2:.1));break;}
     case'savew8':{const v=parseFloat(($('#w8in').value||'').replace(',','.'));if(!(v>0)){toast('Enter your weight');break;}logWeight(v);save();closeModal();render();toast('Weight logged');break;}
     case'delw8':if(ask('Delete this weight entry?')){S.weights=S.weights.filter(x=>x.d!==b.dataset.d);const l=S.weights[S.weights.length-1];if(l){S.settings.bw=+conv(l.w,l.u);S.settings.bwUnit=U();}save();render();}break;
-    case'scanbc':scanBarcode();break;
+    case'scanbc':stat('scan-barcode',true);scanBarcode();break;
     case'bcphoto':$('#bcfile').click();break;
     case'bctype':stopScanner();typeBarcode();break;
     case'bclookup':lookupBarcode($('#bcnum').value);break;
@@ -2609,6 +2703,7 @@ document.addEventListener('change',e=>{
 
 document.documentElement.lang=LANG();startTranslator();trNode(document.body);
 render();
+setTimeout(statStart,1500);
 if(!S.settings.langChosen)langPicker();else if(!S.settings.onboarded)onboarding();else if(!profileDone()&&!S.settings.askedProfile)profileAsk();
 loadNews();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadNews();});
