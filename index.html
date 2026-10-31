@@ -248,7 +248,7 @@ html{--cbg:var(--card)}html.hasbg{--cbg:rgba(23,25,31,.74)}
 html.brd-cring .card::after{opacity:0}
 .brdv-rgbline{--brdg:linear-gradient(90deg,#ff004c,#ff9900,#ffe600,#33ff66,#00c3ff,#7a5cff,#ff00d4,#ff004c);--brdglow:rgba(170,120,255,.35);--brdsp:4s;--fl:3s}
 .brdv-gold{--brdg:linear-gradient(90deg,#7a5410,#ffe08a,#c9971c,#fff3c4,#9c6f12,#ffe08a,#7a5410);--brdglow:rgba(242,182,50,.4);--brdsp:7s;--fl:3s}
-html.brd-on .card{position:relative;border-color:transparent;animation:brdflick var(--fl) ease-in-out infinite}
+html.brd-on .card{position:relative;border-color:transparent;box-shadow:0 0 11px -2px var(--brdglow);animation:brdflick var(--fl) ease-in-out infinite}
 html.brd-on .card::after,.lbrd[class*=brdv-]::after{content:'';position:absolute;inset:-1px;border-radius:inherit;padding:1.5px;background:var(--brdg);background-size:300% 100%;animation:brdflow var(--brdsp) linear infinite;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
 .lbrd{position:relative;border:1.5px solid var(--line)}.lbrd[class*=brdv-]{border-color:transparent;animation:brdflick var(--fl) ease-in-out infinite}
 html.brd-on .gcard::after{inset:0;z-index:1}
@@ -260,11 +260,11 @@ html.brd-fire .card::after{padding:2.5px;filter:drop-shadow(0 0 4px var(--brdglo
 html.brd-fire .card:not(.gcard)::before{content:'';position:absolute;left:14px;right:14px;top:-15px;height:17px;pointer-events:none;background:var(--brdg);background-size:300% 100%;-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2218%22%3E%3Cpath%20d%3D%22M0%2018%20C2%2014.4%201%209%203%209%20C5%2012.600000000000001%203.5%2015.75%203.5%2018%20C9%2012.0%208%203%2010%203%20C12%209.0%2010.5%2016.25%2010.5%2018%20C16%2015.2%2015%2011%2017%2011%20C19%2013.8%2017.5%2016.25%2017.5%2018%20C23%2011.2%2022%201%2024%201%20C26%207.800000000000001%2025.0%2015.5%2025.0%2018%20C31%2014.0%2030%208%2032%208%20C34%2012.0%2032.5%2015.5%2032.5%2018%20C38%2012.399999999999999%2037%204%2039%204%20C41%209.6%2040.0%2016.0%2040.0%2018%20C46%2014.8%2045%2010%2047%2010%20C49%2013.2%2047.5%2016.0%2047.5%2018%20C53%2011.6%2052%202%2054%202%20C56%208.4%2055.5%2015.75%2055.5%2018%20L60%2018%20Z%22%20fill%3D%22%23000%22/%3E%3C/svg%3E") 0 100%/60px 18px repeat-x;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2218%22%3E%3Cpath%20d%3D%22M0%2018%20C2%2014.4%201%209%203%209%20C5%2012.600000000000001%203.5%2015.75%203.5%2018%20C9%2012.0%208%203%2010%203%20C12%209.0%2010.5%2016.25%2010.5%2018%20C16%2015.2%2015%2011%2017%2011%20C19%2013.8%2017.5%2016.25%2017.5%2018%20C23%2011.2%2022%201%2024%201%20C26%207.800000000000001%2025.0%2015.5%2025.0%2018%20C31%2014.0%2030%208%2032%208%20C34%2012.0%2032.5%2015.5%2032.5%2018%20C38%2012.399999999999999%2037%204%2039%204%20C41%209.6%2040.0%2016.0%2040.0%2018%20C46%2014.8%2045%2010%2047%2010%20C49%2013.2%2047.5%2016.0%2047.5%2018%20C53%2011.6%2052%202%2054%202%20C56%208.4%2055.5%2015.75%2055.5%2018%20L60%2018%20Z%22%20fill%3D%22%23000%22/%3E%3C/svg%3E") 0 100%/60px 18px repeat-x;filter:drop-shadow(0 0 4px var(--brdglow));transform-origin:50% 100%;animation:fireup 1.1s linear infinite,firelick .45s ease-in-out infinite alternate,brdflow var(--brdsp) linear infinite;opacity:.95}
 html.brd-fire .card:not(.gcard){margin-top:16px}
 html.brd-real .card:not(.gcard){margin-top:22px}
-#firecv{position:fixed;inset:0;width:100vw;height:100vh;z-index:4;pointer-events:none}
+.fcv{position:absolute;left:-13px;top:-37px;z-index:3;pointer-events:none;display:block}
 @keyframes fireup{from{-webkit-mask-position:0 100%;mask-position:0 100%}to{-webkit-mask-position:60px 100%;mask-position:60px 100%}}
 @keyframes firelick{from{transform:scaleY(.8)}to{transform:scaleY(1.12)}}
-@media (prefers-reduced-motion:reduce){html.brd-fire .card::before{animation:none!important}}
-@media (prefers-reduced-motion:reduce){html.acc-rgb,.bn-rgb,.abg-rgb{animation:none!important}html.brd-on .card,html.brd-on .card::after,.lbrd,.lbrd::after,html.brd-on .gcard{animation:none!important}}
+@media (prefers-reduced-motion:reduce){html.brd-fire:not(.motion-force) .card::before{animation:none!important}}
+@media (prefers-reduced-motion:reduce){html.acc-rgb:not(.motion-force),html:not(.motion-force) .bn-rgb,html:not(.motion-force) .abg-rgb{animation:none!important}html.brd-on:not(.motion-force) .card,html.brd-on:not(.motion-force) .card::after,html:not(.motion-force) .lbrd,html:not(.motion-force) .lbrd::after,html.brd-on:not(.motion-force) .gcard{animation:none!important}}
 .gfx{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:9999}
 .gfin{background:var(--card2);border-radius:12px;padding:10px 12px;margin:0 0 12px}.gfinhd{display:flex;flex-direction:column;gap:2px;margin-bottom:6px}
 .gpromo{text-align:center}.gpromobadge{display:flex;justify-content:center;margin-top:6px}
@@ -559,7 +559,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.10.31u';
+const APP_VERSION='2026.10.31w';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false,branch:''},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],templates:[],water:{},scores:[],active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(!('branch' in (d.settings||{})))st.branch=st.onboarded?'usmc':'';if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[],templates:d.templates||[],water:d.water||{},scores:d.scores||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -2078,6 +2078,9 @@ const G_BRD={none:['Plain','Simple'],neon:['Neon pulse','Pulso neón'],rgbline:[
 const G_FIRE=new Set(['orange','red','lightblue','darkblue','toxic','rgb']);
 const FIRE_SVG='<svg id="fflsvg" width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="ffl" x="-10%" y="-30%" width="120%" height="160%"><feTurbulence type="fractalNoise" baseFrequency="0.03 0.12" numOctaves="2" seed="4" result="n"><animate attributeName="baseFrequency" dur="1.4s" values="0.03 0.12;0.04 0.16;0.026 0.1;0.03 0.12" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="6" xChannelSelector="R" yChannelSelector="G"/></filter></svg>';
 // realistic fire: one canvas over the page draws glowing particles that rise off each card's edges
+// iPhone "Reduce Motion" (also switched on by some Low Power setups) pauses animated looks unless the user opts in
+const sysReduce=()=>!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+const motionOK=()=>!sysReduce()||!!S.settings.motionAlways;
 const G_REAL={
   wildfire:[[255,250,225],[255,222,120],[255,170,40],[255,110,10],[225,55,0],[150,22,0],[70,8,0]],
   bluefire:[[255,255,255],[205,240,255],[120,195,255],[50,130,255],[30,70,235],[45,30,170],[25,10,80]],
@@ -2087,7 +2090,9 @@ const RGB_HUES=18,hsl2rgb=(h,sat,l)=>{const a=sat*Math.min(l,1-l),f=n=>{const k=
 // RGB fire: the hue depends on screen position and time, so the line and the flames above it share one moving rainbow
 const rgbHue=(x,T)=>(((x/innerWidth)*300-T*70)%360+360)%360;
 const rgbPal=h=>[[.6,.95],[1,.82],[1,.66],[1,.55],[1,.45],[1,.3],[1,.14]].map(([sa,l])=>hsl2rgb(h,sa,l));
-const FIRE={kind:null,cv:null,cx:null,raf:0,ps:[],spr:[],cards:[],fr:0,last:0,dpr:1};
+const FIRE={kind:null,raf:0,spr:[],list:[],fr:0,last:0};
+// each card gets its own fire canvas inside it, so the flames scroll with the card exactly (no lag behind the page)
+const FPX=12,FPT=36,FPB=6;
 function fireSprites(pal,N=24,S=64){const out=[];
   for(let i=0;i<N;i++){const t=i/(N-1),f=t*(pal.length-1),a=Math.floor(f),b=Math.min(pal.length-1,a+1),m=f-a,c=pal[a].map((v,k)=>Math.round(v+(pal[b][k]-v)*m));
     const o=document.createElement('canvas');o.width=S;o.height=S*2;const x=o.getContext('2d');
@@ -2095,50 +2100,51 @@ function fireSprites(pal,N=24,S=64){const out=[];
     g.addColorStop(0,`rgba(${c},.9)`);g.addColorStop(.4,`rgba(${c},.4)`);g.addColorStop(.75,`rgba(${c},.1)`);g.addColorStop(1,`rgba(${c},0)`);x.fillStyle=g;x.beginPath();x.arc(0,0,S/2,0,7);x.fill();out.push(o);}
   return out;}
 function fireSet(kind){
-  const rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(rm)kind=null;
-  if(kind===FIRE.kind)return;FIRE.kind=kind;FIRE.ps=[];
-  if(!kind){document.documentElement.classList.remove('brd-cring');cancelAnimationFrame(FIRE.raf);FIRE.raf=0;if(FIRE.cv){FIRE.cv.remove();FIRE.cv=null;}return;}
-  if(!FIRE.cv){FIRE.cv=document.createElement('canvas');FIRE.cv.id='firecv';document.body.appendChild(FIRE.cv);FIRE.cx=FIRE.cv.getContext('2d');}
+  if(!motionOK())kind=null;
   document.documentElement.classList.toggle('brd-cring',kind==='rgbfire');
+  if(kind===FIRE.kind)return;FIRE.kind=kind;
+  for(const f of FIRE.list){f.ps=[];if(f.cv)f.cv.remove();}FIRE.list=[];
+  if(!kind){cancelAnimationFrame(FIRE.raf);FIRE.raf=0;document.querySelectorAll('canvas.fcv').forEach(c=>c.remove());return;}
   FIRE.spr=kind==='rgbfire'?Array.from({length:RGB_HUES},(_,i)=>fireSprites(rgbPal(i*360/RGB_HUES),16,48)):[fireSprites(G_REAL[kind])];FIRE.last=0;if(!FIRE.raf)FIRE.raf=requestAnimationFrame(fireTick);}
+function fireCards(){
+  const keep=[];for(const f of FIRE.list)if(f.el.isConnected)keep.push(f);else if(f.cv)f.cv.remove();
+  for(const el of document.querySelectorAll('#view .card')){if(keep.some(f=>f.el===el))continue;
+    const cv=document.createElement('canvas');cv.className='fcv';cv.setAttribute('aria-hidden','true');el.prepend(cv);
+    keep.push({el,cv,cx:cv.getContext('2d'),ps:[],w:0,h:0,dpr:0,drawn:false,top:!el.classList.contains('gcard'),rad:parseFloat(getComputedStyle(el).borderTopLeftRadius)||14});}
+  FIRE.list=keep;}
 function fireTick(ts){
   if(!FIRE.kind){FIRE.raf=0;return;}FIRE.raf=requestAnimationFrame(fireTick);
   if(document.hidden){FIRE.last=0;return;}
-  const cv=FIRE.cv,cx=FIRE.cx,W=innerWidth,H=innerHeight,dpr=Math.min(2,devicePixelRatio||1);
-  if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
-  const dt=FIRE.last?Math.min(.05,(ts-FIRE.last)/1000):.016;FIRE.last=ts;const T=ts/1000;
-  if(FIRE.fr++%20===0||!FIRE.cards.length||!FIRE.cards[0].isConnected)FIRE.cards=[...document.querySelectorAll('#view .card')];
-  const nav=document.querySelector('nav.tabs'),bot=nav?nav.getBoundingClientRect().top:H,top=(document.querySelector('.topbar')||{getBoundingClientRect:()=>({bottom:0})}).getBoundingClientRect().bottom;
-  const modal=document.querySelector('#modal:not(.hidden)');
-  const ps=FIRE.ps,emit=(x,y,sz,vy,life,vx,ember,ac)=>{if(ps.length<700)ps.push({x,y,vx:vx||0,vy,sz,life,age:0,ph:Math.random()*6.3,ember,ac:ac||0})},bases=[];
-  const rings=[];for(const c of FIRE.cards){const r=c.getBoundingClientRect();if(r.bottom<top-30||r.top>bot+30||r.width<40)continue;
-    rings.push([r,c._rad||(c._rad=parseFloat(getComputedStyle(c).borderTopLeftRadius)||14)]);if(modal)continue;
-    const L=r.left+8,R=r.right-8,w=R-L,topFl=!c.classList.contains('gcard');
-    // top edge: dense, with tall tongues that drift along the edge
-    if(topFl){const n=w*dt*.9;for(let i=0;i<n||Math.random()<n-i;i++){const x=L+Math.random()*w,
-        k=.5+.5*Math.sin(x*.05+T*2.1)*Math.sin(x*.019-T*1.3)+.3*Math.sin(x*.13+T*4.7);
-        const h=Math.max(.2,Math.min(1.2,k));emit(x,r.top+1,4+5.5*h+Math.random()*2,-(6+8*h),.4+.45*h*(.5+Math.random()*.5),0,0,-(70+130*h));if(i>300)break;}bases.push(r);}
-    // sides: thin licks running up the edges
-    const ns=r.height*dt*.12;for(let i=0;i<ns||Math.random()<ns-i;i++){const y=r.top+10+Math.random()*(r.height-20),side=Math.random()<.5;
-      emit(side?r.left+.5:r.right-.5,y,2+Math.random()*1.8,-(16+Math.random()*18),.2+Math.random()*.15,(side?-1:1)*(2+Math.random()*3));if(i>200)break;}
-    // embers
-    if(topFl&&Math.random()<dt*w/140)emit(L+Math.random()*w,r.top,1.2+Math.random()*1.2,-(45+Math.random()*40),.9+Math.random()*.6,(Math.random()-.5)*20,1);}
-  cx.setTransform(dpr,0,0,dpr,0,0);cx.clearRect(0,0,W,H);
-  cx.save();cx.beginPath();cx.rect(0,top,W,Math.max(0,bot-top));cx.clip();cx.globalCompositeOperation='lighter';
-  const rgb=FIRE.kind==='rgbfire',sets=FIRE.spr,NH=sets.length,N=sets[0].length,hgrad=(x0,x1,sat,l,al)=>{const g=cx.createLinearGradient(x0,0,x1,0);for(let k=0;k<=8;k++){const x=x0+(x1-x0)*k/8;g.addColorStop(k/8,`rgba(${hsl2rgb(rgbHue(x,T),sat,l)},${al})`);}return g;};
-  if(rgb){cx.globalCompositeOperation='source-over';
-    for(const[r,rad]of rings){cx.beginPath();cx.roundRect?cx.roundRect(r.left+.75,r.top+.75,r.width-1.5,r.height-1.5,rad):cx.rect(r.left+.75,r.top+.75,r.width-1.5,r.height-1.5);
-      cx.strokeStyle=hgrad(r.left,r.right,1,.55,.28);cx.lineWidth=6;cx.stroke();cx.strokeStyle=hgrad(r.left,r.right,1,.6,1);cx.lineWidth=2;cx.stroke();}
-    cx.globalCompositeOperation='lighter';}
-  for(const r of bases){let g;if(rgb)g=hgrad(r.left,r.right,1,.6,.4);else{const pal=G_REAL[FIRE.kind];g=cx.createLinearGradient(0,r.top-7,0,r.top+3);g.addColorStop(0,`rgba(${pal[3]},0)`);g.addColorStop(.6,`rgba(${pal[2]},.35)`);g.addColorStop(1,`rgba(${pal[1]},.55)`);}
-    cx.globalAlpha=.75+.25*Math.sin(T*9+r.top);cx.fillStyle=g;if(rgb){cx.fillRect(r.left+10,r.top-3,r.width-20,4);cx.globalAlpha*=.4;cx.fillRect(r.left+10,r.top-8,r.width-20,5);}else cx.fillRect(r.left+10,r.top-7,r.width-20,9);}cx.globalAlpha=1;
-  for(let i=ps.length-1;i>=0;i--){const p=ps[i];p.age+=dt;const t=p.age/p.life;if(t>=1){ps[i]=ps[ps.length-1];ps.pop();continue;}
-    p.vy+=p.ac*dt;p.vy*=1+dt*.5;p.x+=(p.vx+Math.sin(T*7+p.ph+p.y*.08)*(p.ember?14:9)*t)*dt;p.y+=p.vy*dt;
-    const spr=rgb?sets[Math.floor(rgbHue(p.x,T)/360*NH)%NH]:sets[0];
-    if(p.ember){const a=(1-t)*(.6+.4*Math.sin(T*30+p.ph));cx.globalAlpha=Math.max(0,a);cx.drawImage(spr[3],p.x-p.sz*1.5,p.y-p.sz*4.4,p.sz*3,p.sz*6);continue;}
-    const sz=p.sz*(1-t*.7),a=Math.min(1,t*14)*Math.pow(1-t,1.1)*.62,im=spr[Math.min(N-1,Math.floor(Math.pow(t,.8)*N))];
-    cx.globalAlpha=a;cx.drawImage(im,p.x-sz,p.y-sz*2.9,sz*2,sz*4);}
-  cx.restore();cx.globalAlpha=1;}
+  const dt=FIRE.last?Math.min(.05,(ts-FIRE.last)/1000):.016;FIRE.last=ts;const T=ts/1000,H=innerHeight;
+  if(FIRE.fr++%15===0||FIRE.list.some(f=>!f.el.isConnected))fireCards();
+  const modal=document.querySelector('#modal:not(.hidden)'),rgb=FIRE.kind==='rgbfire',sets=FIRE.spr,NH=sets.length,N=sets[0].length,dpr=Math.min(2,devicePixelRatio||1);
+  for(const f of FIRE.list){const el=f.el,r=el.getBoundingClientRect();
+    if(r.bottom<-FPT||r.top>H+FPT||r.width<40){if(f.drawn){f.cx.clearRect(0,0,f.cv.width,f.cv.height);f.drawn=false;f.ps=[];}continue;}
+    const w=el.offsetWidth,h=el.offsetHeight,cw=w+FPX*2,ch=h+FPT+FPB;
+    if(f.w!==w||f.h!==h||f.dpr!==dpr){f.w=w;f.h=h;f.dpr=dpr;f.cv.width=Math.round(cw*dpr);f.cv.height=Math.round(ch*dpr);f.cv.style.width=cw+'px';f.cv.style.height=ch+'px';}
+    const cx=f.cx,ps=f.ps,X0=FPX,Y0=FPT,emit=(x,y,sz,vy,life,vx,ember,ac)=>{if(ps.length<260)ps.push({x,y,vx:vx||0,vy,sz,life,age:0,ph:Math.random()*6.3,ember,ac:ac||0})};
+    if(!modal){const L=X0+8,R=X0+w-8,ww=R-L;
+      if(f.top){const n=ww*dt*.9;for(let i=0;i<n||Math.random()<n-i;i++){const x=L+Math.random()*ww,gx=x+r.left,
+          k=.5+.5*Math.sin(gx*.05+T*2.1)*Math.sin(gx*.019-T*1.3)+.3*Math.sin(gx*.13+T*4.7);
+          const hh=Math.max(.2,Math.min(1.2,k));emit(x,Y0+1,4+5.5*hh+Math.random()*2,-(6+8*hh),.4+.45*hh*(.5+Math.random()*.5),0,0,-(70+130*hh));if(i>300)break;}}
+      const ns=h*dt*.12;for(let i=0;i<ns||Math.random()<ns-i;i++){const y=Y0+10+Math.random()*(h-20),side=Math.random()<.5;
+        emit(side?X0+.5:X0+w-.5,y,2+Math.random()*1.8,-(16+Math.random()*18),.2+Math.random()*.15,(side?-1:1)*(2+Math.random()*3));if(i>200)break;}
+      if(f.top&&Math.random()<dt*ww/140)emit(L+Math.random()*ww,Y0,1.2+Math.random()*1.2,-(45+Math.random()*40),.9+Math.random()*.6,(Math.random()-.5)*20,1);}
+    cx.setTransform(dpr,0,0,dpr,0,0);cx.clearRect(0,0,cw,ch);f.drawn=true;
+    const hueAt=x=>rgbHue(x-X0+r.left,T),hgrad=(x0,x1,sat,l,al)=>{const g=cx.createLinearGradient(x0,0,x1,0);for(let k=0;k<=8;k++){const x=x0+(x1-x0)*k/8;g.addColorStop(k/8,`rgba(${hsl2rgb(hueAt(x),sat,l)},${al})`);}return g;};
+    if(rgb){cx.globalCompositeOperation='source-over';cx.beginPath();
+      if(cx.roundRect)cx.roundRect(X0+.75,Y0+.75,w-1.5,h-1.5,f.rad);else cx.rect(X0+.75,Y0+.75,w-1.5,h-1.5);
+      cx.strokeStyle=hgrad(X0,X0+w,1,.55,.28);cx.lineWidth=6;cx.stroke();cx.strokeStyle=hgrad(X0,X0+w,1,.6,1);cx.lineWidth=2;cx.stroke();}
+    cx.globalCompositeOperation='lighter';
+    if(f.top){let g;if(rgb)g=hgrad(X0,X0+w,1,.6,.4);else{const pal=G_REAL[FIRE.kind];g=cx.createLinearGradient(0,Y0-7,0,Y0+3);g.addColorStop(0,`rgba(${pal[3]},0)`);g.addColorStop(.6,`rgba(${pal[2]},.35)`);g.addColorStop(1,`rgba(${pal[1]},.55)`);}
+      cx.globalAlpha=.75+.25*Math.sin(T*9+r.left);cx.fillStyle=g;if(rgb){cx.fillRect(X0+10,Y0-3,w-20,4);cx.globalAlpha*=.4;cx.fillRect(X0+10,Y0-8,w-20,5);}else cx.fillRect(X0+10,Y0-7,w-20,9);cx.globalAlpha=1;}
+    for(let i=ps.length-1;i>=0;i--){const p=ps[i];p.age+=dt;const t=p.age/p.life;if(t>=1){ps[i]=ps[ps.length-1];ps.pop();continue;}
+      p.vy+=p.ac*dt;p.vy*=1+dt*.5;p.x+=(p.vx+Math.sin(T*7+p.ph+p.y*.08)*(p.ember?14:9)*t)*dt;p.y+=p.vy*dt;
+      const spr=rgb?sets[Math.floor(hueAt(p.x)/360*NH)%NH]:sets[0];
+      if(p.ember){const a=(1-t)*(.6+.4*Math.sin(T*30+p.ph));cx.globalAlpha=Math.max(0,a);cx.drawImage(spr[3],p.x-p.sz*1.5,p.y-p.sz*4.4,p.sz*3,p.sz*6);continue;}
+      const sz=p.sz*(1-t*.7),a=Math.min(1,t*14)*Math.pow(1-t,1.1)*.62,im=spr[Math.min(N-1,Math.floor(Math.pow(t,.8)*N))];
+      cx.globalAlpha=a;cx.drawImage(im,p.x-sz,p.y-sz*2.9,sz*2,sz*4);}
+    cx.globalAlpha=1;cx.globalCompositeOperation='source-over';}}
 document.addEventListener('visibilitychange',()=>{FIRE.last=0;});
 const G_FX={none:['None','Ninguno'],confetti:['Confetti','Confeti'],sparks:['Sparks','Chispas'],fireworks:['Fireworks','Fuegos artificiales'],goldrain:['Gold rain','Lluvia de oro'],rgb:['RGB burst','Explosión RGB']};
 const G_UNLOCK=[[2,'acc','ocean'],[3,'ban','woodland'],[3,'bg','grid'],[4,'fx','confetti'],[4,'brd','neon'],[5,'acc','olive'],[5,'bg','carbon'],[6,'ban','desert'],[6,'brd','orange'],[7,'fx','sparks'],[7,'bg','topo'],[8,'acc','crimson'],[8,'brd','red'],[9,'ban','night'],[9,'bg','camo'],[9,'brd','rgbline'],[10,'fx','fireworks'],[10,'brd','lightblue'],[11,'acc','arctic'],[11,'brd','wildfire'],[11,'bg','aurora'],[12,'ban','digital'],[12,'brd','darkblue'],[12,'acc','rgb'],[13,'ban','sunset'],[13,'bg','dusk'],[14,'acc','violet'],[14,'brd','toxic'],[14,'ban','rgb'],[15,'ban','steel'],[15,'brd','bluefire'],[15,'bg','nightsky'],[16,'fx','goldrain'],[16,'brd','rgb'],[16,'bg','rgb'],[17,'acc','gold'],[17,'brd','rgbfire'],[17,'bg','ember'],[18,'ban','stars'],[18,'brd','gold'],[18,'fx','rgb'],[19,'ban','command'],[19,'brd','ghostfire'],[19,'bg','command']];
@@ -2148,7 +2154,7 @@ const gUnlockLvl=(k,id)=>{const u=G_UNLOCK.find(x=>x[1]===k&&x[2]===id);return u
 const gOn=()=>!!S.settings.gameOn;
 const G=()=>{S.game=S.game||{xp:0,acc:'ember',ban:'none',fx:'none',bg:'none',q:null,wk:null,notes:[],wday:{}};if(!S.game.bg)S.game.bg='none';if(!S.game.brd)S.game.brd='none';return S.game;};
 // apply the equipped accent everywhere (only while game mode is on)
-function gApplyLook(){const r=document.documentElement,ac=gOn()&&G().acc&&G_ACC[G().acc]?G().acc:null;r.classList.toggle('acc-rgb',ac==='rgb');if(ac&&ac!=='rgb')r.style.setProperty('--acc',G_ACC[ac][2]);else r.style.removeProperty('--acc');
+function gApplyLook(){const r=document.documentElement;r.classList.toggle('motion-force',!!S.settings.motionAlways);const ac=gOn()&&G().acc&&G_ACC[G().acc]?G().acc:null;r.classList.toggle('acc-rgb',ac==='rgb');if(ac&&ac!=='rgb')r.style.setProperty('--acc',G_ACC[ac][2]);else r.style.removeProperty('--acc');
   let el=document.getElementById('appbg');if(!el){el=document.createElement('div');el.id='appbg';document.body.prepend(el);}const bg=gOn()?G().bg:'none';const on=bg&&bg!=='none'&&G_BG[bg];el.className=on?'abg-'+bg:'';r.classList.toggle('hasbg',!!on);
   for(const c of[...r.classList])if(c.startsWith('brdv-'))r.classList.remove(c);const bd=gOn()?G().brd:'none',bon=bd&&bd!=='none'&&G_BRD[bd];r.classList.toggle('brd-on',!!bon);if(bon)r.classList.add('brdv-'+bd);
   const real=bon&&G_REAL[bd];r.classList.toggle('brd-real',!!real);fireSet(real?bd:null);
@@ -2255,6 +2261,7 @@ function gLocker(){const g=G(),l=gLevel(g.xp);
   showModal(`<div data-notr="1"><div class="sheethead"><h3>🎖 ${L('Locker','Casillero')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
   <div class="card gcard bn-${g.ban}" style="margin:0"><div class="gcardin" style="display:flex;gap:12px;align-items:center">${gBadge(l,52)}<div><div class="muted small">${gRank(l).grade} · ${num(g.xp)} XP</div><div style="font-weight:800;font-size:18px">${gRank(l).name}</div></div></div></div>
   ${S.settings.ownerPreview?`<div class="calcbox" style="margin-top:10px">👁 ${L('Owner preview: every look is unlocked for review. XP and rank are unchanged. Tap the version number in Settings 7 times to turn this off.','Vista de dueño: todos los estilos están desbloqueados para revisar. El XP y el rango no cambian. Toca el número de versión en Ajustes 7 veces para apagarlo.')}</div><button class="btn ghost" data-a="gpromotest">${L('Preview the promotion screen','Ver la pantalla de ascenso')}</button>`:''}
+  ${sysReduce()?`<div class="calcbox" style="margin-top:10px">🎞 ${S.settings.motionAlways?L('Reduce Motion is on in your iPhone settings, but animated looks are set to play anyway.','Reducir movimiento está activado en tu iPhone, pero los estilos animados están configurados para verse de todos modos.'):L('Reduce Motion is on in your iPhone settings, so animated looks are paused: fire borders, Neon pulse, RGB cycle, RGB wave and RGB glow.','Reducir movimiento está activado en tu iPhone, así que los estilos animados están en pausa: bordes de fuego, Pulso neón, Ciclo RGB, Ola RGB y Resplandor RGB.')}</div><button class="btn ghost" data-a="motiontog">${S.settings.motionAlways?L('Pause animations again','Pausar animaciones otra vez'):L('Play animations anyway','Ver animaciones de todos modos')}</button>`:''}
   <p class="muted small">${L('Earn XP from workouts and quests to get promoted. Every few promotions unlocks a new look.','Gana XP con entrenamientos y misiones para ascender. Cada pocos ascensos se desbloquea un nuevo estilo.')}</p>
   ${sec('acc',G_ACC)}${sec('ban',G_BAN)}${sec('bg',G_BG)}${sec('brd',G_BRD)}${sec('fx',G_FX)}
   <details style="margin-top:14px"><summary class="muted small" style="cursor:pointer">${L('All ranks','Todos los rangos')}</summary>${Array.from({length:G_MAX},(_,k)=>k+1).map(n=>`<div class="hrow" style="${n===l?'color:var(--acc);font-weight:700':''}"><span>${gGrade(n)} · ${gRank(n).name}</span><span class="muted">${num(gNeed(n))} XP</span></div>`).join('')}</details>
@@ -3511,7 +3518,7 @@ function vSettings(){
   ${injuryCard()}
   <div class="card">${prefsForm()}</div>
   <div class="card"><h3>Custom exercises</h3>${cust||'<p class="muted small">Add exercises the built-in list is missing.</p>'}<button class="btn ghost" data-a="newcustom">+ Add custom exercise</button></div>
-  <div class="card" data-notr="1"><h3>${L('Workout tab','Pestaña Entrenar')}</h3><label class="ebrow" style="border:0;margin-top:0;padding-top:0"><span><b>${L('Weekly summary','Resumen semanal')}</b><span class="muted small">${L('A recap of last week at the start of each week.','Un resumen de la semana pasada al inicio de cada semana.')}</span></span><button class="tog ${S.settings.weekSumOff?'':'on'}" data-a="weeksumtog" aria-label="Weekly summary"><i></i></button></label><label class="ebrow"><span><b>🎮 ${L('Game mode','Modo juego')}</b><span class="muted small">${L('Daily quests, XP and promotions through your branch\'s ranks. Unlock new accent colors, banners, backgrounds, card borders and effects.','Misiones diarias, XP y ascensos por los rangos de tu rama. Desbloquea colores, banners, fondos, bordes y efectos.')}</span></span><button class="tog ${S.settings.gameOn?'on':''}" data-a="gametog" aria-label="Game mode"><i></i></button></label></div>
+  <div class="card" data-notr="1"><h3>${L('Workout tab','Pestaña Entrenar')}</h3><label class="ebrow" style="border:0;margin-top:0;padding-top:0"><span><b>${L('Weekly summary','Resumen semanal')}</b><span class="muted small">${L('A recap of last week at the start of each week.','Un resumen de la semana pasada al inicio de cada semana.')}</span></span><button class="tog ${S.settings.weekSumOff?'':'on'}" data-a="weeksumtog" aria-label="Weekly summary"><i></i></button></label><label class="ebrow"><span><b>🎮 ${L('Game mode','Modo juego')}</b><span class="muted small">${L('Daily quests, XP and promotions through your branch\'s ranks. Unlock new accent colors, banners, backgrounds, card borders and effects.','Misiones diarias, XP y ascensos por los rangos de tu rama. Desbloquea colores, banners, fondos, bordes y efectos.')}</span></span><button class="tog ${S.settings.gameOn?'on':''}" data-a="gametog" aria-label="Game mode"><i></i></button></label>${S.settings.gameOn?`<label class="ebrow"><span><b>🎞 ${L('Animated looks','Estilos animados')}</b><span class="muted small">${L('Play fire borders, RGB and other animated rewards even when Reduce Motion is on in your iPhone settings.','Mostrar bordes de fuego, RGB y otras recompensas animadas aunque Reducir movimiento esté activado en tu iPhone.')}${sysReduce()?' <b>'+L('Reduce Motion is on right now.','Reducir movimiento está activado ahora.')+'</b>':''}</span></span><button class="tog ${S.settings.motionAlways?'on':''}" data-a="motiontog" aria-label="Animated looks"><i></i></button></label>`:''}</div>
   <div class="card" data-notr="1"><h3>${L('Privacy','Privacidad')}</h3><label class="ebrow" style="border:0;margin-top:0;padding-top:0"><span><b>${L('Send anonymous usage counts','Enviar conteos de uso anónimos')}</b><span class="muted small">${L('Counts installs, app opens and which features get used, to help improve Forge. No names, workouts, food, weight or health data are ever sent.','Cuenta instalaciones, aperturas y qué funciones se usan, para mejorar Forge. Nunca se envían nombres, entrenamientos, comida, peso ni datos de salud.')}</span></span><button class="tog ${S.settings.noStats?'':'on'}" data-a="statstog" aria-label="Send anonymous usage counts"><i></i></button></label></div>
   <div class="card"><h3>Backup</h3><p class="muted small">Your data lives only on this phone. Removing the app from your Home Screen deletes it. To move to a new phone, tap Copy backup, paste the text somewhere safe (Notes, a text or email to yourself), then use Paste backup on the new phone.</p><button class="btn primary" data-a="copybk">Copy backup</button><button class="btn ghost" data-a="pastebk">Paste backup</button><p class="muted small" style="margin:14px 0 0">Or save it as a file:</p><button class="btn ghost" data-a="export">Export backup</button><button class="btn ghost" data-a="import">Import backup</button><input type="file" id="importfile" accept="application/json,.json" hidden></div>
   <div class="card"><button class="btn danger-ghost" style="margin-top:0" data-a="reset">Erase all data</button></div>
@@ -3756,6 +3763,7 @@ document.addEventListener('click',e=>{
     case'gpromotest':{const l=gLevel(G().xp);closeModal();setTimeout(()=>gPromo(Math.max(1,l-1),l),350);break;}
     case'glocker':gLocker();break;
     case'gequip':{G()[b.dataset.k]=b.dataset.id;save();gApplyLook();const inL=!!b.closest('.lgrid');render();if(b.dataset.k==='fx')gEffect(b.dataset.id,true);if(inL)gLocker();else toast(L('Equipped ✓','Equipado ✓'));break;}
+    case'motiontog':S.settings.motionAlways=!S.settings.motionAlways;save();render();if(document.querySelector('#modal:not(.hidden) .lgrid'))gLocker();break;
     case'weeksumtog':S.settings.weekSumOff=!S.settings.weekSumOff;save();render();break;
     case'weekseen':S.settings.weekSeen=b.dataset.k;save();render();break;
     case'backuplater':S.settings.backupSnooze=Date.now();save();render();break;
