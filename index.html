@@ -197,6 +197,24 @@ nav.tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2
 .cdrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 6px}.nag{border:1px solid var(--warn)}
 .tclock{font-size:60px;font-weight:800;text-align:center;font-variant-numeric:tabular-nums;margin:8px 0}
 .tbig{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:180px;border-radius:20px;border:0;background:var(--acc);color:#fff;font-size:68px;font-weight:800;margin:4px 0 12px;touch-action:manipulation;cursor:pointer;-webkit-user-select:none;user-select:none}.tbig small{font-size:13px;font-weight:600;opacity:.85}
+.gcard{position:relative;overflow:hidden;cursor:pointer}.gcardin{position:relative}
+.gcard:not(.bn-none)::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,11,14,.82),rgba(10,11,14,.45))}
+.bn-woodland{background:radial-gradient(circle at 18% 30%,#3d4f2a 0 16%,transparent 17%),radial-gradient(circle at 72% 62%,#26311c 0 21%,transparent 22%),radial-gradient(circle at 45% 85%,#5b4a2f 0 14%,transparent 15%),radial-gradient(circle at 88% 18%,#1f2a18 0 13%,transparent 14%),radial-gradient(circle at 35% 10%,#6a5a3a 0 9%,transparent 10%),#4a5d32}
+.bn-desert{background:radial-gradient(circle at 20% 35%,#a88b5c 0 16%,transparent 17%),radial-gradient(circle at 70% 65%,#8c6f45 0 18%,transparent 19%),radial-gradient(circle at 50% 15%,#d9c49b 0 12%,transparent 13%),radial-gradient(circle at 90% 30%,#b89a68 0 10%,transparent 11%),#c2a878}
+.bn-night{background:radial-gradient(#9fb4ff 1px,transparent 1.6px) 0 0/26px 26px,linear-gradient(160deg,#0b1430,#1a1040)}
+.bn-digital{background:linear-gradient(90deg,#55603f 25%,transparent 25% 50%,#3c4430 50% 75%,transparent 75%) 0 0/16px 16px,linear-gradient(#6b7752 25%,transparent 25% 50%,#4a5338 50% 75%,transparent 75%) 0 0/24px 24px,#5c6847}
+.bn-sunset{background:linear-gradient(120deg,#ff7e5f,#feb47b 40%,#7b4397)}
+.bn-steel{background:repeating-linear-gradient(100deg,#4b525d 0 3px,#59616d 3px 6px)}
+.bn-stars{background:radial-gradient(#fff 1px,transparent 1.6px) 0 0/22px 22px,radial-gradient(#cdf 1px,transparent 1.6px) 11px 7px/31px 31px,linear-gradient(160deg,#0a0f2e,#2b1055)}
+.bn-command{background:linear-gradient(135deg,#111 0 42%,#b8860b 42% 46%,#111 46% 54%,#f2b632 54% 58%,#111 58%)}
+.gbar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin:4px 0}.gbar i{display:block;height:100%;background:var(--acc)}
+.qrow{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:14px}.qrow.done{opacity:.6}.qrow.done>span:nth-child(2){text-decoration:line-through}
+.qck{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex:none}.qrow.done .qck{background:var(--good);border-color:var(--good)}
+.lgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.litem{display:flex;flex-direction:column;gap:4px;align-items:flex-start;text-align:left;background:var(--card2);border:2px solid transparent;border-radius:12px;padding:10px;color:var(--text);cursor:pointer;font:inherit}.litem.on{border-color:var(--acc)}.litem.lock{opacity:.45;cursor:default}
+.lsw{width:100%;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px}.lfx{background:var(--card)}.lban{width:100%;height:34px;border-radius:8px;display:block;background:var(--card)}
+.gfx{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:9999}
+.gfin{background:var(--card2);border-radius:12px;padding:10px 12px;margin:0 0 12px}.gfinhd{display:flex;flex-direction:column;gap:2px;margin-bottom:6px}
+.gpromo{text-align:center}.gpromobadge{display:flex;justify-content:center;margin-top:6px}
 .lp{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}.hbtns{display:flex;gap:8px}
 .dodbtn{display:flex;align-items:center;gap:6px;height:44px;padding:0 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);color:var(--text);text-decoration:none;font-weight:700;font-size:15px}.dodbtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .bell{position:relative;width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--line);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer}
@@ -488,7 +506,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.10.31j';
+const APP_VERSION='2026.10.31l';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false,branch:''},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],templates:[],water:{},scores:[],active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(!('branch' in (d.settings||{})))st.branch=st.onboarded?'usmc':'';if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[],templates:d.templates||[],water:d.water||{},scores:d.scores||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -1962,7 +1980,7 @@ function timerTick(){if(!TM||TM.phase!=='run')return;const el=(performance.now()
       TM.next+=hamrDur(Math.min(TM.lvl,21));}
     setTxt('#tmrclock',String(TM.shut));setTxt('#tmrsub',L(`Level ${TM.lvl} · shuttle ${TM.inLvl+1} · ${fmtT(el)}`,`Nivel ${TM.lvl} · vuelta ${TM.inLvl+1} · ${fmtT(el)}`));return;}
   const s=Math.floor(el);if(TM.mode==='hold'&&s>0&&s%30===0&&TM.lb!==s){TM.lb=s;tone(800,0.15);}setTxt('#tmrclock',fmtT(s));}
-function timerFinish(res){clearInterval(TMI);TMI=null;try{TWL&&TWL.release();}catch(e){}TWL=null;TM.phase='done';TM.result=res;timerDraw();}
+function timerFinish(res){if(gOn())G().timerDay=dk(Date.now());clearInterval(TMI);TMI=null;try{TWL&&TWL.release();}catch(e){}TWL=null;TM.phase='done';TM.result=res;timerDraw();}
 function timerStopBtn(){if(!TM)return;const el=Math.max(0,(performance.now()-TM.st)/1000),m=TM.mode;
   if(m==='run'&&TM.laps.length){const last=TM.laps[TM.laps.length-1],end=Math.round(el);if(end-last>=10)TM.laps.push(end);}
   timerFinish(m==='reps'?TM.count:m==='hamr'?TM.shut:m==='hold'?Math.floor(el):Math.round(el));}
@@ -1984,6 +2002,163 @@ function weekSummary(){if(S.settings.weekSumOff)return'';const thisW=weekStart(D
 function backupNag(){const n=S.workouts.length;if(n<5)return'';const st=S.settings,now=Date.now(),last=+st.lastBackup||S.workouts[0].end,snz=+st.backupSnooze||0;
   if(now-last<14*864e5||now-snz<7*864e5)return'';
   return`<div class="card nag" data-notr="1"><b>💾 ${L(`Back up your ${n} workouts`,`Respalda tus ${n} entrenamientos`)}</b><p class="muted small" style="margin:4px 0 10px">${L('Your data lives only on this phone. A backup takes 10 seconds and saves everything if you switch or lose your phone.','Tus datos viven solo en este teléfono. Un respaldo toma 10 segundos y guarda todo si cambias o pierdes el teléfono.')}</p><div class="row" style="margin:0;gap:8px"><button class="btn primary sm" style="margin:0" data-a="copybk">${L('Copy backup','Copiar respaldo')}</button><button class="btn ghost sm" style="margin:0" data-a="backuplater">${L('Later','Después')}</button></div></div>`;}
+
+// ================= GAME MODE: XP, branch ranks, daily/weekly quests, unlockable looks =================
+// 19 levels = E-1..E-9 then O-1..O-10. Civilians use Marine Corps ranks; National Guard uses Army ranks.
+const RANKS={
+ usmc:['Pvt|Private','PFC|Private First Class','LCpl|Lance Corporal','Cpl|Corporal','Sgt|Sergeant','SSgt|Staff Sergeant','GySgt|Gunnery Sergeant','MSgt|Master Sergeant','MGySgt|Master Gunnery Sergeant','2ndLt|Second Lieutenant','1stLt|First Lieutenant','Capt|Captain','Maj|Major','LtCol|Lieutenant Colonel','Col|Colonel','BGen|Brigadier General','MajGen|Major General','LtGen|Lieutenant General','Gen|General'],
+ army:['PV1|Private','PV2|Private Second Class','PFC|Private First Class','SPC|Specialist','SGT|Sergeant','SSG|Staff Sergeant','SFC|Sergeant First Class','MSG|Master Sergeant','SGM|Sergeant Major','2LT|Second Lieutenant','1LT|First Lieutenant','CPT|Captain','MAJ|Major','LTC|Lieutenant Colonel','COL|Colonel','BG|Brigadier General','MG|Major General','LTG|Lieutenant General','GEN|General'],
+ navy:['SR|Seaman Recruit','SA|Seaman Apprentice','SN|Seaman','PO3|Petty Officer Third Class','PO2|Petty Officer Second Class','PO1|Petty Officer First Class','CPO|Chief Petty Officer','SCPO|Senior Chief Petty Officer','MCPO|Master Chief Petty Officer','ENS|Ensign','LTJG|Lieutenant Junior Grade','LT|Lieutenant','LCDR|Lieutenant Commander','CDR|Commander','CAPT|Captain','RDML|Rear Admiral (Lower Half)','RADM|Rear Admiral','VADM|Vice Admiral','ADM|Admiral'],
+ af:['AB|Airman Basic','Amn|Airman','A1C|Airman First Class','SrA|Senior Airman','SSgt|Staff Sergeant','TSgt|Technical Sergeant','MSgt|Master Sergeant','SMSgt|Senior Master Sergeant','CMSgt|Chief Master Sergeant','2d Lt|Second Lieutenant','1st Lt|First Lieutenant','Capt|Captain','Maj|Major','Lt Col|Lieutenant Colonel','Col|Colonel','Brig Gen|Brigadier General','Maj Gen|Major General','Lt Gen|Lieutenant General','Gen|General']};
+const G_MAX=19;
+const gRanks=()=>RANKS[{army:'army',ng:'army',navy:'navy',af:'af'}[S.settings.branch]||'usmc'];
+const gGrade=l=>l<=9?'E-'+l:'O-'+(l-9);
+const gRank=l=>{const[a,n]=gRanks()[Math.min(G_MAX,Math.max(1,l))-1].split('|');return{abbr:a,name:n,grade:gGrade(l)};};
+const gNeed=l=>l<=1?0:Math.round(120*Math.pow(l-1,1.9)/10)*10;   // total XP to reach level l
+const gLevel=xp=>{let l=1;while(l<G_MAX&&xp>=gNeed(l+1))l++;return l;};
+// ---- unlockable looks (level -> reward)
+const G_ACC={ember:['Ember','Brasa','#ff6b35'],ocean:['Ocean','Océano','#3b9cff'],olive:['Olive drab','Verde oliva','#9bb553'],crimson:['Crimson','Carmesí','#ef4a5a'],arctic:['Arctic','Ártico','#4fd6ea'],violet:['Violet','Violeta','#a084ff'],gold:['Gold','Oro','#f2b632']};
+const G_BAN={none:['Plain','Simple'],woodland:['Woodland camo','Camuflaje bosque'],desert:['Desert camo','Camuflaje desierto'],night:['Night ops','Operaciones nocturnas'],digital:['Digital camo','Camuflaje digital'],sunset:['Sunset','Atardecer'],steel:['Steel','Acero'],stars:['Starfield','Campo de estrellas'],command:['Command gold','Oro de mando']};
+const G_FX={none:['None','Ninguno'],confetti:['Confetti','Confeti'],sparks:['Sparks','Chispas'],fireworks:['Fireworks','Fuegos artificiales'],goldrain:['Gold rain','Lluvia de oro']};
+const G_UNLOCK=[[2,'acc','ocean'],[3,'ban','woodland'],[4,'fx','confetti'],[5,'acc','olive'],[6,'ban','desert'],[7,'fx','sparks'],[8,'acc','crimson'],[9,'ban','night'],[10,'fx','fireworks'],[11,'acc','arctic'],[12,'ban','digital'],[13,'ban','sunset'],[14,'acc','violet'],[15,'ban','steel'],[16,'fx','goldrain'],[17,'acc','gold'],[18,'ban','stars'],[19,'ban','command']];
+const gKindName=k=>k==='acc'?L('Accent color','Color de acento'):k==='ban'?L('Banner','Banner'):L('Celebration effect','Efecto de celebración');
+const gItemName=(k,id)=>L(...(k==='acc'?G_ACC:k==='ban'?G_BAN:G_FX)[id].slice(0,2));
+const gUnlockLvl=(k,id)=>{const u=G_UNLOCK.find(x=>x[1]===k&&x[2]===id);return u?u[0]:1;};
+const gOn=()=>!!S.settings.gameOn;
+const G=()=>{S.game=S.game||{xp:0,acc:'ember',ban:'none',fx:'none',q:null,wk:null,notes:[],wday:{}};return S.game;};
+// apply the equipped accent everywhere (only while game mode is on)
+function gApplyLook(){const r=document.documentElement;if(gOn()&&G().acc&&G_ACC[G().acc])r.style.setProperty('--acc',G_ACC[G().acc][2]);else r.style.removeProperty('--acc');}
+function addXP(n,why){if(!gOn()||!(n>0))return;const g=G(),l0=gLevel(g.xp);g.xp+=Math.round(n);const l1=gLevel(g.xp);
+  if(l1>l0)g.notes.push({t:'level',from:l0,to:l1});save();}
+// ---- workout XP: 50 base + 2/set (max 40) + 25/PR (max 3) + 15/rank-up + 30 for test prep, times a streak bonus up to 1.5x.
+// Only the first 2 workouts with 3+ sets each day earn XP.
+function workoutXP(w,nPR,nUp){const g=G(),d=dk(w.end),sets=w.exercises.reduce((n,e)=>n+e.sets.length,0);
+  if(sets<3)return null;g.wday=g.wday||{};if((g.wday[d]||0)>=2)return{capped:1};g.wday[d]=(g.wday[d]||0)+1;
+  for(const k of Object.keys(g.wday))if(k<dk(Date.now()-10*864e5))delete g.wday[k];
+  const parts=[[L('Workout','Entrenamiento'),50],[L(`${sets} sets`,`${sets} series`),Math.min(40,sets*2)]];
+  if(nPR)parts.push([L(`${Math.min(3,nPR)} record${nPR>1?'s':''}`,`${Math.min(3,nPR)} récord${nPR>1?'s':''}`),25*Math.min(3,nPR)]);
+  if(nUp)parts.push([L(`${nUp} rank-up${nUp>1?'s':''}`,`${nUp} subida${nUp>1?'s':''} de rango`),15*nUp]);
+  if(TESTS.has(w.focus))parts.push([L('Test prep','Preparación'),30]);
+  const base=parts.reduce((a,p)=>a+p[1],0),stk=streakInfo().cur.len,mult=Math.round((1+Math.min(0.5,stk/40))*100)/100,tot=Math.round(base*mult);
+  addXP(tot);return{parts,mult,stk,tot};}
+function gFinishHtml(r){if(!gOn()||!r)return'';
+  if(r.capped)return`<div class="gfin" data-notr="1">⭐ ${L('Daily workout XP limit reached (2 a day). Quests still count!','Límite diario de XP por entrenamiento (2 al día). ¡Las misiones siguen contando!')}</div>`;
+  const g=G(),l=gLevel(g.xp),rk=gRank(l);
+  return`<div class="gfin" data-notr="1"><div class="gfinhd"><b>⭐ +${r.tot} XP</b><span class="muted small">${r.parts.map(p=>p[0]+' '+p[1]).join(' · ')}${r.mult>1?` · 🔥 ×${r.mult}`:''}</span></div>${gBar(g.xp,l)}<div class="small" style="margin-top:4px">${rk.abbr} · ${rk.name} (${rk.grade})</div></div>`;}
+function gBar(xp,l){const a=gNeed(l),b=gNeed(l+1),max=l>=G_MAX,pct=max?100:Math.round((xp-a)/(b-a)*100);
+  return`<div class="gbar"><i style="width:${pct}%"></i></div><div class="muted small" style="display:flex;justify-content:space-between"><span>${L('Level','Nivel')} ${l}</span><span>${max?L('Max rank','Rango máximo'):`${num(xp-a)} / ${num(b-a)} XP`}</span></div>`;}
+// ---- quests
+const Q={
+ workout:{xp:40,en:'Finish a workout',es:'Termina un entrenamiento'},
+ sets15:{xp:40,en:'Complete 15 sets today',es:'Completa 15 series hoy'},
+ pr:{xp:50,en:'Set a personal record',es:'Logra un récord personal'},
+ superset:{xp:40,en:'Do a superset',es:'Haz una superserie'},
+ fresh:{xp:40,en:'Do an exercise you haven\'t done in 2 weeks',es:'Haz un ejercicio que no hayas hecho en 2 semanas'},
+ core:{xp:30,en:'Train your core (abs or obliques)',es:'Entrena tu core (abdomen u oblicuos)'},
+ cardio:{xp:40,en:'Do a run, swim or 20+ minutes of cardio',es:'Haz una carrera, natación o 20+ minutos de cardio'},
+ testprep:{xp:50,en:'Do a test-prep session',es:'Haz una sesión de preparación para la prueba'},
+ mobility:{xp:40,en:'Do a Recovery & mobility session',es:'Haz una sesión de recuperación y movilidad'},
+ timer:{xp:25,en:'Use a test timer',es:'Usa un cronómetro de prueba'},
+ water:{xp:30,en:'Hit your water goal',es:'Cumple tu meta de agua'},
+ food:{xp:20,en:'Log something you ate',es:'Registra algo que comiste'},
+ weight:{xp:20,en:'Log your body weight',es:'Registra tu peso'}};
+const Q_BONUS=50,WQ_XP=150;
+const gHash=s=>{let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;};
+function gPickQuests(d){const hasTest=['pft','aft','pfra','prt'].some(focusOk),h=gHash(d+(S.settings.branch||''));
+  const train=['workout','sets15','pr','superset','fresh','core','cardio'].concat(hasTest?['testprep']:[]),health=['water','food','weight'],extra=['mobility','superset','cardio','core'].concat(hasTest?['timer','testprep']:[]);
+  const a=train[h%train.length],b=health[(h>>>5)%health.length];let c=extra[(h>>>10)%extra.length];
+  if(c===a)c=extra[((h>>>10)+1)%extra.length];return[a,b,c].map(id=>({id,done:false}));}
+const todayW=()=>{const d=dk(Date.now());return S.workouts.filter(w=>dk(w.end)===d);};
+function gQuestState(id){const d=dk(Date.now()),W=todayW(),exs=W.flatMap(w=>w.exercises),g=G();
+  switch(id){
+    case'workout':return[W.length?1:0,1];
+    case'sets15':return[Math.min(15,exs.reduce((n,e)=>n+e.sets.length,0)),15];
+    case'pr':return[(g.prDay&&g.prDay.d===d&&g.prDay.n)?1:0,1];
+    case'superset':return[exs.some(e=>e.ss)?1:0,1];
+    case'fresh':{const since=Date.now()-14*864e5,old=new Set(S.workouts.filter(w=>dk(w.end)!==d&&w.end>=since).flatMap(w=>w.exercises.map(e=>e.exId)));
+      return[exs.some(e=>!old.has(e.exId)&&!MOB.has(e.exId))?1:0,1];}
+    case'core':return[exs.some(e=>{const x=EX(e.exId);return x&&x.p.some(m=>m==='abs'||m==='obliques');})?1:0,1];
+    case'cardio':{let min=0,run=false;for(const e of exs){const x=EX(e.exId);if(!x)continue;if(x.inc==='cardio')min+=e.sets.reduce((a,s)=>a+(+s.r||0),0);else if(x.inc==='run')run=true;}return[run||min>=20?1:0,1];}
+    case'testprep':return[W.some(w=>TESTS.has(w.focus))?1:0,1];
+    case'mobility':return[W.some(w=>w.focus==='mobility')?1:0,1];
+    case'timer':return[g.timerDay===d?1:0,1];
+    case'water':{const have=+(S.water||{})[d]||0,goal=waterGoal();return[Math.min(goal,have),goal];}
+    case'food':return[(S.food||[]).some(f=>f.d===d)?1:0,1];
+    case'weight':return[(S.weights||[]).some(x=>x.d===d)?1:0,1];}
+  return[0,1];}
+// called on every render: rolls quests over at midnight and pays out anything newly completed
+function gameTick(){if(!gOn())return;const g=G(),d=dk(Date.now());
+  if(!g.q||g.q.d!==d)g.q={d,list:gPickQuests(d),bonus:false};
+  for(const q of g.q.list)if(!q.done){const[a,b]=gQuestState(q.id);if(a>=b){q.done=true;addXP(Q[q.id].xp);g.notes.push({t:'quest',id:q.id});}}
+  if(!g.q.bonus&&g.q.list.every(q=>q.done)){g.q.bonus=true;addXP(Q_BONUS);g.notes.push({t:'bonus'});}
+  const wk=dk(weekStart(Date.now()));if(!g.wk||g.wk.k!==wk)g.wk={k:wk,done:false};
+  const goal=+S.settings.weekGoal||4,done=S.workouts.filter(w=>w.end>=weekStart(Date.now())).length;
+  if(!g.wk.done&&done>=goal){g.wk.done=true;addXP(WQ_XP);g.notes.push({t:'week'});}
+  save();setTimeout(gameNotify,350);}
+// show queued notices: quest toasts right away, promotions as a modal when nothing else is open
+function gameNotify(){if(!gOn())return;const g=G();if(!g.notes||!g.notes.length)return;
+  const quests=g.notes.filter(n=>n.t!=='level');if(quests.length){g.notes=g.notes.filter(n=>n.t==='level');save();
+    const msg=quests.map(n=>n.t==='quest'?L(`✅ Quest done: ${Q[n.id].en} +${Q[n.id].xp} XP`,`✅ Misión cumplida: ${Q[n.id].es} +${Q[n.id].xp} XP`):n.t==='bonus'?L(`🏆 All daily quests done! +${Q_BONUS} XP`,`🏆 ¡Todas las misiones del día! +${Q_BONUS} XP`):L(`📅 Weekly quest done! +${WQ_XP} XP`,`📅 ¡Misión semanal cumplida! +${WQ_XP} XP`));
+    msg.forEach((m,k)=>setTimeout(()=>toast(m),k*1600));}
+  if(!$('#modal').classList.contains('hidden'))return;
+  const lv=g.notes.find(n=>n.t==='level');if(!lv)return;g.notes=g.notes.filter(n=>n!==lv);save();gPromo(lv.from,lv.to);}
+function gPromo(from,to){const rk=gRank(to),un=G_UNLOCK.filter(u=>u[0]>from&&u[0]<=to);
+  showModal(`<div data-notr="1" class="gpromo"><div class="gpromobadge">${gBadge(to,64)}</div><h2 style="margin:6px 0 2px">${L('Promoted!','¡Ascendido!')}</h2><p style="margin:0 0 4px"><b>${rk.name}</b> · ${rk.abbr} (${rk.grade})</p><p class="muted small" style="margin:0 0 12px">${L('Level','Nivel')} ${to}</p>
+  ${un.length?`<div class="calcbox" style="text-align:left"><b>🎁 ${L('New look unlocked!','¡Nuevo estilo desbloqueado!')}</b>${un.map(([l,k,id])=>`<div class="tiprow"><span>${gKindName(k)}: <b>${gItemName(k,id)}</b></span><button class="btn primary sm" style="margin:0;width:auto" data-a="gequip" data-k="${k}" data-id="${id}">${L('Use it','Usar')}</button></div>`).join('')}</div>`:''}
+  <button class="btn ghost" data-a="glocker">${L('Open the locker','Abrir el casillero')}</button><button class="btn primary" data-a="close">${L('Let\'s go','Vamos')}</button></div>`);
+  gEffect(G().fx==='none'?'confetti':G().fx,true);}
+// simple level badge (generic chevrons for enlisted, stars for officers; not official insignia)
+function gBadge(l,sz){sz=sz||40;const off=l>9,n=off?Math.min(5,Math.ceil((l-9)/2)):Math.min(5,Math.ceil(l/2)),acc='var(--acc)';
+  let inner='';if(off){for(let k=0;k<n;k++){const x=20+(k-(n-1)/2)*7;inner+=`<path d="M${x} ${14.5}l1.2 2.5 2.7.3-2 1.9.5 2.7-2.4-1.3-2.4 1.3.5-2.7-2-1.9 2.7-.3z" fill="${acc}"/>`;}}
+  else for(let k=0;k<n;k++){const y=11+k*4.2;inner+=`<path d="M11 ${y+4}l9-5 9 5" fill="none" stroke="${acc}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`;}
+  return`<svg viewBox="0 0 40 40" width="${sz}" height="${sz}"><circle cx="20" cy="20" r="18.5" fill="var(--card2)" stroke="${acc}" stroke-width="1.5"/>${inner}<text x="20" y="35" text-anchor="middle" font-size="7" font-weight="800" fill="var(--text)">${l}</text></svg>`;}
+// ---- Workout tab cards
+function gameCard(){if(!gOn())return'';const g=G(),l=gLevel(g.xp),rk=gRank(l),nx=G_UNLOCK.find(u=>u[0]>l);
+  return`<div class="card gcard bn-${g.ban||'none'}" data-notr="1" data-a="glocker" role="button"><div class="gcardin"><div style="display:flex;gap:12px;align-items:center">${gBadge(l,52)}<div style="flex:1;min-width:0"><div class="muted small">${rk.grade} · ${L('Level','Nivel')} ${l}</div><div style="font-size:19px;font-weight:800;line-height:1.15">${rk.name}</div></div><span class="muted" style="font-size:20px">›</span></div>
+  <div style="margin-top:10px">${gBar(g.xp,l)}</div>${nx?`<div class="small" style="margin-top:6px">🎁 ${L(`Lv ${nx[0]}`,`Nv ${nx[0]}`)}: ${gKindName(nx[1])} · ${gItemName(nx[1],nx[2])}</div>`:''}</div></div>`;}
+function questCard(){if(!gOn())return'';const g=G();if(!g.q)return'';
+  const row=q=>{const[a,b]=gQuestState(q.id),D=Q[q.id];return`<div class="qrow ${q.done?'done':''}"><span class="qck">${q.done?'✓':''}</span><span style="flex:1">${L(D.en,D.es)}${!q.done&&b>1?` <span class="muted small">(${b>100?ozTo(a)+' / '+ozTo(b):a+'/'+b})</span>`:''}</span><b class="small">+${D.xp}</b></div>`;};
+  const goal=+S.settings.weekGoal||4,wd=S.workouts.filter(w=>w.end>=weekStart(Date.now())).length;
+  return`<div class="card" data-notr="1"><h3 style="margin:0 0 6px">🎯 ${L('Daily quests','Misiones diarias')}</h3>${g.q.list.map(row).join('')}
+  <div class="muted small" style="margin:6px 0 0">${g.q.bonus?'🏆 '+L('All done today. New quests at midnight.','Todo listo hoy. Nuevas misiones a medianoche.'):L(`Finish all 3 for +${Q_BONUS} bonus XP.`,`Termina las 3 para +${Q_BONUS} XP extra.`)}</div>
+  <div class="qrow ${g.wk&&g.wk.done?'done':''}" style="margin-top:8px"><span class="qck">${g.wk&&g.wk.done?'✓':''}</span><span style="flex:1">📅 ${L(`Weekly: ${goal} workouts this week`,`Semanal: ${goal} entrenamientos esta semana`)} <span class="muted small">(${Math.min(wd,goal)}/${goal})</span></span><b class="small">+${WQ_XP}</b></div></div>`;}
+// ---- locker: pick your look
+function gLocker(){const g=G(),l=gLevel(g.xp);
+  const sec=(k,list)=>`<h3 style="margin:16px 0 8px">${gKindName(k)}</h3><div class="lgrid">${Object.keys(list).map(id=>{const need=gUnlockLvl(k,id),open=l>=need||!!S.settings.ownerPreview,on=g[k]===id;
+    const prev=k==='acc'?`<span class="lsw" style="background:${list[id][2]}"></span>`:k==='ban'?`<span class="lban bn-${id}"></span>`:`<span class="lsw lfx">${{none:'—',confetti:'🎊',sparks:'✨',fireworks:'🎆',goldrain:'🪙'}[id]}</span>`;
+    return`<button class="litem ${on?'on':''} ${open?'':'lock'}" ${open?`data-a="gequip" data-k="${k}" data-id="${id}"`:'disabled'}>${prev}<b>${L(...list[id].slice(0,2))}</b><span class="muted small">${on?L('In use','En uso'):open?L('Tap to use','Toca para usar'):'🔒 '+L(`Level ${need}`,`Nivel ${need}`)+' · '+gRank(need).abbr}</span></button>`;}).join('')}</div>`;
+  showModal(`<div data-notr="1"><div class="sheethead"><h3>🎖 ${L('Locker','Casillero')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
+  <div class="card gcard bn-${g.ban}" style="margin:0"><div class="gcardin" style="display:flex;gap:12px;align-items:center">${gBadge(l,52)}<div><div class="muted small">${gRank(l).grade} · ${num(g.xp)} XP</div><div style="font-weight:800;font-size:18px">${gRank(l).name}</div></div></div></div>
+  ${S.settings.ownerPreview?`<div class="calcbox" style="margin-top:10px">👁 ${L('Owner preview: every look is unlocked for review. XP and rank are unchanged. Tap the version number in Settings 7 times to turn this off.','Vista de dueño: todos los estilos están desbloqueados para revisar. El XP y el rango no cambian. Toca el número de versión en Ajustes 7 veces para apagarlo.')}</div><button class="btn ghost" data-a="gpromotest">${L('Preview the promotion screen','Ver la pantalla de ascenso')}</button>`:''}
+  <p class="muted small">${L('Earn XP from workouts and quests to get promoted. Every few promotions unlocks a new look.','Gana XP con entrenamientos y misiones para ascender. Cada pocos ascensos se desbloquea un nuevo estilo.')}</p>
+  ${sec('acc',G_ACC)}${sec('ban',G_BAN)}${sec('fx',G_FX)}
+  <details style="margin-top:14px"><summary class="muted small" style="cursor:pointer">${L('All ranks','Todos los rangos')}</summary>${Array.from({length:G_MAX},(_,k)=>k+1).map(n=>`<div class="hrow" style="${n===l?'color:var(--acc);font-weight:700':''}"><span>${gGrade(n)} · ${gRank(n).name}</span><span class="muted">${num(gNeed(n))} XP</span></div>`).join('')}</details>
+  <details style="margin-top:8px"><summary class="muted small" style="cursor:pointer">${L('How to earn XP','Cómo ganar XP')}</summary><p class="small">${L('Workout: 50 + 2 per set (up to 40) + 25 per record + 15 per rank-up + 30 for test prep, times your streak bonus (up to ×1.5 at a 20-day streak). Up to 2 workouts a day with 3+ sets earn XP. Daily quests: 20–50 each, +50 for all three. Weekly quest: +150.','Entrenamiento: 50 + 2 por serie (hasta 40) + 25 por récord + 15 por subida de rango + 30 por preparación, por tu bono de racha (hasta ×1.5 con 20 días). Hasta 2 entrenamientos al día con 3+ series dan XP. Misiones diarias: 20–50 cada una, +50 por las tres. Misión semanal: +150.')}</p></details></div>`);}
+// ---- celebration effects (canvas particles)
+function gEffect(kind,force){if(!gOn()||!kind||kind==='none')return;if(!force&&G().fx==='none')return;
+  const c=document.createElement('canvas');c.className='gfx';document.body.appendChild(c);const W=c.width=innerWidth*devicePixelRatio,H=c.height=innerHeight*devicePixelRatio,x=c.getContext('2d'),dp=devicePixelRatio;
+  const acc=getComputedStyle(document.documentElement).getPropertyValue('--acc').trim()||'#ff6b35';
+  const pal={confetti:[acc,'#3ecf8e','#4da6ff','#f5c04a','#ff5468','#ffffff'],sparks:['#fff3b0','#ffd166',acc],fireworks:[acc,'#4da6ff','#f5c04a','#ff5468','#a084ff'],goldrain:['#f2b632','#ffd970','#c98f1a']}[kind]||[acc];
+  const P=[],R=()=>Math.random();
+  if(kind==='confetti')for(let i=0;i<140;i++)P.push({x:W/2,y:H*0.35,vx:(R()-.5)*18*dp,vy:(-R()*16-4)*dp,g:.45*dp,s:(4+R()*5)*dp,r:R()*6,vr:(R()-.5)*.4,c:pal[i%pal.length],sq:1});
+  if(kind==='sparks')for(let i=0;i<120;i++){const a=R()*Math.PI*2,v=(4+R()*10)*dp;P.push({x:W/2,y:H*0.4,vx:Math.cos(a)*v,vy:Math.sin(a)*v,g:.15*dp,s:(1.5+R()*2)*dp,c:pal[i%pal.length],tr:1});}
+  if(kind==='fireworks')for(let b=0;b<4;b++){const cx=W*(.2+R()*.6),cy=H*(.15+R()*.3),col=pal[b%pal.length],t0=b*18;for(let i=0;i<60;i++){const a=i/60*Math.PI*2,v=(3+R()*4)*dp;P.push({x:cx,y:cy,vx:Math.cos(a)*v,vy:Math.sin(a)*v,g:.08*dp,s:2*dp,c:col,d:t0,tr:1});}}
+  if(kind==='goldrain')for(let i=0;i<110;i++)P.push({x:R()*W,y:-R()*H*0.8,vx:(R()-.5)*dp,vy:(3+R()*4)*dp,g:.05*dp,s:(4+R()*4)*dp,c:pal[i%pal.length],coin:1});
+  let f=0;const step=()=>{f++;x.clearRect(0,0,W,H);let alive=0;
+    for(const p of P){if(p.d&&f<p.d){alive++;continue;}p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;if(!p.coin){p.vx*=.985;}if(p.vr)p.r+=p.vr;
+      const life=1-f/(kind==='goldrain'?150:110);if(life<=0||p.y>H+20)continue;alive++;x.globalAlpha=Math.max(0,Math.min(1,life*1.4));x.fillStyle=p.c;
+      if(p.sq){x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore();}
+      else if(p.coin){x.beginPath();x.ellipse(p.x,p.y,p.s/2,p.s/2*Math.abs(Math.sin(f/8+p.x)),0,0,7);x.fill();}
+      else{x.beginPath();x.arc(p.x,p.y,p.s,0,7);x.fill();}}
+    if(alive&&f<170)requestAnimationFrame(step);else c.remove();};
+  requestAnimationFrame(step);}
+function gGameForm(){/* first switch-on */const g=G();if(g.started)return;g.started=1;
+  const past=S.workouts.length,credit=Math.min(60,past)*30;if(credit){g.xp+=credit;}g.notes=[];save();
+  showModal(`<div data-notr="1"><div class="sheethead"><h3>🎮 ${L('Game mode is on','Modo juego activado')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
+  <p>${L('Earn XP from workouts and daily quests, get promoted through the ranks, and unlock new looks for the app: accent colors, banners and celebration effects.','Gana XP con entrenamientos y misiones diarias, asciende de rango y desbloquea nuevos estilos para la app: colores de acento, banners y efectos de celebración.')}</p>
+  ${credit?`<div class="calcbox">${L(`⭐ Service credit: +${num(credit)} XP for your ${past} past workout${past===1?'':'s'}. You start as <b>${gRank(gLevel(g.xp)).name}</b>.`,`⭐ Crédito de servicio: +${num(credit)} XP por tus ${past} entrenamiento${past===1?'':'s'} anteriores. Empiezas como <b>${gRank(gLevel(g.xp)).name}</b>.`)}</div>`:''}
+  <p class="muted small">${L('Ranks follow your Military branch in Settings (civilians use Marine Corps ranks, the National Guard uses Army ranks). Turn game mode off anytime; your XP is kept.','Los rangos siguen tu rama militar en Ajustes (los civiles usan rangos de Marines y la Guardia Nacional los del Ejército). Apaga el modo juego cuando quieras; tu XP se guarda.')}</p>
+  <button class="btn primary" data-a="close">${L('Let\'s go','Vamos')}</button></div>`);}
 
 function usmcCard(f){
   const v=usmcLatest(),evs=usmcEvs(f);let tot=0,n=0,all=true;for(const [ev,,,kind] of evs){const p=v[ev]?usmcPts(ev,v[ev]):null;if(p!=null){n++;tot+=p;if(!p)all=false;}}
@@ -2223,7 +2398,7 @@ const ICONS={
   settings:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>'
 };
 function renderTabs(){$('#tabs').innerHTML=Object.keys(ICONS).map(t=>`<button class="${t===tab?'on':''}" data-a="tab" data-t="${t}"><svg viewBox="0 0 24 24">${ICONS[t]}</svg>${t[0].toUpperCase()+t.slice(1)}</button>`).join('');}
-function render(){$('#view').innerHTML={workout:vWorkout,food:vFood,recovery:vRecovery,ranks:vRanks,history:vHistory,progress:vProgress,updates:vUpdates,settings:vSettings}[tab]();renderTabs();}
+function render(){gameTick();gApplyLook();$('#view').innerHTML={workout:vWorkout,food:vFood,recovery:vRecovery,ranks:vRanks,history:vHistory,progress:vProgress,updates:vUpdates,settings:vSettings}[tab]();renderTabs();}
 
 function vWorkout(){
   if(S.active)return vActive();
@@ -2232,7 +2407,7 @@ function vWorkout(){
   const tired=Object.keys(MUSCLES).filter(m=>rec[m]<85).sort((a,b)=>rec[a]-rec[b]).slice(0,5);
   const lw=S.workouts[S.workouts.length-1];
   return`<div class="hdr"><h1>Workout</h1><div class="hbtns"><button class="bell" data-a="idea" aria-label="Suggest an idea"><svg viewBox="0 0 24 24">${BUBBLE}</svg></button><button class="bell" data-a="tab" data-t="updates" aria-label="Updates"><svg viewBox="0 0 24 24">${BELL}</svg>${hasNewNews()?'<i class="dot"></i>':''}</button></div></div>
-  ${streakCard()}${weekSummary()}${backupNag()}
+  ${gameCard()}${streakCard()}${questCard()}${weekSummary()}${backupNag()}
   <div class="card"><label class="lbl">Focus</label><select id="focus">${Object.entries(FOCUS).filter(([k])=>focusOk(k)).map(([k,l])=>`<option value="${k}" ${k===focusSel?'selected':''}>${l}</option>`).join('')}</select>
   <p class="muted small">Auto picks <b>${FOCUS[auto]}</b> today — those muscles are the most recovered.</p>
   ${injuryChip()}
@@ -3210,16 +3385,16 @@ function vSettings(){
   ${injuryCard()}
   <div class="card">${prefsForm()}</div>
   <div class="card"><h3>Custom exercises</h3>${cust||'<p class="muted small">Add exercises the built-in list is missing.</p>'}<button class="btn ghost" data-a="newcustom">+ Add custom exercise</button></div>
-  <div class="card" data-notr="1"><h3>${L('Workout tab','Pestaña Entrenar')}</h3><label class="ebrow" style="border:0;margin-top:0;padding-top:0"><span><b>${L('Weekly summary','Resumen semanal')}</b><span class="muted small">${L('A recap of last week at the start of each week.','Un resumen de la semana pasada al inicio de cada semana.')}</span></span><button class="tog ${S.settings.weekSumOff?'':'on'}" data-a="weeksumtog" aria-label="Weekly summary"><i></i></button></label></div>
+  <div class="card" data-notr="1"><h3>${L('Workout tab','Pestaña Entrenar')}</h3><label class="ebrow" style="border:0;margin-top:0;padding-top:0"><span><b>${L('Weekly summary','Resumen semanal')}</b><span class="muted small">${L('A recap of last week at the start of each week.','Un resumen de la semana pasada al inicio de cada semana.')}</span></span><button class="tog ${S.settings.weekSumOff?'':'on'}" data-a="weeksumtog" aria-label="Weekly summary"><i></i></button></label><label class="ebrow"><span><b>🎮 ${L('Game mode','Modo juego')}</b><span class="muted small">${L('Daily quests, XP and promotions through your branch\'s ranks. Unlock new accent colors, banners and effects.','Misiones diarias, XP y ascensos por los rangos de tu rama. Desbloquea colores, banners y efectos.')}</span></span><button class="tog ${S.settings.gameOn?'on':''}" data-a="gametog" aria-label="Game mode"><i></i></button></label></div>
   <div class="card" data-notr="1"><h3>${L('Privacy','Privacidad')}</h3><label class="ebrow" style="border:0;margin-top:0;padding-top:0"><span><b>${L('Send anonymous usage counts','Enviar conteos de uso anónimos')}</b><span class="muted small">${L('Counts installs, app opens and which features get used, to help improve Forge. No names, workouts, food, weight or health data are ever sent.','Cuenta instalaciones, aperturas y qué funciones se usan, para mejorar Forge. Nunca se envían nombres, entrenamientos, comida, peso ni datos de salud.')}</span></span><button class="tog ${S.settings.noStats?'':'on'}" data-a="statstog" aria-label="Send anonymous usage counts"><i></i></button></label></div>
   <div class="card"><h3>Backup</h3><p class="muted small">Your data lives only on this phone. Removing the app from your Home Screen deletes it. To move to a new phone, tap Copy backup, paste the text somewhere safe (Notes, a text or email to yourself), then use Paste backup on the new phone.</p><button class="btn primary" data-a="copybk">Copy backup</button><button class="btn ghost" data-a="pastebk">Paste backup</button><p class="muted small" style="margin:14px 0 0">Or save it as a file:</p><button class="btn ghost" data-a="export">Export backup</button><button class="btn ghost" data-a="import">Import backup</button><input type="file" id="importfile" accept="application/json,.json" hidden></div>
   <div class="card"><button class="btn danger-ghost" style="margin-top:0" data-a="reset">Erase all data</button></div>
-  <p class="muted small" style="text-align:center">Forge version ${APP_VERSION}</p>`;
+  <p class="muted small" style="text-align:center" data-a="vertap">Forge version ${APP_VERSION}${S.settings.ownerPreview?' · 👁 preview':''}</p>`;
 }
 
 // ---------- modals ----------
 function showModal(html){$('#sheet').innerHTML=html;$('#modal').classList.remove('hidden');document.body.classList.add('noscroll');}
-function closeModal(){timerStop();stopScanner();$('#modal').classList.add('hidden');$('#sheet').innerHTML='';document.body.classList.remove('noscroll');modalLocked=false;}
+function closeModal(){timerStop();setTimeout(gameNotify,300);stopScanner();$('#modal').classList.add('hidden');$('#sheet').innerHTML='';document.body.classList.remove('noscroll');modalLocked=false;}
 function langPicker(){showModal(`<div class="langpick"><div class="globe">🌐</div><button class="btn primary big" data-a="picklang" data-l="en">English</button><button class="btn primary big" data-a="picklang" data-l="es">Español</button></div>`);modalLocked=true;}
 function onboarding(){showModal(`<h2>Welcome to Forge</h2><p class="muted">Set this up once — you can change it anytime in Settings.</p>${prefsForm()}<button class="btn primary big" data-a="onboarded">Let's go</button>`);modalLocked=true;}
 function openPicker(mode,i){pick={mode,i};showModal(`<div class="sheethead"><h3>${mode==='swap'?'Swap exercise':'Add exercise'}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div><input id="pq" type="search" placeholder="Search exercises or muscles" autocomplete="off"><div id="plist" class="plist"></div>`);renderPickerList();}
@@ -3310,10 +3485,13 @@ function finish(){
     const ps=inW.map(([ev])=>usmcPts(ev,v[ev])),tot=ps.reduce((x,y)=>x+(y||0),0),full=inW.length===3&&ps.every(x=>x!=null);
     return`<div data-notr="1"><h3>🎖 ${L('Estimated test points','Puntos estimados de la prueba')}</h3>${inW.map(([ev,en,es],k)=>{const p=ps[k];return`<div class="pr">${L(en,es)}: <b>${p==null?'—':p===0?L('below min','bajo mín.'):p}</b></div>`;}).join('')}${full?(()=>{const [c,col]=usmcClass(tot,ps.every(x=>x>0));return`<div class="ustot"><span>${L('Total','Total')}</span><b>${tot}</b><span style="color:${col};font-weight:700">${c}</span></div>`;})():''}</div>`;})():'';
   if(TESTS.has(w.focus)&&usHtml)recordScore(w.focus,scoreOf(w.focus));
+  if(gOn()&&prs.length){G().prDay={d:dk(w.end),n:prs.length};}
+  const gRes=gOn()?workoutXP(w,prs.length,ups.length):null;gameTick();
   const ckcal=exs.reduce((a,e)=>{const x=EX(e.exId);if(!x)return a;if(x.inc==='cardio')return a+cardioKcal(e.exId,e.sets.reduce((q,s)=>q+(+s.r||0),0));
     if(SWIM.has(x.id)){const kg=U()==='lb'?bodyW()*0.45359237:bodyW(),min=e.sets.reduce((q,s)=>q+tsec(s.r),0)/60;return a+(kg?Math.round(SWIM_MET*kg*min/60):0);}return a;},0);
   const cHtml=ckcal?`<div class="ustot" style="margin:0 0 12px"><span>🔥 ${L('Cardio','Cardio')}</span><b>≈ ${ckcal}</b><span class="muted small">kcal</span></div><button class="btn ghost" style="margin:0 0 12px" data-a="addburn" data-k="${ckcal}">${L("Add to today's calories burned","Sumar a las calorías quemadas de hoy")}</button>`:'';
-  showModal(`<div class="sheethead"><h3>Workout saved 💪</h3></div>${stkHtml}${cHtml}${usHtml}<div class="stats"><div><b>${fmtDur(w.end-w.start)}</b><span>time</span></div><div><b>${sets}</b><span>sets</span></div>${v?`<div><b>${num(v)}</b><span>${U()} lifted</span></div>`:''}</div>${prs.length?'<h3>New records 🏆</h3>'+prs.map(p=>`<div class="pr">${p}</div>`).join(''):''}${upHtml}<button class="btn ghost" data-a="tplfromw" data-id="${esc(w.id)}">💾 Save to My workouts</button><button class="btn primary" data-a="close">Done</button>`);
+  showModal(`<div class="sheethead"><h3>Workout saved 💪</h3></div>${gFinishHtml(gRes)}${stkHtml}${cHtml}${usHtml}<div class="stats"><div><b>${fmtDur(w.end-w.start)}</b><span>time</span></div><div><b>${sets}</b><span>sets</span></div>${v?`<div><b>${num(v)}</b><span>${U()} lifted</span></div>`:''}</div>${prs.length?'<h3>New records 🏆</h3>'+prs.map(p=>`<div class="pr">${p}</div>`).join(''):''}${upHtml}<button class="btn ghost" data-a="tplfromw" data-id="${esc(w.id)}">💾 Save to My workouts</button><button class="btn primary" data-a="close">Done</button>`);
+  if(gOn())setTimeout(()=>gEffect(G().fx),250);
 }
 async function exportData(){
   const name='forge-backup-'+new Date().toISOString().slice(0,10)+'.json';
@@ -3446,6 +3624,12 @@ document.addEventListener('click',e=>{
     case'testdate':testDateForm(b.dataset.t);break;
     case'savetestdate':{const v=($('#tdate')||{}).value;if(!v){toast(L('Pick a date','Elige una fecha'));break;}S.settings.testDates=Object.assign({},S.settings.testDates,{[b.dataset.t]:v});save();closeModal();render();break;}
     case'cleartestdate':{const o=Object.assign({},S.settings.testDates);delete o[b.dataset.t];S.settings.testDates=o;save();closeModal();render();break;}
+    case'gametog':S.settings.gameOn=!S.settings.gameOn;save();render();if(S.settings.gameOn)gGameForm();break;
+    case'vertap':{const n=(window._vt=(Date.now()-(window._vtt||0)<1500?(window._vt||0):0)+1);window._vtt=Date.now();
+      if(n>=7){window._vt=0;S.settings.ownerPreview=!S.settings.ownerPreview;if(!S.settings.ownerPreview){const g=G(),l=gLevel(g.xp);for(const k of['acc','ban','fx'])if(gUnlockLvl(k,g[k])>l)g[k]=k==='acc'?'ember':'none';gApplyLook();}save();render();toast(S.settings.ownerPreview?L('👁 Owner preview on: all looks unlocked','👁 Vista de dueño activada: todos los estilos desbloqueados'):L('Owner preview off','Vista de dueño desactivada'));}break;}
+    case'gpromotest':{const l=gLevel(G().xp);closeModal();setTimeout(()=>gPromo(Math.max(1,l-1),l),350);break;}
+    case'glocker':gLocker();break;
+    case'gequip':{G()[b.dataset.k]=b.dataset.id;save();gApplyLook();const inL=!!b.closest('.lgrid');render();if(b.dataset.k==='fx')gEffect(b.dataset.id,true);if(inL)gLocker();else toast(L('Equipped ✓','Equipado ✓'));break;}
     case'weeksumtog':S.settings.weekSumOff=!S.settings.weekSumOff;save();render();break;
     case'weekseen':S.settings.weekSeen=b.dataset.k;save();render();break;
     case'backuplater':S.settings.backupSnooze=Date.now();save();render();break;
