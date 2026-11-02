@@ -3,6 +3,17 @@ One post per day: put the newest day at the TOP, right below this note, and add 
 Start a post with ## and a title. Use - at the start of a line for a bullet point. Plain lines show as normal text.
 For Spanish, add " || " then the Spanish text on the same line (English || Español).
 
+## Nov 2 updates || Novedades del 2 nov
+New features || Funciones nuevas
+- 📋 Copy a meal: on the Food tab, copy breakfast, lunch, dinner, snacks, single items or a whole day from another day || 📋 Copiar una comida: en la pestaña Comida, copia el desayuno, almuerzo, cena, snacks, alimentos sueltos o todo un día desde otro día
+- 📊 Monthly recap: workouts, days trained, time, weight lifted, new records, most trained muscles and more, with a picture you can share. Find it on Progress, and on the Workout tab at the start of each month || 📊 Resumen mensual: entrenamientos, días entrenados, tiempo, peso levantado, nuevos récords, músculos más entrenados y más, con una imagen para compartir. Está en Progreso y en la pestaña Entrenar al inicio de cada mes
+- 🏋️ Plate calculator: barbell exercises show which plates go on each side for your next set. Tap it to see the loaded bar and change the bar weight || 🏋️ Calculadora de discos: los ejercicios con barra muestran qué discos van en cada lado para tu siguiente serie. Tócala para ver la barra cargada y cambiar el peso de la barra
+- 🔥 Warm-up sets: heavy barbell lifts like squat, bench and deadlift suggest lighter ramp-up sets before your first working set. They aren't logged, and you can turn them off in Settings || 🔥 Series de calentamiento: los levantamientos pesados con barra como sentadilla, press de banca y peso muerto sugieren series más ligeras antes de tu primera serie de trabajo. No se registran y puedes apagarlas en Ajustes
+- 📅 Workout calendar in History: see every day you trained by month, and tap a day to open that workout || 📅 Calendario de entrenamientos en Historial: mira cada día que entrenaste por mes y toca un día para abrir ese entrenamiento
+Improvements || Mejoras
+- Fixed the bottom tab bar moving while scrolling. It now stays put at the bottom || Se arregló que la barra de pestañas inferior se moviera al desplazarte. Ahora se queda fija abajo
+- Anonymous usage counts now include more features (each counted at most once a day, and only the feature's name is sent). Injuries are never counted, and Field mode only counts that it was used (never its dates), and you can turn counts off in Settings → Privacy || Los conteos de uso anónimos ahora incluyen más funciones (cada una se cuenta como máximo una vez al día y solo se envía el nombre de la función). Las lesiones nunca se cuentan, y del Modo campo solo se cuenta que se usó (nunca sus fechas), y puedes apagar los conteos en Ajustes → Privacidad
+
 ## Nov 1 updates || Novedades del 1 nov
 New features || Funciones nuevas
 - 👆 Swipe left or right to switch tabs, in the same order as the bottom bar. You can turn it off in Settings || 👆 Desliza a la izquierda o derecha para cambiar de pestaña, en el mismo orden que la barra inferior. Puedes apagarlo en Ajustes
