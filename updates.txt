@@ -3,6 +3,17 @@ One post per day: put the newest day at the TOP, right below this note, and add 
 Start a post with ## and a title. Use - at the start of a line for a bullet point. Plain lines show as normal text.
 For Spanish, add " || " then the Spanish text on the same line (English || Español).
 
+## Nov 3 updates || Novedades del 3 nov
+New features || Funciones nuevas
+- 📤 Share any finished workout: tap Share on the workout-saved screen or on any workout in History. You don't have to save it to My workouts first || 📤 Comparte cualquier entrenamiento terminado: toca Compartir en la pantalla de entrenamiento guardado o en cualquier entrenamiento del Historial. Ya no tienes que guardarlo primero en Mis entrenamientos
+- 🏋️ Share your weights and reps too: when you share, pick Share with my weights & reps or exercises and sets only. The person adding it can use your numbers (changed to their lb or kg) or their own || 🏋️ Comparte también tus pesos y repeticiones: al compartir, elige Compartir con mis pesos y repeticiones o solo ejercicios y series. Quien lo agregue puede usar tus números (cambiados a sus lb o kg) o los suyos
+- 📋 Paste shared workout: copy a workout link, then tap Paste shared workout under My workouts on the Workout tab. No typing needed || 📋 Pegar entrenamiento compartido: copia un enlace de entrenamiento y toca Pegar entrenamiento compartido en Mis entrenamientos en la pestaña Entrenar. Sin escribir nada
+Improvements || Mejoras
+- Shared workout links are about half as long, and they're sent as a real link so the link doesn't get lost from the message. Older links still work || Los enlaces de entrenamientos compartidos son casi la mitad de largos y se envían como un enlace real para que no se pierda del mensaje. Los enlaces anteriores siguen funcionando
+- Opening a shared link in Safari now shows a big Add to my Forge app button. It copies the workout and shows the 2 steps to add it in the home-screen app || Abrir un enlace compartido en Safari ahora muestra un botón grande Agregar a mi app Forge. Copia el entrenamiento y muestra los 2 pasos para agregarlo en la app de la pantalla de inicio
+- On Android, tapping a shared link opens the installed Forge app straight to the workout || En Android, tocar un enlace compartido abre la app Forge instalada directo en el entrenamiento
+- Shared links now show the Forge logo in message previews || Los enlaces compartidos ahora muestran el logo de Forge en las vistas previas de los mensajes
+
 ## Nov 2 updates || Novedades del 2 nov
 New features || Funciones nuevas
 - ✨ Accent effects, a new reward type: your accent color can now move on buttons, the XP bar and your rank badge. Shine (level 3), Ember flicker (6), Wave (9), Heartbeat (11), Sparkle (12), Scanline (13), Charge (15), Static (17), Glitch (18), Holo (19) and Plasma (20). Pick one in the Locker || ✨ Efectos de acento, un nuevo tipo de recompensa: tu color de acento ahora puede moverse en los botones, la barra de XP y tu insignia de rango. Brillo (nivel 3), Parpadeo de brasa (6), Onda (9), Latido (11), Destellos (12), Escáner (13), Carga (15), Estática (17), Falla digital (18), Holográfico (19) y Plasma (20). Elige uno en el Casillero
