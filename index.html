@@ -119,6 +119,7 @@ nav.tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2
 .sheethead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .sheethead h3{margin:0;font-size:20px}
 .plist{margin-top:8px}
+.modal.mpick{align-items:stretch}.modal.mpick .sheet{display:flex;flex-direction:column;height:calc(100% - env(safe-area-inset-top) - 10px);max-height:none;margin-top:calc(env(safe-area-inset-top) + 10px);overflow:hidden;padding-bottom:0}.modal.mpick #pq{flex:none}.modal.mpick .plist{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:calc(40vh + env(safe-area-inset-bottom))}
 .pitem{display:flex;flex-direction:column;align-items:flex-start;gap:3px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);color:var(--text);padding:12px 2px;font-family:inherit;font-size:16px;cursor:pointer}
 .pitem.dim{opacity:.45}
 .pr{padding:8px 0;border-top:1px solid var(--line)}
@@ -613,7 +614,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.11.06g';
+const APP_VERSION='2026.11.06h';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false,branch:''},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],templates:[],water:{},scores:[],active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(!('branch' in (d.settings||{})))st.branch=st.onboarded?'usmc':'';if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[],templates:d.templates||[],water:d.water||{},scores:d.scores||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -4569,11 +4570,11 @@ const agreeBox=()=>`<div class="calcbox agreebox"><p class="small" style="margin
 function termsAsk(){showModal(`<div data-notr="1"><h3 style="margin-top:0">📄 ${L('Terms & health disclaimer','Términos y aviso de salud')}</h3><p class="muted small">${L('Forge now has Terms of Use, a health disclaimer and a Privacy Policy. Please read and agree to keep using the app.','Forge ahora tiene Términos de uso, un aviso de salud y una Política de privacidad. Léelos y acéptalos para seguir usando la app.')}</p>
   ${agreeBox().replace(/data-b="onb"/g,'data-b="agree"')}<button class="btn primary big" data-a="agreeok">${L('Agree and continue','Aceptar y continuar')}</button></div>`);modalLocked=true;}
 // ---------- modals ----------
-function showModal(html){$('#sheet').innerHTML=html;$('#modal').classList.remove('hidden');document.body.classList.add('noscroll');}
-function closeModal(){timerStop();setTimeout(gameNotify,300);stopScanner();$('#modal').classList.add('hidden');$('#sheet').innerHTML='';document.body.classList.remove('noscroll');modalLocked=false;}
+function showModal(html){$('#modal').classList.remove('mpick');$('#sheet').innerHTML=html;$('#modal').classList.remove('hidden');document.body.classList.add('noscroll');}
+function closeModal(){timerStop();setTimeout(gameNotify,300);stopScanner();$('#modal').classList.add('hidden');$('#modal').classList.remove('mpick');$('#sheet').innerHTML='';document.body.classList.remove('noscroll');modalLocked=false;}
 function langPicker(){showModal(`<div class="langpick"><div class="globe">🌐</div><button class="btn primary big" data-a="picklang" data-l="en">English</button><button class="btn primary big" data-a="picklang" data-l="es">Español</button></div>`);modalLocked=true;}
 function onboarding(){showModal(`<h2>Welcome to Forge</h2><p class="muted">Set this up once — you can change it anytime in Settings.</p>${prefsForm()}<div data-notr="1">${agreeBox()}</div><button class="btn primary big" data-a="onboarded">Let's go</button>`);modalLocked=true;}
-function openPicker(mode,i){pick={mode,i};showModal(`<div class="sheethead"><h3>${mode==='swap'?'Swap exercise':'Add exercise'}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div><input id="pq" type="search" placeholder="Search exercises or muscles" autocomplete="off"><div id="plist" class="plist"></div>`);renderPickerList();}
+function openPicker(mode,i){pick={mode,i};showModal(`<div class="sheethead"><h3>${mode==='swap'?'Swap exercise':'Add exercise'}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div><input id="pq" type="search" placeholder="Search exercises or muscles" autocomplete="off"><div id="plist" class="plist"></div>`);$('#modal').classList.add('mpick');renderPickerList();}
 // Words people type for each muscle (English + Spanish, accents ignored). A search matching one shows every exercise that works it.
 const MUSCLE_WORDS={chest:'chest pecs pec pectoral pectorals pecho pectorales',shoulders:'shoulders shoulder delts delt deltoid deltoids hombros hombro deltoides',
  triceps:'triceps tricep tri triceps arms arm brazos brazo',biceps:'biceps bicep bis biceps arms arm brazos brazo',forearms:'forearms forearm grip wrist wrists antebrazos antebrazo agarre muneca munecas arms arm brazos brazo',
