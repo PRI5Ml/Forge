@@ -3,6 +3,15 @@ One post per day: put the newest day at the TOP, right below this note, and add 
 Start a post with ## and a title. Use - at the start of a line for a bullet point. Plain lines show as normal text.
 For Spanish, add " || " then the Spanish text on the same line (English || Español).
 
+## Nov 8 updates || Novedades del 8 nov
+New features || Funciones nuevas
+- 🧘 24 new stretches with photo demos, so every muscle has stretches: hip flexors, glutes, quads, hamstrings, inner thighs, outer hips, calves, lower and upper back, lats, chest, shoulders, triceps, biceps, forearms, abs, obliques and neck. Each one shows the muscles it stretches on the body chart || 🧘 24 estiramientos nuevos con fotos, así cada músculo tiene estiramientos: flexores de cadera, glúteos, cuádriceps, isquiotibiales, aductores, cadera externa, pantorrillas, espalda baja y alta, dorsales, pecho, hombros, tríceps, bíceps, antebrazos, abdomen, oblicuos y cuello. Cada uno muestra en el mapa del cuerpo los músculos que estira
+- 🧘 Stretches by muscle: on the Recovery tab, tap any muscle to see its stretches. You can also search a muscle like "glutes" or "hip flexor" in the Exercise library || 🧘 Estiramientos por músculo: en la pestaña Recuperación, toca cualquier músculo para ver sus estiramientos. También puedes buscar un músculo como "glúteos" o "flexor de cadera" en la Biblioteca de ejercicios
+- 2 new Recovery & mobility sessions: Lower body & hips and Upper body & neck || 2 sesiones nuevas de Recuperación y movilidad: Tren inferior y cadera, y Tren superior y cuello
+Improvements || Mejoras
+- Pigeon Stretch, Open Book Rotation and Doorway Chest Stretch were replaced in the mobility sessions by Figure-4 Glute Stretch, Lying Spinal Twist and Elbows-Back Chest Stretch, which stretch the same areas and have photo demos. Your past workouts with the old stretches are kept || El estiramiento de paloma, la rotación de libro abierto y el estiramiento de pecho en la puerta se cambiaron en las sesiones de movilidad por Estiramiento de glúteo en 4, Torsión de columna acostado y Estiramiento de pecho con codos atrás, que estiran las mismas zonas y tienen fotos. Tus entrenamientos pasados con los estiramientos anteriores se conservan
+- Fixed the website link on shared rank cards and rank text (it had a typo) || Se corrigió el enlace del sitio en las tarjetas y el texto de rangos compartidos (tenía un error)
+
 ## Nov 7 updates || Novedades del 7 nov
 New features || Funciones nuevas
 - 📖 Exercise library: look up how any exercise is done without starting a workout. Tap Exercise library on the Workout tab, search by name or muscle, and tap an exercise to see the demo and steps || 📖 Biblioteca de ejercicios: mira cómo se hace cualquier ejercicio sin empezar un entrenamiento. Toca Biblioteca de ejercicios en la pestaña Entrenar, busca por nombre o músculo y toca un ejercicio para ver la demostración y los pasos
