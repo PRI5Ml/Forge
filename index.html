@@ -200,7 +200,9 @@ details.card.flash{box-shadow:0 0 0 2px var(--acc)}
 .okmsg,.warnmsg{border-radius:10px;padding:8px 10px;margin:0 0 10px}.okmsg{background:rgba(52,211,153,.12);color:var(--good)}.warnmsg{background:rgba(245,192,74,.12);color:#f5c04a}
 #dexaform input.filled{border-color:var(--acc)}
 .whtrchip{display:inline-block;padding:6px 10px;border-radius:20px;font-size:13px;font-weight:700}.whtrchip.ok{background:rgba(52,211,153,.15);color:var(--good)}.whtrchip.bad{background:rgba(255,84,104,.15);color:var(--bad)}
-.tplrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.tplrow:first-of-type{border-top:0}.tplinfo{flex:1;min-width:0;display:flex;flex-direction:column}.tplinfo .small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tplrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.tplnote{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.bldrow{border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0}.bldtop{display:flex;align-items:center;justify-content:space-between;gap:6px}.bldtop b{font-size:15px}.bldbtns{display:flex;gap:2px;flex-shrink:0}.bldbtns .icon{width:32px;height:32px}.bldbtns .icon[disabled]{opacity:.3}
+.bldin{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}.bldin>div{flex:1;min-width:84px}.bldin input{width:100%;padding:9px 10px;border-radius:10px;background:var(--card2);border:1px solid var(--line);color:var(--text);font-size:16px;font-family:inherit}.bldin input::placeholder{color:var(--muted)}textarea[data-bld]{width:100%;padding:12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);color:var(--text);font-size:16px;font-family:inherit;resize:vertical}.stepper{display:flex;align-items:center;gap:8px}.stepper b{min-width:18px;text-align:center}.stepper .icon{width:34px;height:34px}.tplrow:first-of-type{border-top:0}.tplinfo{flex:1;min-width:0;display:flex;flex-direction:column}.tplinfo .small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tplpick{margin-bottom:10px}.tplgrp{background:var(--card2);border-radius:12px;padding:10px 12px;margin-bottom:8px}.tplgrp summary{display:flex;align-items:center;gap:8px;cursor:pointer}.tplgrp>div{margin-top:8px}
 .glasses{display:flex;gap:4px;align-items:flex-end}.glasses span{width:12px;height:22px;border-radius:3px 3px 5px 5px;border:2px solid #4da6ff55}.glasses span.full{background:#4da6ff;border-color:#4da6ff}
 .sstog{background:var(--card2);border:1px solid var(--line);color:var(--muted);height:36px;padding:0 9px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
@@ -658,7 +660,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.11.08a';
+const APP_VERSION='2026.11.08b';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false,branch:''},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],templates:[],water:{},scores:[],active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(!('branch' in (d.settings||{})))st.branch=st.onboarded?'usmc':'';if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[],templates:d.templates||[],water:d.water||{},scores:d.scores||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -1340,7 +1342,7 @@ function showHowto(id){
   ${isSt?exMuscleMap(ex).replace('Muscles worked','Muscles stretched'):exMuscleMap(ex)}<div class="htmeta"><div><span class="lbl">${isSt?'Stretches':'Works'}</span><b>${ex.p.map(musN).join(', ')}</b>${ex.s.length?`<span class="muted small"> + ${ex.s.map(musN).join(', ')}</span>`:''}</div><div><span class="lbl">Equipment</span>${esc(eq)}</div></div>
   ${hw?`<h3 style="margin-top:14px">How to do it</h3><ol class="htsteps">${hw[0].map(s=>`<li>${esc(s)}</li>`).join('')}</ol><div class="httip"><b>Tip</b> ${esc(hw[1])}</div>`:'<p class="muted">No instructions for custom exercises.</p>'}
   ${im?'<p class="muted small" style="margin-bottom:0">Photos: free-exercise-db (public domain). Needs internet to load.</p>':''}
-  ${window._libBack?`<button class="btn ghost" data-a="library">‹ Back to library</button>`:''}`);window._libBack=false;
+  ${window._libBack?`<button class="btn primary" data-a="bldaddid" data-id="${esc(id)}" data-notr="1">＋ ${L('Add to a planned workout','Agregar a un entrenamiento planeado')}</button><button class="btn ghost" data-a="library">‹ Back to library</button>`:''}${window._bldBack?`<button class="btn ghost" data-a="bldopen" data-notr="1">‹ ${L('Back to plan','Volver al plan')}</button>`:''}`);window._libBack=false;window._bldBack=false;
 }
 function scheme(ex){
   if(ex.inc==='run')return{sets:DIST.has(ex.id)?1:3,lo:0,hi:0};
@@ -3046,11 +3048,40 @@ function tplImportForm(){
   <textarea id="tplcode" style="width:100%;min-height:100px" placeholder="FW1.…"></textarea>
   <button class="btn primary" data-a="tplimportgo">${L('Continue','Continuar')}</button></div>`);
 }
+// ---------- plan a workout: build it now (from the library, a post online, anywhere), start it later ----------
+function bldDraft(){return S.planDraft||(S.planDraft={name:'',note:'',items:[]});}
+function bldOpen(){const d=bldDraft(),ed=d.tid&&(S.templates||[]).some(t=>t.id===d.tid);
+  const unitL=ex=>ex.inc==='sec'?L('Seconds','Segundos'):ex.inc==='cardio'?L('Minutes','Minutos'):L('Reps','Reps');
+  const rows=d.items.map((x,i)=>{const ex=EX(x.id);if(!ex)return'';const noR=ex.inc==='run';
+    return`<div class="bldrow"><div class="bldtop"><b>${i+1}. ${esc(tr(ex.name))}</b><span class="bldbtns">${HOWTO[ex.id]?`<button class="icon" data-a="bldhow" data-id="${ex.id}" aria-label="${L('How to do it','Cómo hacerlo')}">ⓘ</button>`:''}<button class="icon" data-a="bldmv" data-i="${i}" data-d="-1" aria-label="${L('Move up','Subir')}" ${i?'':'disabled'}>↑</button><button class="icon" data-a="bldmv" data-i="${i}" data-d="1" aria-label="${L('Move down','Bajar')}" ${i<d.items.length-1?'':'disabled'}>↓</button><button class="icon" data-a="bldrm" data-i="${i}" aria-label="${L('Remove','Quitar')}">✕</button></span></div>
+    <div class="bldin"><div><span class="lbl">${L('Sets','Series')}</span><div class="stepper"><button class="icon" data-a="bldn" data-i="${i}" data-d="-1">−</button><b>${x.n}</b><button class="icon" data-a="bldn" data-i="${i}" data-d="1">+</button></div></div>
+    ${noR?'':`<div><span class="lbl">${unitL(ex)}</span><input type="number" inputmode="numeric" min="0" data-bld="r" data-i="${i}" value="${esc(x.r||'')}" placeholder="${L('optional','opcional')}"></div>`}
+    ${isLoad(ex)?`<div><span class="lbl">${L('Weight','Peso')} (${U()})</span><input type="number" inputmode="decimal" min="0" data-bld="w" data-i="${i}" value="${esc(x.w||'')}" placeholder="${L('optional','opcional')}"></div>`:''}</div></div>`;}).join('');
+  showModal(`<div data-notr="1"><div class="sheethead"><h3>📝 ${ed?L('Edit workout','Editar entrenamiento'):L('Plan a workout','Planear un entrenamiento')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
+  <p class="muted small" style="margin-top:0">${L('Build it now and start it later from My workouts on the Workout tab. Your plan is kept even if you close this.','Ármalo ahora y empiézalo después desde Mis entrenamientos en la pestaña Entrenar. Tu plan se guarda aunque cierres esto.')}</p>
+  <div class="field"><label class="lbl">${L('Name','Nombre')}</label><input type="text" data-bld="name" value="${esc(d.name)}" maxlength="40" placeholder="${L('e.g. Leg day from Instagram','ej. Día de pierna de Instagram')}"></div>
+  ${rows||`<p class="muted small">${L('No exercises yet.','Aún no hay ejercicios.')}</p>`}
+  <button class="btn ghost" data-a="bldadd">＋ ${L('Add exercise','Agregar ejercicio')}</button>
+  <div class="field"><label class="lbl">${L('Notes (optional)','Notas (opcional)')}</label><textarea data-bld="note" rows="2" maxlength="300" placeholder="${L('Where you saw it, rest times, anything to remember','Dónde lo viste, descansos, lo que quieras recordar')}">${esc(d.note||'')}</textarea></div>
+  <button class="btn primary" data-a="bldsave" ${d.items.length?'':'disabled'}>${ed?L('Save changes','Guardar cambios'):L('Save to My workouts','Guardar en Mis entrenamientos')}</button>
+  <button class="linkbtn small" style="display:block;margin:8px auto 0" data-a="blddiscard">${ed?L('Cancel editing','Cancelar edición'):L('Discard plan','Descartar plan')}</button></div>`);
+}
+function bldAdd(id){const ex=EX(id);if(!ex)return;const d=bldDraft();d.items.push({id,n:ex.inc==='run'||ex.inc==='cardio'?1:3,r:'',w:''});save();}
+function bldSave(){const d=bldDraft();if(!d.items.length)return;const nm=(d.name||'').trim()||L('My workout','Mi entrenamiento');
+  const items=d.items.filter(x=>EX(x.id)).map(x=>({id:x.id,n:x.n,...(x.r||x.w?{sets:Array.from({length:x.n},()=>({w:x.w||'',r:x.r||''}))}:{})}));
+  S.templates=S.templates||[];const hasW=items.some(x=>x.sets&&x.sets.some(q=>q.w));
+  let t=d.tid&&S.templates.find(x=>x.id===d.tid);
+  if(t){t.name=nm;t.items=items;t.note=(d.note||'').trim();if(hasW)t.unit=U();}
+  else S.templates.push({id:uid(),name:nm,items,note:(d.note||'').trim(),made:Date.now(),planned:1,...(hasW?{unit:U()}:{})});
+  delete S.planDraft;save();closeModal();render();toast(L(`Saved "${nm}". Start it anytime from My workouts.`,`"${nm}" guardado. Empiézalo cuando quieras desde Mis entrenamientos.`));stat('f/workout-planned',true);}
+function bldEdit(t){S.planDraft={tid:t.id,name:t.name,note:t.note||'',items:t.items.filter(x=>EX(x.id)).map(x=>{const q=(x.sets||[])[0]||{};return{id:x.id,n:x.n,r:q.r||'',w:q.w?shareConv(EX(x.id),q.w,t.unit||U()):''};})};save();bldOpen();}
 function tplCard(){
   const T=(S.templates||[]).slice().sort((a,b)=>(b.used||b.made)-(a.used||a.made));
-  const imp=`<div class="row" style="align-items:center"><button class="btn ghost sm" style="margin:0;width:auto" data-a="tplpaste">📋 ${L('Paste shared workout','Pegar entrenamiento compartido')}</button><button class="linkbtn small" data-a="tplimport">${L('Type a link','Escribir enlace')}</button></div>`;
+  const dr=S.planDraft&&!S.planDraft.tid&&S.planDraft.items.length;
+  const plan=`<button class="btn ghost sm" style="margin:0 0 8px" data-a="bldopen">📝 ${dr?L(`Continue your plan (${S.planDraft.items.length})`,`Continuar tu plan (${S.planDraft.items.length})`):L('Plan a workout for later','Planear un entrenamiento para después')}</button>`;
+  const imp=plan+`<div class="row" style="align-items:center"><button class="btn ghost sm" style="margin:0;width:auto" data-a="tplpaste">📋 ${L('Paste shared workout','Pegar entrenamiento compartido')}</button><button class="linkbtn small" data-a="tplimport">${L('Type a link','Escribir enlace')}</button></div>`;
   if(!T.length)return`<div class="card" data-notr="1"><h3>${L('My workouts','Mis entrenamientos')}</h3><p class="muted small" style="margin:0 0 8px">${S.workouts.length?L('Save any workout (during it, after finishing, or from History) to start it again in one tap.','Guarda cualquier entrenamiento (durante, al terminar o desde Historial) para empezarlo de nuevo con un toque.'):L('Got a workout link from a friend? Copy it, then tap Paste.','¿Te mandaron un enlace de entrenamiento? Cópialo y toca Pegar.')}</p>${imp}</div>`;
-  return`<div class="card" data-notr="1"><h3>${L('My workouts','Mis entrenamientos')}</h3>${T.map(t=>`<div class="tplrow"><div class="tplinfo"><b>${esc(t.name)}</b><span class="muted small">${t.items.length} ${L('exercises','ejercicios')} · ${esc(t.items.slice(0,3).map(x=>EX(x.id)?tr(EX(x.id).name):'').join(', '))}${t.items.length>3?'…':''}</span></div><button class="btn primary sm" style="width:auto;margin:0" data-a="tplstart" data-id="${esc(t.id)}">${L('Start','Empezar')}</button><button class="icon" data-a="tplshare" data-id="${esc(t.id)}" aria-label="Share"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button class="icon" data-a="tpldel" data-id="${esc(t.id)}" aria-label="Delete">✕</button></div>`).join('')}<div style="border-top:1px solid var(--line);padding-top:10px">${imp}</div></div>`;
+  return`<div class="card" data-notr="1"><h3>${L('My workouts','Mis entrenamientos')}</h3>${T.map(t=>`<div class="tplrow"><div class="tplinfo"><b>${esc(t.name)}</b><span class="muted small">${t.items.length} ${L('exercises','ejercicios')} · ${esc(t.items.slice(0,3).map(x=>EX(x.id)?tr(EX(x.id).name):'').join(', '))}${t.items.length>3?'…':''}</span>${t.note?`<span class="muted small tplnote">📝 ${esc(t.note)}</span>`:''}</div><button class="btn primary sm" style="width:auto;margin:0" data-a="tplstart" data-id="${esc(t.id)}">${L('Start','Empezar')}</button><button class="icon" data-a="tplshare" data-id="${esc(t.id)}" aria-label="Share"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button class="icon" data-a="tpledit" data-id="${esc(t.id)}" aria-label="${L('Edit','Editar')}">✎</button><button class="icon" data-a="tpldel" data-id="${esc(t.id)}" aria-label="Delete">✕</button></div>`).join('')}<div style="border-top:1px solid var(--line);padding-top:10px">${imp}</div></div>`;
 }
 function tplPickerHtml(){
   const T=S.templates||[];if(!T.length||!S.active)return'';const inW=new Set(S.active.exercises.map(e=>e.exId));
@@ -4324,7 +4355,7 @@ const STAT_ACT={finish:'workout-finished',empty:'empty-workout',addex:'exercise-
   tplsave:'saved-workout',tplfromactive:'saved-workout',tplfromw:'saved-workout',tplstart:'saved-workout-started',tplshare:'saved-workout-shared',
   usmccalc:'calc-marine-pft-cft',aftcalc:'calc-army-aft',afcalc:'calc-air-force-pfra',nvcalc:'calc-navy-prt',timer:'test-timer',timerex:'test-timer',savetestdate:'test-date-set',savescore:'test-score-saved',
   glocker:'locker-opened',granks:'rank-xp-info',gequip:b=>'equip-'+({acc:'accent',ban:'banner',bg:'background',brd:'border',fx:'effect'}[b.dataset.k]||'look'),gametog:'game-mode-switched',
-  streakhelp:'streak-info',rankhelp:'ranks-info',stretchmus:'stretch-by-muscle',easier:'easier-version-used',harder:'harder-version-used',progtryharder:'program-tried-harder',progharder:'program-moved-up',library:'exercise-library-opened',heat:'heat-guide-opened',records:'records-opened',gymuse:'gym-profile-switched',gymsave:'gym-profile-saved',progstart:'program-session-started',rucklog:'ruck-log-opened',remform:'reminders-opened',progplan:'program-plan-opened',rkmuscle:'rank-muscle-opened',rankcopy:'ranks-copied',copybk:'backup-copied',export:'backup-exported',pastebk:'backup-restore-opened',
+  streakhelp:'streak-info',rankhelp:'ranks-info',bldopen:'plan-workout-open',bldaddid:'plan-from-library',tpledit:'workout-edit',stretchmus:'stretch-by-muscle',easier:'easier-version-used',harder:'harder-version-used',progtryharder:'program-tried-harder',progharder:'program-moved-up',library:'exercise-library-opened',heat:'heat-guide-opened',records:'records-opened',gymuse:'gym-profile-switched',gymsave:'gym-profile-saved',progstart:'program-session-started',rucklog:'ruck-log-opened',remform:'reminders-opened',progplan:'program-plan-opened',rkmuscle:'rank-muscle-opened',rankcopy:'ranks-copied',copybk:'backup-copied',export:'backup-exported',pastebk:'backup-restore-opened',
   motiontog:'animated-looks-switched',swipetog:'swipe-setting-switched',idea:'idea-box-opened',tab:b=>'tab-'+b.dataset.t,copymeal:'meal-copied',copyitem:'meal-copied',recapopen:'recap-opened',recapshare:'recap-shared'};
 function statStart(){
   // one "install" per phone: the first time Forge is opened from the home screen (kept outside backups so a restored backup on a new phone still counts)
@@ -4814,7 +4845,7 @@ function showModal(html){$('#modal').classList.remove('mpick');$('#sheet').inner
 function closeModal(){timerStop();setTimeout(gameNotify,300);stopScanner();$('#modal').classList.add('hidden');$('#modal').classList.remove('mpick');$('#sheet').innerHTML='';document.body.classList.remove('noscroll');modalLocked=false;}
 function langPicker(){showModal(`<div class="langpick"><div class="globe">🌐</div><button class="btn primary big" data-a="picklang" data-l="en">English</button><button class="btn primary big" data-a="picklang" data-l="es">Español</button></div>`);modalLocked=true;}
 function onboarding(){showModal(`<h2>Welcome to Forge</h2><p class="muted">Set this up once — you can change it anytime in Settings.</p>${prefsForm()}<div data-notr="1">${agreeBox()}</div><button class="btn primary big" data-a="onboarded">Let's go</button>`);modalLocked=true;}
-function openPicker(mode,i){pick={mode,i};showModal(`<div class="sheethead"><h3>${mode==='swap'?'Swap exercise':mode==='browse'?'📖 Exercise library':'Add exercise'}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div><input id="pq" type="search" placeholder="Search exercises or muscles" autocomplete="off" value="${mode==='browse'&&window._libQ?esc(window._libQ):''}"><div id="plist" class="plist"></div>`);$('#modal').classList.add('mpick');renderPickerList();}
+function openPicker(mode,i){pick={mode,i};showModal(`<div class="sheethead"><h3>${mode==='swap'?'Swap exercise':mode==='browse'?'📖 Exercise library':mode==='build'?L('Add to your plan','Agregar a tu plan'):'Add exercise'}</h3>${mode==='build'?`<button class="icon" data-a="bldopen" aria-label="${L('Back to plan','Volver al plan')}">‹</button>`:`<button class="icon" data-a="close" aria-label="Close">✕</button>`}</div>${mode==='browse'?`<button class="btn ghost sm" style="margin:0 0 8px" data-a="bldopen" data-notr="1">📝 ${S.planDraft&&S.planDraft.items.length?L(`Continue your plan (${S.planDraft.items.length})`,`Continuar tu plan (${S.planDraft.items.length})`):L('Plan a workout for later','Planear un entrenamiento para después')}</button>`:''}<input id="pq" type="search" placeholder="Search exercises or muscles" autocomplete="off" value="${mode==='browse'&&window._libQ?esc(window._libQ):''}"><div id="plist" class="plist"></div>`);$('#modal').classList.add('mpick');renderPickerList();}
 // Words people type for each muscle (English + Spanish, accents ignored). A search matching one shows every exercise that works it.
 const MUSCLE_WORDS={chest:'chest pecs pec pectoral pectorals pecho pectorales',shoulders:'shoulders shoulder delts delt deltoid deltoids hombros hombro deltoides',
  triceps:'triceps tricep tri triceps arms arm brazos brazo',biceps:'biceps bicep bis biceps arms arm brazos brazo',forearms:'forearms forearm grip wrist wrists antebrazos antebrazo agarre muneca munecas arms arm brazos brazo',
@@ -4839,9 +4870,9 @@ function musclesFor(qf){
 const OLD_STRETCH=new Set(['pigeon_stretch','thoracic_rotation','chest_doorway']);// no free photos: kept for history, replaced in routines
 const stretchQ=qf=>{const o=new Set();if(/hip ?flex|flexor|psoas/.test(qf))o.add('hipflex');if(/^(neck|cuello)/.test(qf))o.add('neck');return o;};
 function renderPickerList(){
-  const br=pick.mode==='browse';if(!S.active&&!br)return;
+  const br=pick.mode==='browse',bd=pick.mode==='build';if(!S.active&&!br&&!bd)return;
   const q=(($('#pq')||{}).value||'').trim().toLowerCase();if(br)window._libQ=q;
-  const inW=new Set(br?[]:S.active.exercises.map(e=>e.exId));
+  const inW=new Set(br?[]:bd?bldDraft().items.map(x=>x.id):S.active.exercises.map(e=>e.exId));
   let list=allEx().filter(ex=>!inW.has(ex.id)&&!OLD_STRETCH.has(ex.id));
   const fold=s=>String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''),qf=fold(q);
   const MM=q?new Set([...musclesFor(qf),...stretchQ(qf)]):new Set(),how={},SM=id=>STRETCH_MUS[id]?[STRETCH_MUS[id][0].split(' '),STRETCH_MUS[id][1].split(' ').filter(Boolean)]:null;
@@ -4854,7 +4885,7 @@ function renderPickerList(){
     return false;});
   else if(pick.mode==='swap'){const cur=EX(S.active.exercises[pick.i].exId);if(cur)list=list.filter(ex=>ex.p.some(m=>cur.p.includes(m)));}
   list.sort((a,b)=>(hasEq(b)-hasEq(a))||((how[a.id]||0)-(how[b.id]||0))||tr(a.name).localeCompare(tr(b.name),LOC()));
-  $('#plist').innerHTML=(!q&&pick.mode==='add'?tplPickerHtml():'')+list.map(ex=>`<button class="pitem ${hasEq(ex)?'':'dim'}" data-a="${br?'libex':'pick'}" data-id="${esc(ex.id)}"><b>${esc(ex.name)}</b><span class="muted small">${STRETCH_MUS[ex.id]?'🧘 '+L('Stretch','Estiramiento')+' · '+STRETCH_MUS[ex.id][0].split(' ').map(x=>S.settings.lang==='es'?tr(musN(x)):musN(x)).join(', '):ex.p.map(m=>MUSCLES[m]).join(', ')}${how[ex.id]===2&&!STRETCH_MUS[ex.id]?' · also works '+ex.s.filter(m=>MM.has(m)).map(m=>MUSCLES[m]).join(', '):''}${hasEq(ex)?'':' · needs '+ex.eq.filter(k=>!S.settings.equip.includes(k)).map(k=>EQUIP[k]).join(', ')}</span>${injuryFor(ex)?`<span class="small warn">⚠️ May aggravate: ${INJ_AREAS[injuryFor(ex).area]}</span>`:''}</button>`).join('')||'<p class="muted">No matches.</p>';
+  $('#plist').innerHTML=(!q&&pick.mode==='add'?tplPickerHtml():'')+list.map(ex=>`<button class="pitem ${hasEq(ex)?'':'dim'}" data-a="${br?'libex':bd?'bldpick':'pick'}" data-id="${esc(ex.id)}"><b>${esc(ex.name)}</b><span class="muted small">${STRETCH_MUS[ex.id]?'🧘 '+L('Stretch','Estiramiento')+' · '+STRETCH_MUS[ex.id][0].split(' ').map(x=>S.settings.lang==='es'?tr(musN(x)):musN(x)).join(', '):ex.p.map(m=>MUSCLES[m]).join(', ')}${how[ex.id]===2&&!STRETCH_MUS[ex.id]?' · also works '+ex.s.filter(m=>MM.has(m)).map(m=>MUSCLES[m]).join(', '):''}${hasEq(ex)?'':' · needs '+ex.eq.filter(k=>!S.settings.equip.includes(k)).map(k=>EQUIP[k]).join(', ')}</span>${injuryFor(ex)?`<span class="small warn">⚠️ May aggravate: ${INJ_AREAS[injuryFor(ex).area]}</span>`:''}</button>`).join('')||'<p class="muted">No matches.</p>';
 }
 function customForm(){
   const mo=Object.entries(MUSCLES).map(([k,l])=>`<option value="${k}">${l}</option>`).join('');
@@ -5038,6 +5069,17 @@ document.addEventListener('click',e=>{
     case'gymupd':{const c=gymCur();if(c){c.eq=S.settings.equip.slice();save();render();toast(L(`Saved ${c.n}`,`Guardado: ${c.n}`));}break;}
     case'gymdel':if(ask(L('Delete this gym profile? Your equipment stays as it is.','¿Borrar este perfil? Tu equipo se queda igual.'))){S.settings.gyms=gyms().filter(g=>g.id!==b.dataset.id);S.settings.gymCur=null;save();render();}break;
     case'heat':heatGuide();break;
+    case'bldopen':bldOpen();break;
+    case'bldadd':openPicker('build');break;
+    case'bldpick':bldAdd(b.dataset.id);bldOpen();break;
+    case'bldaddid':{bldAdd(b.dataset.id);const ex=EX(b.dataset.id);toast(L(`Added ${ex?tr(ex.name):''} to your plan`,`${ex?tr(ex.name):''} agregado a tu plan`));bldOpen();break;}
+    case'bldhow':window._bldBack=true;showHowto(b.dataset.id);break;
+    case'bldn':{const d=bldDraft(),x=d.items[+b.dataset.i];if(x){x.n=Math.max(1,Math.min(10,x.n+(+b.dataset.d)));save();bldOpen();}break;}
+    case'bldmv':{const d=bldDraft(),i=+b.dataset.i,j=i+(+b.dataset.d);if(j>=0&&j<d.items.length){[d.items[i],d.items[j]]=[d.items[j],d.items[i]];save();bldOpen();}break;}
+    case'bldrm':{const d=bldDraft();d.items.splice(+b.dataset.i,1);save();bldOpen();break;}
+    case'bldsave':bldSave();break;
+    case'blddiscard':{const d=S.planDraft;if(d&&!d.tid&&d.items.length&&!ask(L('Discard this plan?','¿Descartar este plan?')))break;delete S.planDraft;save();closeModal();render();break;}
+    case'tpledit':{const t=(S.templates||[]).find(x=>x.id===b.dataset.id);if(t)bldEdit(t);break;}
     case'stretchmus':{const m=b.dataset.m,ids=Object.keys(STRETCH_MUS).filter(id=>!OLD_STRETCH.has(id)&&EX(id)),pr=ids.filter(id=>STRETCH_MUS[id][0].split(' ').includes(m)),sc=ids.filter(id=>!pr.includes(id)&&STRETCH_MUS[id][1].split(' ').includes(m));
       const row=id=>{const ex=EX(id),inj=injuryFor(ex);return`<button class="pitem" data-a="howto" data-id="${id}"><b>${esc(tr(ex.name))}</b><span class="muted small">🧘 ${STRETCH_MUS[id][0].split(' ').map(x=>tr(musN(x))).join(', ')}</span>${inj?`<span class="small warn">⚠️ ${L('May aggravate','Puede agravar')}: ${esc(tr(INJ_AREAS[inj.area]))}</span>`:''}</button>`;};
       showModal(`<div data-notr="1"><div class="sheethead"><h3>🧘 ${L('Stretches for','Estiramientos para')} ${esc(tr(musN(m)))}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div><p class="muted small" style="margin-top:0">${L('Hold each one 20–45 seconds and breathe. A stretch should feel like a pull, never sharp pain.','Sostén cada uno 20–45 segundos y respira. Un estiramiento se siente como un jalón, nunca como dolor agudo.')}</p>${pr.map(row).join('')}${sc.length?`<div class="lsub" style="margin-top:10px">${L('Also stretches','También estira')} ${esc(tr(musN(m)))}</div>${sc.map(row).join('')}`:''}</div>`);break;}
@@ -5221,6 +5263,7 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('input',e=>{
   const t=e.target;
+  if(t.dataset.bld&&S.planDraft){const f=t.dataset.bld,d=S.planDraft;if(f==='name'||f==='note')d[f]=t.value;else{const x=d.items[+t.dataset.i];if(x)x[f]=t.value.replace(',','.');}save();return;}
   if(t.dataset.f&&S.active){
     const ii=t.dataset.i,sets=S.active.exercises[+ii].sets,j=+t.dataset.j,f=t.dataset.f,old=sets[j][f];
     sets[j][f]=t.value.replace(',','.');
