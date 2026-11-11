@@ -712,7 +712,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.11.10k';
+const APP_VERSION='2026.11.10l';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false,branch:''},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],templates:[],water:{},scores:[],active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(!('branch' in (d.settings||{})))st.branch=st.onboarded?'usmc':'';if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[],templates:d.templates||[],water:d.water||{},scores:d.scores||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -5663,30 +5663,43 @@ window.addEventListener('hashchange',()=>{const c=(location.hash.match(SHARE_RE)
 function startFlow(){if(!S.settings.langChosen)langPicker();else if(!S.settings.onboarded)onboarding();else if((S.settings.termsV||0)<TERMS_V)termsAsk();else if(sharedW)tplPreview(sharedW,sharedCode);else if(sharedCode)toast(L('That shared workout link is broken or incomplete.','Ese enlace de entrenamiento está dañado o incompleto.'));else if(!profileDone()&&!S.settings.askedProfile)profileAsk();}
 {const lk=(location.hash.match(/^#(terms|privacy|credits)$/)||[])[1];if(lk)legalView(lk,'page');else startFlow();}
 
-// ---------- Marine Corps Birthday (Nov 10, 2026 only): big banner + confetti on the first open that day ----------
-function usmcBday(){const d=new Date();if(d.getFullYear()!==2026||d.getMonth()!==10||d.getDate()!==10||S.settings.usmcBday===2026)return;
-  S.settings.usmcBday=2026;save();
+// ---------- Military branch birthdays: big banner + confetti the first time the app is opened on that day, every year ----------
+// n = how the banner names the branch, y = founding year (birthday number = this year - y), c = [dark, main, border/accent]
+const BDAYS=[
+ {k:'ng',  m:11,d:13,y:1636,n:['National Guard','Guardia Nacional'],date:['December 13, 1636','13 de diciembre de 1636'],motto:'Always Ready, Always There',c:['#16301f','#2c5a3a','#ffc72c']},
+ {k:'army',m:5, d:14,y:1775,n:['Army','Ejército'],date:['June 14, 1775','14 de junio de 1775'],motto:"This We'll Defend",c:['#111111','#2b2b2b','#ffd100']},
+ {k:'cg',  m:7, d:4, y:1790,n:['Coast Guard','Guardia Costera'],date:['August 4, 1790','4 de agosto de 1790'],motto:'Semper Paratus',c:['#0b2a52','#1f4e8c','#f26a21']},
+ {k:'af',  m:8, d:18,y:1947,n:['Air Force','Fuerza Aérea'],date:['September 18, 1947','18 de septiembre de 1947'],motto:'Aim High … Fly-Fight-Win',c:['#00205b','#00308f','#c0c6cf']},
+ {k:'navy',m:9, d:13,y:1775,n:['Navy','Marina'],date:['October 13, 1775','13 de octubre de 1775'],motto:'',c:['#001233','#002868','#ffc72c']},
+ {k:'usmc',m:10,d:10,y:1775,n:['Marines','Marines'],date:['November 10, 1775','10 de noviembre de 1775'],motto:'Semper Fidelis',c:['#8c0b16','#c8102e','#ffc72c']},
+ {k:'sf',  m:11,d:20,y:2019,n:['Space Force','Fuerza Espacial'],date:['December 20, 2019','20 de diciembre de 2019'],motto:'Semper Supra',c:['#0a1024','#1c2a52','#c0c6cf']}];
+const ordEn=n=>{const t=n%100,u=n%10;return n+(t>=11&&t<=13?'th':u===1?'st':u===2?'nd':u===3?'rd':'th');};
+function branchBday(){const d=new Date(),yr=d.getFullYear(),B=BDAYS.find(b=>b.m===d.getMonth()&&b.d===d.getDate());if(!B)return;
+  const seen=S.settings.bdaySeen=S.settings.bdaySeen||{};
+  if(seen[B.k]===yr||(B.k==='usmc'&&S.settings.usmcBday===yr))return;
+  seen[B.k]=yr;save();
+  const age=yr-B.y,[dk,mid,acc]=B.c;
   const wrap=document.createElement('div');wrap.id='bday';wrap.setAttribute('data-notr','1');
   wrap.innerHTML=`<style>
   #bday{position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden}
   #bday .bb{pointer-events:auto;position:absolute;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 12px);padding:20px 46px 20px 18px;border-radius:18px;text-align:center;
-    background:linear-gradient(135deg,#8c0b16,#c8102e 55%,#8c0b16);border:3px solid #ffc72c;box-shadow:0 10px 40px rgba(0,0,0,.6),0 0 30px rgba(255,199,44,.45);color:#fff;animation:bdin .6s cubic-bezier(.2,1.4,.4,1) both}
-  #bday .bb b{display:block;font-size:26px;line-height:1.15;font-weight:900;letter-spacing:.3px;text-shadow:0 2px 0 #5a0610}
-  #bday .bb span{display:block;margin-top:6px;font-size:15px;color:#ffe08a;font-weight:700}
+    background:linear-gradient(135deg,${dk},${mid} 55%,${dk});border:3px solid ${acc};box-shadow:0 10px 40px rgba(0,0,0,.6),0 0 30px ${acc}73;color:#fff;animation:bdin .6s cubic-bezier(.2,1.4,.4,1) both}
+  #bday .bb b{display:block;font-size:26px;line-height:1.15;font-weight:900;letter-spacing:.3px;text-shadow:0 2px 0 rgba(0,0,0,.45)}
+  #bday .bb span{display:block;margin-top:6px;font-size:15px;color:${acc};font-weight:700}
   #bday .bx{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;border:0;background:rgba(0,0,0,.3);color:#fff;font-size:16px}
   #bday i{position:absolute;top:-20px;width:9px;height:14px;border-radius:2px;animation:bdfall linear forwards}
   @keyframes bdin{from{transform:translateY(-140%) scale(.9)}to{transform:none}}
   @keyframes bdfall{to{transform:translate3d(var(--dx),110vh,0) rotate(var(--r))}}
   @media (prefers-reduced-motion:reduce){#bday i{display:none}#bday .bb{animation:none}}</style>
-  <div class="bb" role="status"><b>🎉 ${L('Happy 251st Birthday Marines','¡Feliz cumpleaños 251, Marines!')} 🎂</b><span>${L('November 10, 1775 – 2026 · Semper Fidelis','10 de noviembre de 1775 – 2026 · Semper Fidelis')}</span><button class="bx" aria-label="${L('Close','Cerrar')}">✕</button></div>`;
-  const C=['#c8102e','#ffc72c','#ffffff','#ffd84a','#e23b4e'];
+  <div class="bb" role="status"><b>🎉 ${L(`Happy ${ordEn(age)} Birthday ${B.n[0]}`,`¡Feliz cumpleaños ${age}, ${B.n[1]}!`)} 🎂</b><span>${L(B.date[0],B.date[1])} – ${yr}${B.motto?' · '+B.motto:''}</span><button class="bx" aria-label="${L('Close','Cerrar')}">✕</button></div>`;
+  const C=[mid,acc,'#ffffff',acc,'#e23b4e'];
   for(let k=0;k<140;k++){const c=document.createElement('i');c.style.left=Math.random()*100+'vw';c.style.background=C[k%C.length];
     c.style.setProperty('--dx',(Math.random()*160-80)+'px');c.style.setProperty('--r',(Math.random()*1440-720)+'deg');
     c.style.animationDuration=(3+Math.random()*4)+'s';c.style.animationDelay=(Math.random()*3)+'s';if(k%3===0){c.style.width='7px';c.style.height='7px';c.style.borderRadius='50%';}wrap.appendChild(c);}
   document.body.appendChild(wrap);
   const bye=()=>{const b=wrap.querySelector('.bb');if(b){b.style.transition='opacity .5s,transform .5s';b.style.opacity='0';b.style.transform='translateY(-30px)';}setTimeout(()=>wrap.remove(),600);};
   wrap.querySelector('.bx').onclick=bye;setTimeout(bye,12000);}
-setTimeout(()=>{try{if(S.settings.langChosen)usmcBday();}catch(e){}},400);
+setTimeout(()=>{try{if(S.settings.langChosen)branchBday();}catch(e){}},400);
 loadNews();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadNews();});
 setInterval(tick,250);
