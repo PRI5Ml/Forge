@@ -3,6 +3,15 @@ One post per day: put the newest day at the TOP, right below this note, and add 
 Start a post with ## and a title. Use - at the start of a line for a bullet point. Plain lines show as normal text.
 For Spanish, add " || " then the Spanish text on the same line (English || Español).
 
+## Nov 15 updates || Novedades del 15 nov
+New features || Funciones nuevas
+- 💡 "Why this exercise?": every generated exercise now shows a short reason, like "Back hasn't been trained in 5 days" or "Chest is fully recovered" || 💡 "¿Por qué este ejercicio?": cada ejercicio generado ahora muestra una razón corta, como "Espalda: 5 días sin entrenar" o "Pecho: totalmente recuperado"
+- 🎛 Exercise variety setting (Settings): Stick to my favorites (same lifts, steady progress), Balanced, or Mix it up (new exercises more often) || 🎛 Ajuste de variedad de ejercicios (Ajustes): Mis favoritos (mismos ejercicios, progreso constante), Equilibrado o Variar (ejercicios nuevos más seguido)
+- 🔁 Auto-add: if you add the same exercise yourself to 3 of your last 4 workouts (like a treadmill warm-up), Forge asks if you want it added automatically. Turn it off anytime in Settings || 🔁 Agregar automático: si agregas tú mismo el mismo ejercicio en 3 de tus últimos 4 entrenamientos (como un calentamiento en caminadora), Forge te pregunta si quieres que se agregue solo. Quítalo cuando quieras en Ajustes
+- ↔ Interval timer: new "Switch sides halfway" option for one-arm and one-leg moves, with a double beep halfway through each work round || ↔ Temporizador de intervalos: nueva opción "Cambiar de lado a la mitad" para ejercicios a un brazo o una pierna, con doble pitido a la mitad de cada ronda
+- 📏 Body measurements on the Progress tab: chest, arms, waist, hips and thighs, with a mini chart and your change over time || 📏 Medidas corporales en la pestaña Progreso: pecho, brazos, cintura, cadera y muslos, con una mini gráfica y tu cambio con el tiempo
+- 🏅 4 new badges for ranking up every muscle: All Gold or higher, All Diamond or higher, All Titan or higher and All Godlike. Every one of your 19 muscles has to reach that rank || 🏅 4 insignias nuevas por subir el rango de todos tus músculos: Todos en Oro o más, Todos en Diamante o más, Todos en Titán o más y Todos en Divino. Tus 19 músculos tienen que llegar a ese rango
+
 ## Nov 10 updates || Novedades del 10 nov
 New features || Funciones nuevas
 - 🎂 Happy 251st Birthday, Marines! Every year, a birthday banner with confetti now shows the first time you open Forge on each branch's birthday: National Guard (Dec 13), Army (Jun 14), Coast Guard (Aug 4), Air Force (Sep 18), Navy (Oct 13), Marine Corps (Nov 10) and Space Force (Dec 20) || 🎂 ¡Feliz cumpleaños 251, Marines! Cada año, un aviso de cumpleaños con confeti aparece la primera vez que abres Forge en el cumpleaños de cada rama: Guardia Nacional (13 dic), Ejército (14 jun), Guardia Costera (4 ago), Fuerza Aérea (18 sep), Marina (13 oct), Cuerpo de Marines (10 nov) y Fuerza Espacial (20 dic)
