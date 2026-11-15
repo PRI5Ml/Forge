@@ -719,7 +719,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.11.15p';
+const APP_VERSION='2026.11.15q';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false,branch:''},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],templates:[],water:{},scores:[],active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(!('branch' in (d.settings||{})))st.branch=st.onboarded?'usmc':'';if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[],templates:d.templates||[],water:d.water||{},scores:d.scores||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -4055,7 +4055,7 @@ const RC_STOP=new Set(['with','and','the','of','a','an','on','in','to','for','1'
 const RC_GEN=new Set(['small','medium','large','regular','piece','drink','side','pack','extra','double','spicy','grilled','crispy','original','classic','kid','kids','mini','size']);
 const RC_HEAD=/\b(build your own|your items?|luxe box|cravings box|box|bigger plate|plate|kids? meal|family meal|bundle|pack)\b\s*$|^\s*\d+\s+items?\s*$|^\s*(plate|bowl|bigger plate|combo|meal|entree|side|drink|beverage|items?)\s*$/i;
 const RC_OPT=/^(seasoned beef|beef|ground beef|chicken|grilled chicken|shredded chicken|steak|carne asada|potato(es)?|beans?|black beans|refried beans|pinto beans|rice|fresco style|regular|original|spicy|mild|hot|medium|lettuce|cheese|sour cream|tomatoes?|onions?)$/i;
-const RC_SKIP=/\b(sub ?-?total|total|tax|tip|gratuity|change due|change|cash|visa|master ?card|amex|american express|discover|debit|credit|card|auth|approval|approved|order ?(no|num|number|#)|check ?#|ticket|table|server|cashier|guest|thank|receipt|survey|www\.|\.com|phone|tel\b|store ?#|register|balance|payment|tendered|delivery|service fee|fee\b|promo|discount|coupon|reward|points|savings|you saved|drive ?thru|dine ?in|take ?out|carry ?out|to go|pickup|pick up|mobile|kiosk|transaction|trans ?#|terminal|merchant|signature|customer copy|rounding|donation|round up)\b/i;
+const RC_SKIP=/\b(order history|order details|hide details|show details|view details|reorder|order again|view receipt|your order|sub ?-?total|total|tax|tip|gratuity|change due|change|cash|visa|master ?card|amex|american express|discover|debit|credit|card|auth|approval|approved|order ?(no|num|number|#)|check ?#|ticket|table|server|cashier|guest|thank|receipt|survey|www\.|\.com|phone|tel\b|store ?#|register|balance|payment|tendered|delivery|service fee|fee\b|promo|discount|coupon|reward|points|savings|you saved|drive ?thru|dine ?in|take ?out|carry ?out|to go|pickup|pick up|mobile|kiosk|transaction|trans ?#|terminal|merchant|signature|customer copy|rounding|donation|round up)\b/i;
 const RC_MOD=/^\s*(no|add|extra|xtra|light|lite|easy|sub|substitute|side of|on side|without|w\/o|plain|well|cut|grilled onion|onion|pickle|ketchup|mustard|mayo|lettuce|tomato|sauce|ranch|bbq|honey mustard|buffalo|dressing|ice|no ice|lemon)\b|^\s*[-+*>~•·]/i;
 function rcNorm(s){
   s=String(s).toLowerCase().replace(/[’'`®™©]/g,'').replace(/&/g,' and ').replace(/\bw\//g,' with ').replace(/\bw\/o\b/g,' without ')
@@ -4073,12 +4073,27 @@ function rcScore(L,I){if(!L.length||!I.length)return 0;let hit=0,real=0;const us
 function rcDetect(text){const t=String(text).toLowerCase().replace(/[^a-z]/g,'');
   for(const c of REST.chains){const keys=[c.n.toLowerCase().replace(/[^a-z]/g,''),c.id];if(c.id==='hardees')keys.push('hardees','carlsjr');if(c.id==='canes')keys.push('raisingcanes');if(c.id==='bww')keys.push('buffalowildwings','bdubs');
     if(keys.some(k=>k.length>=4&&t.includes(k)))return c.id;}return '';}
+function rcLines(text){
+  const src=String(text).split(/\r?\n/).map(x=>x.replace(/\t/g,' ').trim()),out=[];let cur='';
+  for(const l of src){if(!l){if(cur){out.push(cur);cur='';}continue;}
+    if(cur&&/[a-z]-$/i.test(cur))cur+=l;else if(cur&&/,$/.test(cur))cur+=' '+l;else{if(cur)out.push(cur);cur=l;}}
+  if(cur)out.push(cur);
+  const res=[];for(const l of out){const parts=l.split(/\s*,\s*/).filter(Boolean);
+    if(parts.length>=2&&!/\$?\d+[.,]\d{2}\s*$/.test(parts[parts.length-1].replace(/^\d+$/,''))){
+      // an ingredient list like "Chicken with White Rice, Black Beans, Cheese": one line per ingredient
+      const first=parts[0].split(/\s+with\s+/i);res.push(...first,...parts.slice(1).map(x=>x.replace(/^(and|&)\s+/i,'')));}
+    else res.push(l);}
+  return res;}
+function rcBestChain(text){let best='',bs=0,second=0;
+  for(const c of REST.chains){const r=rcParse(text,c.id);const t=r.rows.reduce((a,x)=>a+x.opts[0].s*(x.opts[0].s>=.5?1:.3),0);
+    if(t>bs){second=bs;bs=t;best=c.id;}else if(t>second)second=t;}
+  return bs>=1&&bs>=second*1.25?best:'';}
 function rcParse(text,chId){
   const chains=chId?REST.chains.filter(c=>c.id===chId):REST.chains,cand=[];
   for(const c of chains){const ct=new Set(rcNorm(c.n));c.items.forEach((it,k)=>{const all=rcNorm(it[0].replace(/\([^)]*\)/g,' ')),t=all.filter(x=>!ct.has(x));cand.push({c,k,it,tok:t.length?t:all});});}
   const chT=chId?new Set(rcNorm(REST.chains.find(c=>c.id===chId).n)):new Set(),cmg=chId==='chipotle';
   const rows=[],bad=[];
-  for(let raw of String(text).split(/\r?\n/)){
+  for(let raw of rcLines(text)){
     let l=raw.replace(/\t/g,' ').replace(/[®™©]/g,'').trim();if(!l||!/[a-z]{2}/i.test(l))continue;
     if(RC_SKIP.test(l)||RC_MOD.test(l)||RC_HEAD.test(l))continue;
     if(!cmg&&RC_OPT.test(l.replace(/^\s*\d+\s+/,'').trim()))continue;
@@ -4128,7 +4143,7 @@ function rcptForm(msg){
     <button class="linkbtn small" data-a="rcedit" style="display:block;margin:8px auto 0">‹ ${L('Edit the receipt text','Editar el texto del recibo')}</button>`:''}</div>`);}
 function rcptGo(){rcptRead();const txt=RCT.txt.trim();if(!txt){toast(L('Paste the receipt text first, or read a photo.','Primero pega el texto del recibo o lee una foto.'));return;}
   let auto='';if(!RCT.ch){auto=rcDetect(txt);}const ch=RCT.ch||auto;
-  let r=rcParse(txt,ch);if(!ch&&r.rows.length){const ids=new Set(r.rows.filter(x=>x.on).map(x=>x.opts[x.pick].c));if(ids.size===1){auto=[...ids][0];r=rcParse(txt,auto);}}
+  let r=rcParse(txt,ch);if(!ch&&r.rows.length){auto=rcBestChain(txt);if(auto)r=rcParse(txt,auto);}
   const fin=RCT.ch||auto;RCT.rows=r.rows;RCT.bad=r.bad;const had=RCT.ch;RCT.ch=fin;
   const c=fin&&REST.chains.find(x=>x.id===fin);
   rcptForm(c&&!had?L(`Looks like <b>${esc(c.n)}</b>. Wrong restaurant? Change it above.`,`Parece que es <b>${esc(c.n)}</b>. ¿Restaurante equivocado? Cámbialo arriba.`):!c?L('No restaurant name found, so this searched every chain. Pick the restaurant above for better matches.','No se encontró el nombre del restaurante, así que se buscó en todas las cadenas. Elige el restaurante arriba para mejores resultados.'):'');}
