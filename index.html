@@ -76,6 +76,12 @@ select,input[type=text],input[type=search],input[type=email],input[type=date]{wi
 .last{color:var(--muted);margin-top:8px}
 .note{color:var(--acc);margin-top:4px}
 .why{color:var(--muted);margin-top:4px}
+#tut{position:fixed;inset:0;z-index:9990}
+#tut .tspot{position:fixed;border-radius:14px;box-shadow:0 0 0 9999px rgba(0,0,0,.72);border:2px solid var(--acc);pointer-events:none;transition:all .25s}
+#tut .tdim{position:fixed;inset:0;background:rgba(0,0,0,.72)}
+#tut .tbub{position:fixed;left:16px;right:16px;max-width:420px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+#tut .tbub .tt{font-size:18px;display:block}#tut .tbub p{margin:6px 0 12px;line-height:1.45}
+
 .sethead,.set{display:grid;grid-template-columns:30px 1fr 1fr 48px;gap:8px;align-items:center}
 .sethead{margin-top:12px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 .sethead span{text-align:center}
@@ -713,7 +719,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.11.15c';
+const APP_VERSION='2026.11.15p';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false,branch:''},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],templates:[],water:{},scores:[],active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(!('branch' in (d.settings||{})))st.branch=st.onboarded?'usmc':'';if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[],templates:d.templates||[],water:d.water||{},scores:d.scores||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -3246,6 +3252,53 @@ function tplImportForm(){
 }
 // ---------- plan a workout: build it now (from the library, a post online, anywhere), start it later ----------
 function demoThumb(id,act){const im=HOWTO_IMG[id];return im?`<div class="demo dmini" data-a="${act}" data-id="${esc(id)}" role="img" aria-label="${esc(tr((EX(id)||{}).name||''))}"><img class="d0" loading="lazy" src="${IMG_BASE+im}/0.jpg" alt="" onerror="this.parentNode.classList.add('none');this.parentNode.innerHTML='🏋️'"><img class="d1" loading="lazy" src="${IMG_BASE+im}/1.jpg" alt="" onerror="this.remove()"></div>`:`<div class="dmini none" data-a="${act}" data-id="${esc(id)}">${STRETCH_MUS[id]?'🧘':'🏋️'}</div>`;}
+
+// ---------- import a workout from pasted text (ChatGPT, a coach, notes): "Bench 3x8 135, Rows 3x10" -> a plan you can review and save ----------
+const IMP_SYN=[[/\bdb\b|\bdbs\b/g,'dumbbell'],[/\bbb\b/g,'barbell'],[/\bkb\b/g,'kettlebell'],[/\brdls?\b/g,'romanian deadlift'],[/\bohp\b/g,'overhead press'],[/\bsldl\b/g,'stiff leg deadlift'],
+ [/pull ?downs?/g,'pulldown'],[/push ?ups?/g,'push up'],[/pull ?ups?/g,'pull up'],[/chin ?ups?/g,'chin up'],[/sit ?ups?/g,'sit up'],[/skull ?crushers?/g,'skull crusher'],[/\btri(cep)?s?\b/g,'triceps'],[/\bbi(cep)?s?\b/g,'biceps'],
+ [/\blat\b|\blats\b/g,'lat'],[/\brow(s|ing)?\b/g,'row'],[/\bsquats?\b/g,'squat'],[/\blunges?\b/g,'lunge'],[/\bcurls?\b/g,'curl'],[/\bpresse?s?\b/g,'press'],[/\bflye?s?\b/g,'fly'],[/\bdips?\b/g,'dip'],[/\braises?\b/g,'raise'],[/\bextensions?\b/g,'extension'],[/\bdeadlifts?\b/g,'deadlift'],[/\bplanks?\b/g,'plank'],[/\bcrunch(es)?\b/g,'crunch'],[/\bshrugs?\b/g,'shrug'],[/\bthrusts?\b/g,'thrust'],[/\bbench press\b/g,'bench press'],[/\bmil(itary)? press\b/g,'overhead press']];
+const impNorm=t=>{t=' '+String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]+/g,' ')+' ';for(const[a,b]of IMP_SYN)t=t.replace(a,b);return t.replace(/\s+/g,' ').trim().split(' ').map(w=>w.length>4&&/[^s]s$/.test(w)?w.slice(0,-1):w).join(' ');};
+let IMP_IDX=null;
+// everyday names people use for the most common lifts (English and Spanish)
+const IMP_ALIAS={squat:['squat','back squat','barbell squat','sentadilla','sentadilla con barra'],bench:['bench','bench press','flat bench','press de banca','press banca'],deadlift:['deadlift','conventional deadlift','peso muerto'],
+ ohp:['overhead press','military press','shoulder press','press militar','press de hombro'],pullup:['pull up','pullups','dominada','dominadas'],chinup:['chin up','dominada supina'],pushup:['push up','flexion','flexiones','lagartija','lagartijas'],
+ pushdown:['triceps pushdown','tricep pushdown','pushdown','cable pushdown','extension de triceps en polea'],bb_row:['barbell row','bent over row','remo con barra'],lat_pulldown:['lat pulldown','pulldown','jalon al pecho'],
+ db_curl:['curl','bicep curl','dumbbell curl','curl de biceps'],rdl:['romanian deadlift','rdl','peso muerto rumano'],leg_press:['leg press','prensa','prensa de piernas'],plank:['plank','plancha'],lat_raise:['lateral raise','side raise','elevacion lateral','elevaciones laterales'],
+ hip_thrust:['hip thrust','empuje de cadera'],lunge:['lunge','walking lunge','zancada','zancadas'],dip:['dip','dips','fondos'],cable_row:['seated cable row','cable row','remo en polea']};
+const IMP_COMMON=new Set(['bench','squat','deadlift','ohp','pullup','chinup','pushup','bb_row','lat_pulldown','db_curl','pushdown','dip','rdl','leg_press','plank','lat_raise','incline_db','db_press','cable_row','lunge','hip_thrust','leg_curl','leg_ext','face_pull','calf_raise']);
+function impMatch(name,strict){const q=impNorm(name);if(!q)return null;const qt=q.split(' ');const HAS=new Set(S.workouts.flatMap(w=>w.exercises.map(e=>e.exId)));
+  if(!IMP_IDX)IMP_IDX=allEx().filter(ex=>!PREP_ONLY.has(ex.id)).map(ex=>[ex,[impNorm(ex.name),impNorm(tr(ex.name))].concat((IMP_ALIAS[ex.id]||[]).map(impNorm))]);
+  let best=null,bs=0;
+  for(const[ex,names]of IMP_IDX)for(const n of names){if(!n)continue;if(n===q)return ex;const nt=n.split(' ');
+    const hit=qt.filter(w=>nt.includes(w)).length;if(!hit)continue;const sc=hit/Math.max(qt.length,nt.length)+(n.includes(q)||q.includes(n)?0.25:0)+(hasEq(ex)?0.05:0)+(IMP_COMMON.has(ex.id)?0.1:0)+(HAS.has(ex.id)?0.1:0)-(nt.length>qt.length?0.02*(nt.length-qt.length):0);
+    if(sc>bs){bs=sc;best=ex;}}
+  return bs>=(strict?0.85:0.5)?best:null;}
+function impParse(txt){const out=[],miss=[];let title='';IMP_IDX=null;
+  let lines=String(txt).replace(/\r/g,'').split(/\n|;/).map(x=>x.trim()).filter(Boolean);
+  lines=lines.flatMap(l=>(l.match(/\d+\s*[x×]\s*\d+/gi)||[]).length>1?l.split(/,(?![^(]*\))/):[l]);
+  for(let l of lines){l=l.replace(/^[\s\-*•#>]+/,'').replace(/^\d+[.)]\s*/,'').replace(/\*\*/g,'').trim();if(!l)continue;
+    let n=3,r='',w='',m,got=false;
+    if((m=l.match(/(\d+)\s*(?:x|×|sets?\s*(?:of|x|×)?)\s*(\d+)(?:\s*(?:-|–|to)\s*(\d+))?\s*(sec|secs|seconds|s\b|min|mins|minutes)?/i))){n=+m[1];r=+m[2];
+      if(m[4]&&/^m/i.test(m[4]))r=r*60;l=l.replace(m[0],' ');got=true;}
+    else if((m=l.match(/(\d+)\s*sets?\b/i))){n=+m[1];got=true;l=l.replace(m[0],' ');const m2=l.match(/(\d+)(?:\s*(?:-|–|to)\s*\d+)?\s*(reps?|sec|secs|seconds|min|mins|minutes)\b/i);if(m2){r=+m2[1];if(/^m/i.test(m2[2]))r*=60;l=l.replace(m2[0],' ');}}
+    const wm=l.match(/(?:@|at)?\s*(\d+(?:\.\d+)?)\s*(lbs?|pounds|kgs?|kilos?)\b/i)||l.match(/@\s*(\d+(?:\.\d+)?)/);
+    if(!wm&&got){const bn=l.match(/(?:^|\s)(\d{1,4}(?:\.\d+)?)\s*$/);if(bn){w=String(+bn[1]);l=l.replace(bn[0],' ');}}
+    if(wm){let v=+wm[1];const isKg=/kg|kilo/i.test(wm[2]||'')?true:/lb|pound/i.test(wm[2]||'')?false:U()==='kg';if(isKg&&U()==='lb')v=Math.round(v*2.20462);else if(!isKg&&U()==='kg')v=Math.round(v/2.20462*2)/2;w=v;l=l.replace(wm[0],' ');}
+    l=l.replace(/\((.*?)\)/g,' ').replace(/\b(reps?|sets?|rest|each( side| arm| leg)?|per side|of)\b/gi,' ').replace(/[:–—\-|,@]+/g,' ').replace(/\s+/g,' ').trim();
+    if(!l)continue;
+    const ex=impMatch(l,!got);
+    if(ex){n=Math.max(1,Math.min(10,n||3));const tm=ex.inc==='run'||ex.inc==='cardio';out.push({id:ex.id,n:tm?1:n,r:r?String(r):'',w:w?String(w):''});}
+    else if(/\d/.test(l)||l.split(' ').length<=6){if(!out.length&&!title&&!/\d/.test(l))title=l;else miss.push(l);}}
+  return{items:out,miss,title};}
+function impForm(){showModal(`<div data-notr="1"><div class="sheethead"><h3>📥 ${L('Import a workout from text','Importar un entrenamiento de texto')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
+  <p class="muted small" style="margin-top:0">${L('Paste a workout from ChatGPT, a coach, a note or a message. Put each exercise on its own line, like the example. You can fix anything before you save it.','Pega un entrenamiento de ChatGPT, un entrenador, una nota o un mensaje. Pon cada ejercicio en su propia línea, como en el ejemplo. Puedes corregir lo que sea antes de guardarlo.')}</p>
+  <textarea id="imptxt" rows="9" style="width:100%" placeholder="${L('Push day\nBench press 4x8 135 lb\nIncline dumbbell press 3x10 50\nCable fly 3 sets of 12\nTriceps pushdown 3x12\nPlank 3 x 45 sec','Día de empuje\nPress de banca 4x8 135 lb\nPress inclinado con mancuernas 3x10 50\nAperturas en polea 3 series de 12\nExtensión de tríceps en polea 3x12\nPlancha 3 x 45 seg')}"></textarea>
+  ${navigator.clipboard&&navigator.clipboard.readText?`<button class="btn ghost" data-a="imppaste">📋 ${L('Paste from clipboard','Pegar del portapapeles')}</button>`:''}
+  <button class="btn primary" data-a="impgo">${L('Import','Importar')}</button></div>`);}
+function impGo(){const t=($('#imptxt')||{}).value||'';const r=impParse(t);
+  if(!r.items.length){toast(L("Couldn't find any exercises. Put each one on its own line, like \"Squat 3x8 135\".",'No se encontraron ejercicios. Pon cada uno en su propia línea, como "Sentadilla 3x8 135".'));return;}
+  S.planDraft={name:r.title.slice(0,40)||L('Imported workout','Entrenamiento importado'),note:r.miss.length?L('Not found, add these yourself: ','No encontrados, agrégalos tú: ')+r.miss.join(', '):'',items:r.items};save();bldOpen();
+  toast(r.miss.length?L(`Imported ${r.items.length}. ${r.miss.length} not found (listed in Notes).`,`Se importaron ${r.items.length}. ${r.miss.length} no encontrados (en Notas).`):L(`Imported ${r.items.length} exercises. Check them, then save.`,`Se importaron ${r.items.length} ejercicios. Revísalos y guarda.`));stat('f/workout-imported',true);}
 function bldDraft(){return S.planDraft||(S.planDraft={name:'',note:'',items:[]});}
 function bldOpen(){const d=bldDraft(),ed=d.tid&&(S.templates||[]).some(t=>t.id===d.tid);
   const unitL=ex=>ex.inc==='sec'?L('Seconds','Segundos'):ex.inc==='cardio'?L('Minutes','Minutos'):L('Reps','Reps');
@@ -3276,7 +3329,7 @@ function tplCard(){
   const T=(S.templates||[]).slice().sort((a,b)=>(b.used||b.made)-(a.used||a.made));
   const dr=S.planDraft&&!S.planDraft.tid&&S.planDraft.items.length;
   const plan=`<button class="btn ghost sm" style="margin:0 0 8px" data-a="bldopen">📝 ${dr?L(`Continue your plan (${S.planDraft.items.length})`,`Continuar tu plan (${S.planDraft.items.length})`):L('Plan a workout for later','Planear un entrenamiento para después')}</button>`;
-  const imp=plan+`<div class="row" style="align-items:center"><button class="btn ghost sm" style="margin:0;width:auto" data-a="tplpaste">📋 ${L('Paste shared workout','Pegar entrenamiento compartido')}</button><button class="linkbtn small" data-a="tplimport">${L('Type a link','Escribir enlace')}</button></div>`;
+  const imp=plan+`<button class="btn ghost sm" style="margin:0 0 8px" data-a="impopen">📥 ${L('Import a workout from text','Importar un entrenamiento de texto')}</button><div class="row" style="align-items:center"><button class="btn ghost sm" style="margin:0;width:auto" data-a="tplpaste">📋 ${L('Paste shared workout','Pegar entrenamiento compartido')}</button><button class="linkbtn small" data-a="tplimport">${L('Type a link','Escribir enlace')}</button></div>`;
   if(!T.length)return`<div class="card" data-notr="1"><h3>${L('My workouts','Mis entrenamientos')}</h3><p class="muted small" style="margin:0 0 8px">${S.workouts.length?L('Save any workout (during it, after finishing, or from History) to start it again in one tap.','Guarda cualquier entrenamiento (durante, al terminar o desde Historial) para empezarlo de nuevo con un toque.'):L('Got a workout link from a friend? Copy it, then tap Paste.','¿Te mandaron un enlace de entrenamiento? Cópialo y toca Pegar.')}</p>${imp}</div>`;
   return`<div class="card" data-notr="1"><h3>${L('My workouts','Mis entrenamientos')}</h3>${T.map(t=>`<div class="tplrow"><div class="tplinfo"><b>${esc(t.name)}</b><span class="muted small">${t.items.length} ${L('exercises','ejercicios')} · ${esc(t.items.slice(0,3).map(x=>EX(x.id)?tr(EX(x.id).name):'').join(', '))}${t.items.length>3?'…':''}</span>${t.note?`<span class="muted small tplnote">📝 ${esc(t.note)}</span>`:''}</div><button class="btn primary sm" style="width:auto;margin:0" data-a="tplstart" data-id="${esc(t.id)}">${L('Start','Empezar')}</button><button class="icon" data-a="tplshare" data-id="${esc(t.id)}" aria-label="Share"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button class="icon" data-a="tpledit" data-id="${esc(t.id)}" aria-label="${L('Edit','Editar')}">✎</button><button class="icon" data-a="tpldel" data-id="${esc(t.id)}" aria-label="Delete">✕</button></div>`).join('')}<div style="border-top:1px solid var(--line);padding-top:10px">${imp}</div></div>`;
 }
@@ -3923,10 +3976,12 @@ function vFood(){
   ${macroBar('Protein',t.p,g.p,'g','#5b9dff')}${macroBar('Carbs',t.c,g.c,'g','#f5c04a')}${macroBar('Fat',t.f,g.f,'g','#ff5ea8')}</div>
   ${waterCard()}
   <div class="row" style="margin-top:0"><button class="btn primary big" style="margin:0" data-a="scanbc">▥ Scan barcode</button><button class="btn primary big" style="margin:0" data-a="scanfood">📷 Scan label</button></div>
+  <div class="row" style="margin-top:0;gap:8px"><button class="btn ghost" style="margin:0" data-a="restopen" data-notr="1">🍔 ${L('Restaurants','Restaurantes')}</button><button class="btn ghost" style="margin:0" data-a="rcptopen" data-notr="1">🧾 ${L('From a receipt','De un recibo')}</button></div>
   <button class="btn ghost" data-a="addfood">+ Add manually</button>
   <button class="btn ghost" data-a="copyfood" data-notr="1">📋 ${L('Copy a meal from another day','Copiar una comida de otro día')}</button>
   <input type="file" id="scanfile" accept="image/*" capture="environment" hidden>
   ${rec?`<div class="card" style="margin-top:12px"><h3>Add again</h3><div>${rec}</div></div>`:''}
+  ${recipeCard()}
   <div class="card" style="margin-top:12px"><h3>${isToday?"Today's food":'Food'}</h3>${rows||'<p class="muted small" style="margin:0">Nothing logged yet. Scan the nutrition label on the package, or add it manually.</p>'}</div>
   <div class="card"><div class="hdr"><h3 style="margin:0 0 10px">Daily goals</h3><button class="helpbtn" data-a="nuthelp">ⓘ How it's calculated</button></div>${(()=>{const n=S.settings.nut;
     if(!n)return`<p class="muted small" style="margin-top:0">Get targets for your goal: lose fat, maintain or build muscle.</p><button class="btn primary" style="margin:0 0 14px" data-a="nutform">Calculate my targets</button>`;
@@ -3935,6 +3990,164 @@ function vFood(){
   ${[['cal','Calories','kcal'],['p','Protein','g'],['c','Carbs','g'],['f','Fat','g']].map(([k,l,u])=>`<div class="field"><label class="lbl">${l} (${u})</label><input type="text" inputmode="numeric" data-goal="${k}" value="${g0[k]}"></div>`).join('')}</div><p class="muted small" style="margin:0">Change any number to set it yourself.</p>
   <label class="ebrow"><span><b>Add calories burned to my goal</b><span class="muted small">On: burn 400 and you get 400 more to eat that day. Off: it's just shown.</span></span><button class="tog ${S.settings.eatBack?'on':''}" data-a="eatback" aria-label="Add calories burned to my goal"><i></i></button></label></div>`;
 }
+
+// ---------- recipes: build once from foods you've logged (or ingredients you type in), then log a serving in one tap ----------
+let RCP=null;
+const rcpTot=r=>r.items.reduce((t,x)=>{const k=+x.sv||0;t.cal+=k*(+x.cal||0);t.p+=k*(+x.p||0);t.c+=k*(+x.c||0);t.f+=k*(+x.f||0);return t;},{cal:0,p:0,c:0,f:0});
+const rcpPer=r=>{const t=rcpTot(r),n=Math.max(1,+r.serv||1);return{cal:Math.round(t.cal/n),p:r1(t.p/n),c:r1(t.c/n),f:r1(t.f/n)};};
+function foodLib(){const seen=new Set(),out=[];for(let i=S.food.length-1;i>=0;i--){const e=S.food[i],k=(e.name||'').trim().toLowerCase();if(!k||seen.has(k)||e.rcp)continue;seen.add(k);out.push(e);}return out;}
+function recipeCard(){const R=S.recipes||[];
+  return`<div class="card" style="margin-top:12px" data-notr="1"><h3>🍲 ${L('My recipes','Mis recetas')}</h3>${R.length?`<p class="muted small" style="margin:-4px 0 8px">${L('Tap one to log a serving. ✎ to edit.','Toca una para registrar una porción. ✎ para editar.')}</p><div>${R.map(r=>{const q=rcpPer(r);return`<span class="chip" style="margin:0 6px 6px 0;padding:0"><button class="chip qa" style="margin:0;border:0" data-a="rcplog" data-id="${esc(r.id)}">+ ${esc(r.name)} <span class="muted">${q.cal}</span></button><button class="icon" style="width:28px;height:28px;font-size:13px" data-a="rcpedit" data-id="${esc(r.id)}" aria-label="${L('Edit','Editar')}">✎</button></span>`;}).join('')}</div>`:`<p class="muted small" style="margin:-4px 0 8px">${L('Cook the same meals a lot? Save the recipe once, then log a serving in one tap.','¿Cocinas lo mismo seguido? Guarda la receta una vez y registra una porción con un toque.')}</p>`}
+  <button class="btn ghost sm" style="margin:0" data-a="rcpnew">+ ${L('New recipe','Nueva receta')}</button></div>`;}
+function rcpRead(){if(!RCP)return;const n=$('#rcpname'),sv=$('#rcpserv');if(n)RCP.name=n.value;if(sv)RCP.serv=Math.max(1,parseFloat(sv.value.replace(',','.'))||1);
+  document.querySelectorAll('[data-rsv]').forEach(i=>{const x=RCP.items[+i.dataset.rsv];if(x)x.sv=Math.max(0,parseFloat(i.value.replace(',','.'))||0);});}
+function rcpForm(mode){const r=RCP,per=rcpPer(r),tot=rcpTot(r);
+  const lib=mode==='lib'?foodLib():[];
+  showModal(`<div data-notr="1"><div class="sheethead"><h3>🍲 ${r.id&&(S.recipes||[]).some(x=>x.id===r.id)?L('Edit recipe','Editar receta'):L('New recipe','Nueva receta')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
+  <div class="grid2"><div class="field"><label class="lbl">${L('Name','Nombre')}</label><input type="text" id="rcpname" maxlength="40" value="${esc(r.name||'')}" placeholder="${L('e.g. Beef chili','ej. Chili de res')}"></div>
+  <div class="field"><label class="lbl">${L('Makes (servings)','Rinde (porciones)')}</label><input type="text" inputmode="decimal" id="rcpserv" value="${r.serv||1}"></div></div>
+  <b class="small">${L('Ingredients','Ingredientes')}</b>
+  ${r.items.length?r.items.map((x,k)=>`<div class="hrow" style="flex-direction:row;align-items:center;gap:8px"><span style="flex:1">${esc(x.name)}<br><span class="muted small">${Math.round(+x.cal||0)} kcal ${L('per serving','por porción')}</span></span><input type="text" inputmode="decimal" data-rsv="${k}" value="${r1(+x.sv||0)}" style="width:62px;text-align:center" aria-label="${L('Servings','Porciones')}"><span class="muted small">×</span><button class="icon" data-a="rcprm" data-k="${k}" aria-label="${L('Remove','Quitar')}">✕</button></div>`).join(''):`<p class="muted small">${L('No ingredients yet.','Aún no hay ingredientes.')}</p>`}
+  ${mode==='lib'?`<div class="calcbox" style="margin:8px 0"><b class="small">${L('Foods you\'ve logged','Alimentos que has registrado')}</b><input type="search" id="rcpq" placeholder="${L('Search','Buscar')}" style="margin:6px 0" oninput="document.querySelectorAll('#rcplib button').forEach(b=>b.style.display=b.textContent.toLowerCase().includes(this.value.toLowerCase())?'':'none')"><div id="rcplib" style="max-height:220px;overflow:auto">${lib.length?lib.map(f=>`<button class="pitem" style="width:100%;text-align:left" data-a="rcpaddf" data-id="${esc(f.id)}">＋ ${esc(f.name)} <span class="muted small">${Math.round(+f.cal||0)} kcal · P ${r1(+f.p||0)}g</span></button>`).join(''):`<p class="muted small">${L('Nothing logged yet. Add the ingredient yourself instead.','Aún no has registrado nada. Mejor agrega el ingrediente tú.')}</p>`}</div><button class="btn primary sm" style="margin:8px 0 0" data-a="rcpdone">${L('Done adding','Listo')}</button></div>`:''}
+  ${mode==='man'?`<div class="calcbox" style="margin:8px 0"><div class="field"><label class="lbl">${L('Ingredient','Ingrediente')}</label><input type="text" id="ri_n" placeholder="${L('e.g. Ground beef 93/7, 4 oz','ej. Carne molida 93/7, 4 oz')}"></div>
+    <div class="grid2">${[['cal',L('Calories','Calorías')],['p',L('Protein (g)','Proteína (g)')],['c',L('Carbs (g)','Carbohidratos (g)')],['f',L('Fat (g)','Grasa (g)')]].map(([k,l])=>`<div class="field"><label class="lbl">${l}</label><input type="text" inputmode="decimal" id="ri_${k}" placeholder="0"></div>`).join('')}</div>
+    <div class="field"><label class="lbl">${L('How many of that amount go in the whole recipe','Cuántas de esa cantidad lleva toda la receta')}</label><input type="text" inputmode="decimal" id="ri_sv" value="1"></div><button class="btn primary sm" style="margin:0" data-a="rcpaddm">${L('Add ingredient','Agregar ingrediente')}</button></div>`:''}
+  ${mode?'':`<div class="row" style="gap:8px;margin:8px 0"><button class="btn ghost sm" style="margin:0" data-a="rcplib">＋ ${L('From foods I\'ve logged','De alimentos registrados')}</button><button class="btn ghost sm" style="margin:0" data-a="rcpman">＋ ${L('Type one in','Escribir uno')}</button></div>`}
+  <div class="calcbox" style="margin:8px 0">${L('Whole recipe','Receta completa')}: <b>${Math.round(tot.cal).toLocaleString()} kcal</b><br>${L('Per serving','Por porción')}: <b>${per.cal} kcal</b> · P ${per.p}g · C ${per.c}g · F ${per.f}g</div>
+  <button class="btn primary" data-a="rcpsave" ${r.items.length?'':'disabled'}>${L('Save recipe','Guardar receta')}</button>
+  ${(S.recipes||[]).some(x=>x.id===r.id)?`<button class="linkbtn small" style="display:block;margin:8px auto 0;color:var(--bad)" data-a="rcpdel">${L('Delete recipe','Borrar receta')}</button>`:''}</div>`);}
+
+// ---------- restaurants: popular items from ~40 chains (restaurants.json, cached for offline). Tap an item to log it. ----------
+let REST=null,RQ='',RCAT='all',RCH=null;
+const RCATS=[['all','All','Todos'],['fast','Fast food','Comida rápida'],['pizza','Pizza','Pizza'],['subs','Subs','Sándwiches'],['sit','Sit-down','Restaurantes'],['coffee','Coffee','Café']];
+function restLoad(){if(REST)return Promise.resolve(REST);return fetch('restaurants.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>REST=d);}
+function restOpen(){RQ='';RCAT='all';RCH=null;showModal(`<div data-notr="1"><div class="sheethead"><h3>🍔 ${L('Restaurants','Restaurantes')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div><p class="muted small">${L('Loading…','Cargando…')}</p></div>`);
+  restLoad().then(()=>restDraw(true)).catch(()=>{$('#sheet').innerHTML=`<div data-notr="1"><div class="sheethead"><h3>🍔 ${L('Restaurants','Restaurantes')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div><p>${L("Couldn't load the restaurant list. Connect to the internet once and it will work offline after that.",'No se pudo cargar la lista de restaurantes. Conéctate a internet una vez y después funcionará sin conexión.')}</p></div>`;});}
+const restItem=(c,it,k)=>`<button class="pitem" style="width:100%;text-align:left;display:flex;justify-content:space-between;gap:8px" data-a="restlog" data-c="${esc(c.id)}" data-k="${k}"><span>${RCH?'':`<span class="muted small">${esc(c.n)} · </span>`}${esc(it[0])}<br><span class="muted small">P ${it[2]}g · C ${it[3]}g · F ${it[4]}g</span></span><b style="white-space:nowrap">${it[1]} <span class="muted small" style="font-weight:400">kcal</span></b></button>`;
+function restList(){const D=REST;if(!D)return'';const q=RQ.trim().toLowerCase(),ws=q.split(/\s+/).filter(Boolean);
+  if(RCH){const c=D.chains.find(x=>x.id===RCH);if(!c)return'';const its=c.items.map((it,k)=>[it,k]).filter(([it])=>ws.every(w=>it[0].toLowerCase().includes(w)));
+    return`<button class="linkbtn small" data-a="restback">‹ ${L('All restaurants','Todos los restaurantes')}</button><h3 style="margin:8px 0 6px">${esc(c.n)}</h3>${its.map(([it,k])=>restItem(c,it,k)).join('')||`<p class="muted small">${L('No match.','Sin resultados.')}</p>`}<p class="muted small" style="margin-top:10px">${L('Source','Fuente')}: ${esc(c.src)}</p>`;}
+  const chains=D.chains.filter(c=>RCAT==='all'||c.cat===RCAT);
+  if(ws.length){const hits=[];for(const c of chains){const cn=c.n.toLowerCase();c.items.forEach((it,k)=>{const t=cn+' '+it[0].toLowerCase();if(ws.every(w=>t.includes(w)))hits.push(restItem(c,it,k));});}
+    return hits.slice(0,80).join('')||`<p class="muted small">${L("No match. Try a shorter word, like \"burger\" or \"chicken\".",'Sin resultados. Prueba una palabra más corta, como "burger" o "chicken".')}</p>`;}
+  return chains.map(c=>`<button class="pitem" style="width:100%;text-align:left;display:flex;justify-content:space-between" data-a="restchain" data-c="${esc(c.id)}"><b>${esc(c.n)}</b><span class="muted small">${c.items.length} ${L('items','opciones')} ›</span></button>`).join('');}
+function restDraw(first){const D=REST;
+  if(first)$('#sheet').innerHTML=`<div data-notr="1"><div class="sheethead"><h3>🍔 ${L('Restaurants','Restaurantes')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
+  <button class="btn ghost sm" style="margin:0 0 8px" data-a="rcptopen">🧾 ${L('Log a whole order from a receipt','Registrar un pedido completo desde un recibo')}</button>
+  <input type="search" id="restq" placeholder="${L('Search, e.g. big mac, chicken sandwich','Busca, ej. big mac, chicken sandwich')}" style="width:100%;margin-bottom:8px">
+  <div class="lchips" id="restcats" style="margin-bottom:8px"></div><div id="restlist"></div>
+  <p class="muted small" style="margin-top:10px">${L(`Popular items from ${D.chains.length} chains, as of ${D.asOf}. Numbers are from each chain's published nutrition info or nutrition databases; menus change, so check the restaurant if it matters.`,`Opciones populares de ${D.chains.length} cadenas, a ${D.asOf}. Los números vienen de la información publicada por cada cadena o de bases de datos de nutrición; los menús cambian, así que verifica con el restaurante si es importante.`)}</p></div>`;
+  const cats=$('#restcats');if(cats)cats.innerHTML=RCH?'':RCATS.map(([k,en,es])=>`<button class="lchip ${k===RCAT?'on':''}" data-a="restcat" data-k="${k}">${L(en,es)}</button>`).join('');
+  const l=$('#restlist');if(l)l.innerHTML=restList();
+  const q=$('#restq');if(q&&!q._b){q._b=1;q.addEventListener('input',()=>{RQ=q.value;const l2=$('#restlist');if(l2)l2.innerHTML=restList();});}}
+// ---------- log a restaurant order from a receipt: paste the text, or read a photo (Tesseract, on the phone) ----------
+let RCT={txt:'',ch:'',rows:null,bad:[]};
+const RC_ABBR={lg:'large',lrg:'large',larg:'large',md:'medium',med:'medium',sm:'small',sml:'small',reg:'regular',pc:'piece',pcs:'piece',pce:'piece',ct:'piece',
+  chkn:'chicken',chk:'chicken',ckn:'chicken',chx:'chicken',chix:'chicken',sand:'sandwich',sndwch:'sandwich',sndw:'sandwich',sw:'sandwich',sammy:'sandwich',
+  nug:'nugget',nugs:'nugget',nugget:'nugget',mcnug:'mcnugget',ff:'fries',fry:'fries',frys:'fries',burg:'burger',bgr:'burger',chz:'cheese',chs:'cheese',chse:'cheese',
+  dbl:'double',trpl:'triple',qtr:'quarter',qp:'quarter pounder',qpc:'quarter pounder cheese',dqp:'double quarter pounder',w:'with',bfast:'breakfast',bkfst:'breakfast',brkfst:'breakfast',
+  ckie:'cookie',crsp:'crispy',spcy:'spicy',spcy_:'spicy',sprm:'supreme',supr:'supreme',burr:'burrito',brto:'burrito',qsd:'quesadilla',ques:'quesadilla',quesa:'quesadilla',
+  ic:'iced',frap:'frappuccino',orig:'original',trad:'traditional',bnls:'boneless',bnl:'boneless',wng:'wing',wngs:'wing',pep:'pepperoni',pepp:'pepperoni',pepr:'pepperoni',
+  saus:'sausage',sausg:'sausage',ssg:'sausage',bisc:'biscuit',bisk:'biscuit',mcmuff:'mcmuffin',bac:'bacon',bcn:'bacon',grld:'grilled',grl:'grilled',fil:'filet',
+  tndr:'tender',tndrs:'tender',strp:'strip',strps:'strip',choc:'chocolate',van:'vanilla',straw:'strawberry',shk:'shake',hb:'hamburger',hamb:'hamburger',cb:'cheeseburger',chzbgr:'cheeseburger',
+  bowl:'bowl',bwl:'bowl',rice:'rice',wht:'white',brn:'brown',blk:'black',bean:'bean',pnto:'pinto',guac:'guacamole',sc:'sour cream',ent:'entree',ff_:'fries'};
+const RC_STOP=new Set(['with','and','the','of','a','an','on','in','to','for','1','serving','oz','meal','combo','value','order','ea','each','item','w']);
+const RC_GEN=new Set(['small','medium','large','regular','piece','drink','side','pack','extra','double','spicy','grilled','crispy','original','classic','kid','kids','mini','size']);
+const RC_HEAD=/\b(build your own|your items?|luxe box|cravings box|box|bigger plate|plate|kids? meal|family meal|bundle|pack)\b\s*$|^\s*\d+\s+items?\s*$|^\s*(plate|bowl|bigger plate|combo|meal|entree|side|drink|beverage|items?)\s*$/i;
+const RC_OPT=/^(seasoned beef|beef|ground beef|chicken|grilled chicken|shredded chicken|steak|carne asada|potato(es)?|beans?|black beans|refried beans|pinto beans|rice|fresco style|regular|original|spicy|mild|hot|medium|lettuce|cheese|sour cream|tomatoes?|onions?)$/i;
+const RC_SKIP=/\b(sub ?-?total|total|tax|tip|gratuity|change due|change|cash|visa|master ?card|amex|american express|discover|debit|credit|card|auth|approval|approved|order ?(no|num|number|#)|check ?#|ticket|table|server|cashier|guest|thank|receipt|survey|www\.|\.com|phone|tel\b|store ?#|register|balance|payment|tendered|delivery|service fee|fee\b|promo|discount|coupon|reward|points|savings|you saved|drive ?thru|dine ?in|take ?out|carry ?out|to go|pickup|pick up|mobile|kiosk|transaction|trans ?#|terminal|merchant|signature|customer copy|rounding|donation|round up)\b/i;
+const RC_MOD=/^\s*(no|add|extra|xtra|light|lite|easy|sub|substitute|side of|on side|without|w\/o|plain|well|cut|grilled onion|onion|pickle|ketchup|mustard|mayo|lettuce|tomato|sauce|ranch|bbq|honey mustard|buffalo|dressing|ice|no ice|lemon)\b|^\s*[-+*>~•·]/i;
+function rcNorm(s){
+  s=String(s).toLowerCase().replace(/[’'`®™©]/g,'').replace(/&/g,' and ').replace(/\bw\//g,' with ').replace(/\bw\/o\b/g,' without ')
+    .replace(/(\d)([a-z])/g,'$1 $2').replace(/([a-z])(\d)/g,'$1 $2').replace(/[^a-z0-9]+/g,' ').trim();
+  const out=[];for(let t of s.split(' ')){if(!t)continue;const x=RC_ABBR[t];if(x)out.push(...x.split(' '));else out.push(t);}
+  return out.map(t=>t.length>3&&/s$/.test(t)&&!/ss$/.test(t)?t.slice(0,-1):t).filter(t=>!RC_STOP.has(t));}
+function rcTokMatch(a,b){if(a===b)return 1;if(a.length>=4&&b.length>=4&&(a.startsWith(b)||b.startsWith(a)))return .85;return 0;}
+function rcScore(L,I){if(!L.length||!I.length)return 0;let hit=0,real=0;const used=new Set();
+  for(const t of I){let best=0,bj=-1;L.forEach((u,j)=>{if(used.has(j))return;const m=rcTokMatch(t,u);if(m>best){best=m;bj=j;}});if(bj>=0){used.add(bj);hit+=best;if(!RC_GEN.has(t)&&!/^\d+$/.test(t))real++;}}
+  if(!real)return 0;
+  for(const w of ['slice','single'])if(I.includes(w)&&!L.includes(w))hit-=.3;
+  // numbers must agree (6 pc vs 10 pc): an unmatched number in either side is a strong penalty
+  const nI=I.filter(t=>/^\d+$/.test(t)),nL=L.filter(t=>/^\d+$/.test(t));if(nI.some(n=>nL.length&&!nL.includes(n)))hit-=1;
+  return Math.max(0,2*hit/(L.length+I.length));}
+function rcDetect(text){const t=String(text).toLowerCase().replace(/[^a-z]/g,'');
+  for(const c of REST.chains){const keys=[c.n.toLowerCase().replace(/[^a-z]/g,''),c.id];if(c.id==='hardees')keys.push('hardees','carlsjr');if(c.id==='canes')keys.push('raisingcanes');if(c.id==='bww')keys.push('buffalowildwings','bdubs');
+    if(keys.some(k=>k.length>=4&&t.includes(k)))return c.id;}return '';}
+function rcParse(text,chId){
+  const chains=chId?REST.chains.filter(c=>c.id===chId):REST.chains,cand=[];
+  for(const c of chains){const ct=new Set(rcNorm(c.n));c.items.forEach((it,k)=>{const all=rcNorm(it[0].replace(/\([^)]*\)/g,' ')),t=all.filter(x=>!ct.has(x));cand.push({c,k,it,tok:t.length?t:all});});}
+  const chT=chId?new Set(rcNorm(REST.chains.find(c=>c.id===chId).n)):new Set(),cmg=chId==='chipotle';
+  const rows=[],bad=[];
+  for(let raw of String(text).split(/\r?\n/)){
+    let l=raw.replace(/\t/g,' ').replace(/[®™©]/g,'').trim();if(!l||!/[a-z]{2}/i.test(l))continue;
+    if(RC_SKIP.test(l)||RC_MOD.test(l)||RC_HEAD.test(l))continue;
+    if(!cmg&&RC_OPT.test(l.replace(/^\s*\d+\s+/,'').trim()))continue;
+    if(cmg&&/\b(bowl|salad)\b/i.test(l))continue;
+    {const nt=rcNorm(l).filter(x=>!/^\d+$/.test(x));if(nt.length&&REST.chains.some(c=>{const cn=rcNorm(c.n);return cn.length===nt.length&&cn.every(y=>nt.includes(y));}))continue;}
+    if(/\byour (items|order)\b/i.test(l)||RC_HEAD.test(l.replace(/\(?\$?\s?\d{1,4}[.,]\d{2}\)?/g,' ').trim()))continue;
+    if(/^\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4}|\d{1,2}:\d{2})/.test(l))continue;
+    l=l.replace(/\(?\$?\s?\d{1,4}[.,]\d{2}\)?/g,' ').replace(/#\s?\d+\b/g,' ').replace(/\s+/g,' ').trim();
+    let q=1,m;
+    if((m=l.match(/^(\d{1,2})\s*[x×@]\s*/i))||((m=l.match(/^(\d{1,2})\s+(?!pc|piece|pcs|ct|count|oz|in|inch|wing|tender|strip|nug|lb)/i))&&+m[1]<=20)){q=+m[1];l=l.slice(m[0].length);}
+    else if((m=l.match(/\s(?:x|×|qty:?)\s*(\d{1,2})\s*$/i))){q=+m[1];l=l.slice(0,m.index);}
+    else if((m=l.match(/^qty:?\s*(\d{1,2})\s*/i))){q=+m[1];l=l.slice(m[0].length);}
+    l=l.replace(/\b(meal|combo|value meal)\b/ig,'').trim();
+    const tok0=rcNorm(l),tok=tok0.filter(x=>!chT.has(x)).length?tok0.filter(x=>!chT.has(x)):tok0;if(!tok.length||!/[a-z]{3}/.test(tok.join('')))continue;
+    const sc=cand.map(x=>({x,s:rcScore(tok,x.tok)})).filter(z=>z.s>0).sort((a,b)=>b.s-a.s).slice(0,4);
+    if(!sc.length||sc[0].s<.34){bad.push(raw.trim());continue;}
+    rows.push({line:raw.trim(),q:Math.max(1,Math.min(20,q)),opts:sc.map(z=>({c:z.x.c.id,k:z.x.k,s:z.s})),pick:0,on:sc[0].s>=.5});}
+  return {rows,bad};}
+const rcItem=o=>{const c=REST.chains.find(x=>x.id===o.c);return c&&{c,it:c.items[o.k]};};
+function rcptOpen(){restLoad().then(()=>{RCT={txt:RCT.txt||'',ch:RCT.ch||'',rows:null,bad:[]};rcptForm();}).catch(()=>toast(L("Couldn't load the restaurant list. Connect to the internet once.",'No se pudo cargar la lista. Conéctate a internet una vez.')));}
+function rcptRead(){const t=$('#rctext');if(t)RCT.txt=t.value;const s=$('#rcch');if(s)RCT.ch=s.value;
+  document.querySelectorAll('[data-rcq]').forEach(i=>{const r=RCT.rows&&RCT.rows[+i.dataset.rcq];if(r)r.q=Math.max(0,Math.min(50,parseFloat(String(i.value).replace(',','.'))||0));});
+  document.querySelectorAll('[data-rcon]').forEach(i=>{const r=RCT.rows&&RCT.rows[+i.dataset.rcon];if(r)r.on=i.checked;});
+  document.querySelectorAll('[data-rcpk]').forEach(i=>{const r=RCT.rows&&RCT.rows[+i.dataset.rcpk];if(r)r.pick=+i.value;});}
+function rcptTot(){let n=0,cal=0;for(const r of RCT.rows||[])if(r.on&&r.q>0){const x=rcItem(r.opts[r.pick]);if(x){n++;cal+=r.q*x.it[1];}}return{n,cal:Math.round(cal)};}
+function rcptForm(msg){
+  const chs=REST.chains.slice().sort((a,b)=>a.n.localeCompare(b.n));
+  const rows=RCT.rows,tot=rows?rcptTot():null;
+  showModal(`<div data-notr="1"><div class="sheethead"><h3>🧾 ${L('Log from a receipt','Registrar desde un recibo')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
+  ${rows?'':`<p class="muted small" style="margin:0 0 8px">${L('Paste your receipt, order email, or the order from the restaurant\'s app, or read it from a photo. Forge finds each item so you don\'t have to add them one by one.','Pega tu recibo, el correo del pedido o el pedido de la app del restaurante, o léelo de una foto. Forge encuentra cada producto para que no tengas que agregarlos uno por uno.')}</p>
+  <label class="btn primary" style="margin:0 0 6px;display:block;text-align:center;cursor:pointer">📷 ${L('Read a photo of the receipt','Leer una foto del recibo')}<input type="file" id="rcfile" accept="image/*" hidden></label>
+  <p class="muted small" style="margin:0 0 10px">💡 ${L('iPhone tip: open the receipt photo (or point the Camera at it), press and hold on the text, tap <b>Select All</b> then <b>Copy</b>, and paste below. This is usually the most accurate way.','Consejo para iPhone: abre la foto del recibo (o apunta la Cámara), mantén presionado el texto, toca <b>Seleccionar todo</b> y luego <b>Copiar</b>, y pégalo abajo. Suele ser lo más preciso.')}</p>`}
+  ${msg?`<div class="calcbox" style="margin:0 0 8px">${msg}</div>`:''}
+  <label class="small muted">${L('Restaurant','Restaurante')}</label>
+  <select id="rcch" style="width:100%;margin:2px 0 8px"><option value="">${L('Find it on the receipt','Detectarlo en el recibo')}</option>${chs.map(c=>`<option value="${esc(c.id)}" ${c.id===RCT.ch?'selected':''}>${esc(c.n)}</option>`).join('')}</select>
+  ${rows?'':`<textarea id="rctext" rows="9" style="width:100%;font:13px/1.35 ui-monospace,Menlo,monospace" placeholder="${L('e.g.\n1 Big Mac 5.99\n2 Med Fry 6.38\n10 pc McNuggets 5.49\nSubtotal 17.86','ej.\n1 Big Mac 5.99\n2 Med Fry 6.38\n10 pc McNuggets 5.49\nSubtotal 17.86')}">${esc(RCT.txt)}</textarea>
+  <button class="btn primary" data-a="rcgo" style="margin-top:8px">${L('Find my items','Buscar mis productos')}</button>`}
+  ${rows?`${rows.length?rows.map((r,i)=>{const x=rcItem(r.opts[r.pick]);return`<div class="pitem" style="display:block;padding:10px 12px;margin-bottom:8px;${r.on?'':'opacity:.6'}">
+      <div style="display:flex;gap:10px;align-items:center"><input type="checkbox" data-rcon="${i}" ${r.on?'checked':''} style="width:24px;height:24px;flex:none" aria-label="${L('Include','Incluir')}">
+      <div style="flex:1;min-width:0"><b>${x?(RCT.ch?'':esc(x.c.n)+' · ')+esc(x.it[0]):''}</b>${x?`<br><span class="muted small">${Math.round(r.q*x.it[1])} kcal · P ${Math.round(r.q*x.it[2])}g · C ${Math.round(r.q*x.it[3])}g · F ${Math.round(r.q*x.it[4])}g</span>`:''}</div>
+      <label class="small muted" style="flex:none;text-align:center">×<input type="number" inputmode="numeric" min="0" step="1" value="${r.q}" data-rcq="${i}" style="width:52px;text-align:center;margin-left:2px" aria-label="${L('How many','Cantidad')}"></label></div>
+      <div class="muted small" style="margin-top:6px">${L('From','De')}: “${esc(r.line)}”</div>
+      ${r.opts.length>1?`<select data-rcpk="${i}" style="width:100%;margin-top:6px;font-size:13px"><option value="${r.pick}" selected>${L('Wrong item? Pick another','¿Producto equivocado? Elige otro')}</option>${r.opts.map((o,j)=>{const y=rcItem(o);return y&&j!==r.pick?`<option value="${j}">${RCT.ch?'':esc(y.c.n)+' · '}${esc(y.it[0])} (${y.it[1]} kcal)</option>`:'';}).join('')}</select>`:''}
+      ${!r.on?`<div class="small" style="color:var(--warn);margin-top:6px">${L('Not sure about this one. Tick the box if it\'s right.','No estamos seguros de este. Marca la casilla si es correcto.')}</div>`:''}</div>`;}).join(''):`<p>${L("Couldn't find any menu items in that text.","No se encontraron productos del menú en ese texto.")}</p>`}
+    ${RCT.bad.length?`<details style="margin:8px 0"><summary class="small muted">${L(`${RCT.bad.length} line(s) not matched (drinks, sides or items not in the list)`,`${RCT.bad.length} línea(s) sin coincidencia (bebidas, extras o productos que no están en la lista)`)}</summary><div class="small muted" style="margin-top:4px">${RCT.bad.map(esc).join('<br>')}</div><p class="small muted">${L('Add those with Restaurants search or + Add manually.','Agrégalos con la búsqueda de Restaurantes o + Agregar manualmente.')}</p></details>`:''}
+    <button class="btn primary" data-a="rclog" ${tot.n?'':'disabled'}>${L(`Log ${tot.n} item${tot.n===1?'':'s'} · ${tot.cal.toLocaleString()} kcal`,`Registrar ${tot.n} producto${tot.n===1?'':'s'} · ${tot.cal.toLocaleString()} kcal`)}</button>
+    <button class="linkbtn small" data-a="rcedit" style="display:block;margin:8px auto 0">‹ ${L('Edit the receipt text','Editar el texto del recibo')}</button>`:''}</div>`);}
+function rcptGo(){rcptRead();const txt=RCT.txt.trim();if(!txt){toast(L('Paste the receipt text first, or read a photo.','Primero pega el texto del recibo o lee una foto.'));return;}
+  let auto='';if(!RCT.ch){auto=rcDetect(txt);}const ch=RCT.ch||auto;
+  let r=rcParse(txt,ch);if(!ch&&r.rows.length){const ids=new Set(r.rows.filter(x=>x.on).map(x=>x.opts[x.pick].c));if(ids.size===1){auto=[...ids][0];r=rcParse(txt,auto);}}
+  const fin=RCT.ch||auto;RCT.rows=r.rows;RCT.bad=r.bad;const had=RCT.ch;RCT.ch=fin;
+  const c=fin&&REST.chains.find(x=>x.id===fin);
+  rcptForm(c&&!had?L(`Looks like <b>${esc(c.n)}</b>. Wrong restaurant? Change it above.`,`Parece que es <b>${esc(c.n)}</b>. ¿Restaurante equivocado? Cámbialo arriba.`):!c?L('No restaurant name found, so this searched every chain. Pick the restaurant above for better matches.','No se encontró el nombre del restaurante, así que se buscó en todas las cadenas. Elige el restaurante arriba para mejores resultados.'):'');}
+function rcptLog(){rcptRead();let n=0,cal=0;const t0=Date.now();
+  for(const r of RCT.rows||[]){if(!r.on||!(r.q>0))continue;const x=rcItem(r.opts[r.pick]);if(!x)continue;
+    S.food.push({id:uid(),d:foodDay,t:t0+n,name:x.c.n+' · '+x.it[0],sv:r.q,cal:x.it[1],p:x.it[2],c:x.it[3],f:x.it[4],rest:1});n++;cal+=r.q*x.it[1];}
+  if(!n)return;save();RCT={txt:'',ch:'',rows:null,bad:[]};closeModal();render();
+  toast(L(`Logged ${n} item${n===1?'':'s'} (${Math.round(cal).toLocaleString()} kcal).`,`Se registraron ${n} producto${n===1?'':'s'} (${Math.round(cal).toLocaleString()} kcal).`));}
+async function rcptPhoto(file){rcptRead();
+  showModal(`<div class="sheethead"><h3>${L('Reading receipt…','Leyendo recibo…')}</h3></div><p class="muted small" id="scanmsg">${L('Preparing photo','Preparando foto')}</p><div class="track" style="height:10px"><div class="fill" id="scanbar" style="width:3%;background:var(--acc);transition:width .3s"></div></div><p class="muted small" style="margin-top:12px">${L('The first time downloads the reader (about 10 MB). The photo stays on your phone.','La primera vez descarga el lector (unos 10 MB). La foto se queda en tu teléfono.')}</p>`);
+  modalLocked=true;let canvas;
+  try{canvas=await fileToCanvas(file);scanThumb='';}catch(e){modalLocked=false;rcptForm(L("Couldn't open that photo. Try again or paste the text.",'No se pudo abrir la foto. Intenta de nuevo o pega el texto.'));return;}
+  try{scanStatus(L('Loading reader…','Cargando lector…'),.08);await loadTess();
+    if(!tessWorker)tessWorker=await Tesseract.createWorker('eng',1,{logger:m=>{if(m.status==='recognizing text')scanStatus(L('Reading the receipt…','Leyendo el recibo…'),.3+.7*m.progress);}});
+    scanStatus(L('Reading the receipt…','Leyendo el recibo…'),.3);
+    const {data}=await tessWorker.recognize(canvas);modalLocked=false;
+    const txt=(data.text||'').trim();if(!txt){rcptForm(L("Couldn't read any text. Try a flat, close, well-lit photo, or use the iPhone tip below.",'No se pudo leer texto. Intenta una foto plana, cercana y con buena luz, o usa el consejo de iPhone.'));return;}
+    RCT.txt=txt;RCT.rows=null;rcptGo();
+  }catch(e){modalLocked=false;rcptForm(L("Couldn't load the receipt reader. Check your internet connection, or paste the text instead.",'No se pudo cargar el lector. Revisa tu internet o pega el texto.'));}}
 // ---------- copy a meal: a past day's food grouped into meals by the time it was logged ----------
 const MEALS=[['b','Breakfast','Desayuno'],['l','Lunch','Almuerzo'],['d','Dinner','Cena'],['s','Snacks','Snacks']];
 const mealOf=t=>{const d=new Date(t),h=d.getHours()+d.getMinutes()/60;return h<4?'s':h<11?'b':h<16?'l':h<21.5?'d':'s';};
@@ -3965,7 +4178,13 @@ function recapStats(y,mo){const a=new Date(y,mo,1).getTime(),b=new Date(y,mo+1,1
   const wts=(S.weights||[]).filter(x=>inM(x.d)).sort((x,z)=>x.d<z.d?-1:1),wch=wts.length>1?r1(+conv(wts[wts.length-1].w,wts[wts.length-1].u)-+conv(wts[0].w,wts[0].u)):null;
   const fd=[...new Set(S.food.filter(f=>inM(f.d)).map(f=>f.d))],avgCal=fd.length?Math.round(fd.reduce((t,d)=>t+dayTotals(d).cal,0)/fd.length):0,avgP=fd.length?Math.round(fd.reduce((t,d)=>t+dayTotals(d).p,0)/fd.length):0;
   const sc=(S.scores||[]).filter(x=>inM(x.d)),bestSc=sc.length?sc.reduce((m,x)=>x.s>m.s?x:m):null;
-  return{n:ws.length,days,dim:new Date(y,mo+1,0).getDate(),mins,sets,vol,prs:Object.keys(prs).length,prList:Object.keys(prs).slice(0,3).map(id=>tr(EX(id).name)),topM,wch,fdays:fd.length,avgCal,avgP,bestSc,y,mo};}
+  // strength gains: this month's best estimated max vs your best before this month
+  const bm={},bb={};for(const w of S.workouts){if(w.end>=b)continue;for(const e of w.exercises){const ex=EX(e.exId);if(!ex||!isLoad(ex))continue;let mx=0;for(const st of e.sets){const wt=+conv(st.w,w.unit)||0,r=+st.r||0;if(wt>0&&r>0)mx=Math.max(mx,e1rm(wt,r));}if(!mx)continue;const T=w.end>=a?bm:bb;T[ex.id]=Math.max(T[ex.id]||0,mx);}}
+  const gains=Object.keys(bm).filter(id=>bb[id]&&bm[id]>bb[id]+.01).map(id=>({id,from:bb[id],to:bm[id],pct:(bm[id]/bb[id]-1)*100})).sort((x,z)=>z.pct-x.pct);
+  // muscles that ranked up this month
+  let rkUp=[];try{const keep=S.workouts;S.workouts=keep.filter(w=>w.end<a);const r0=muscleRanks();S.workouts=keep.filter(w=>w.end<b);const r1x=muscleRanks();S.workouts=keep;
+    rkUp=Object.keys(MUSCLES).filter(m=>r1x[m]&&(!r0[m]||r1x[m].i>r0[m].i)).map(m=>({m,i:r1x[m].i})).sort((x,z)=>z.i-x.i);}catch(e){}
+  return{gains,rkUp,n:ws.length,days,dim:new Date(y,mo+1,0).getDate(),mins,sets,vol,prs:Object.keys(prs).length,prList:Object.keys(prs).slice(0,3).map(id=>tr(EX(id).name)),topM,wch,fdays:fd.length,avgCal,avgP,bestSc,y,mo};}
 const monthName=(y,mo)=>(t=>t[0].toUpperCase()+t.slice(1))(new Date(y,mo,1).toLocaleDateString(LOC(),{month:'long',year:'numeric'}));
 const monthIn=(y,mo)=>LANG()==='es'?new Date(y,mo,1).toLocaleDateString(LOC(),{month:'long',year:'numeric'}):monthName(y,mo);   // mid-sentence: Spanish months stay lowercase
 const fmtVol=v=>v>=1e6?(r1(v/1e6))+'M':v>=1e4?Math.round(v/1e3)+'k':v.toLocaleString();
@@ -3978,6 +4197,8 @@ function recapView(off){if(off==null)off=recapDefault();recapOff=off;const now=n
   showModal(`<div data-notr="1"><div class="sheethead"><h3>📊 ${L('Monthly recap','Resumen mensual')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
   <div class="daynav" style="margin:0 0 12px"><button class="icon" data-a="recapnav" data-o="${off-1}" ${canPrev?'':'disabled style="opacity:.3"'} aria-label="${L('Previous month','Mes anterior')}">‹</button><b>${monthName(y,mo)}${off===0?' <span class="muted small">'+L('(so far)','(hasta ahora)')+'</span>':''}</b><button class="icon" data-a="recapnav" data-o="${off+1}" ${off<0?'':'disabled style="opacity:.3"'} aria-label="${L('Next month','Mes siguiente')}">›</button></div>
   ${r.n?`<div class="rgrid">${tile(r.n,L(r.n===1?'workout':'workouts',r.n===1?'entrenamiento':'entrenamientos'))}${tile(`${r.days}<small>/${r.dim}</small>`,L('days trained','días entrenados'))}${tile(fmtHM(r.mins),L('training time','tiempo entrenando'))}${tile(fmtVol(r.vol),L(`${U()} lifted`,`${U()} levantados`))}${tile(r.sets,L('sets','series'))}${tile(r.prs,L(r.prs===1?'new record':'new records',r.prs===1?'nuevo récord':'nuevos récords'))}</div>
+  ${r.gains.length?`<div class="calcbox" style="margin:12px 0 0"><b>💪 ${L('Strength gains','Aumentos de fuerza')}</b><div class="muted small" style="margin:2px 0 6px">${L('Best estimated max this month vs. before it','Mejor máximo estimado este mes vs. antes')}</div>${r.gains.slice(0,6).map(g=>`<div class="hrow" style="flex-direction:row;justify-content:space-between;align-items:center"><span>${esc(tr(EX(g.id).name))}</span><span class="small"><span class="muted">${Math.round(g.from)} → </span><b>${Math.round(g.to)} ${U()}</b> <span class="good">+${g.pct<1?r1(g.pct):Math.round(g.pct)}%</span></span></div>`).join('')}${r.gains.length>6?`<div class="muted small" style="margin-top:4px">${L(`and ${r.gains.length-6} more lifts went up`,`y ${r.gains.length-6} ejercicios más subieron`)}</div>`:''}</div>`:''}
+  ${r.rkUp.length?`<div class="calcbox" style="margin:10px 0 0"><b>⬆ ${L('Ranked up','Subieron de rango')}</b>${r.rkUp.slice(0,8).map(x=>`<div class="rk" style="margin-top:6px">${badge(x.i,28)}<div class="rkbody"><b>${esc(tr(MUSCLES[x.m]))}</b> <span style="color:${rankColor(x.i)};font-weight:700">${tr(rankName(x.i))}</span></div></div>`).join('')}${r.rkUp.length>8?`<div class="muted small" style="margin-top:4px">${L(`and ${r.rkUp.length-8} more`,`y ${r.rkUp.length-8} más`)}</div>`:''}</div>`:''}
   ${r.prList.length?`<p class="small" style="margin:12px 0 0">🏆 ${L('Records','Récords')}: <b>${r.prList.map(esc).join(', ')}</b>${r.prs>3?L(` and ${r.prs-3} more`,` y ${r.prs-3} más`):''}</p>`:''}
   ${r.topM.length?`<p class="small" style="margin:8px 0 0">💪 ${L('Most trained','Más entrenado')}: <b>${r.topM.map(esc).join(', ')}</b></p>`:''}`:`<p class="muted">${L('No workouts this month yet.','Aún no hay entrenamientos este mes.')}</p>`}
   ${r.wch!=null?`<p class="small" style="margin:8px 0 0">⚖️ ${L('Body weight','Peso corporal')}: <b>${r.wch>0?'+':''}${r.wch} ${U()}</b></p>`:''}
@@ -4927,6 +5148,7 @@ function prefsForm(){
 function vSettings(){
   const cust=S.custom.map(c=>`<div class="hrow" style="flex-direction:row;justify-content:space-between;align-items:center"><span>${esc(c.name)}<br><span class="muted small">${c.p.map(m=>MUSCLES[m]).join(', ')}</span></span><button class="icon" data-a="delcustom" data-id="${esc(c.id)}" aria-label="Delete">✕</button></div>`).join('');
   return`<h1>Settings</h1>
+  <div class="card" data-notr="1"><h3>🎓 ${L('App tutorial','Tutorial de la app')}</h3><p class="muted small" style="margin-top:0">${L('A one-minute tour of where everything is.','Un recorrido de un minuto por la app.')}</p><button class="btn ghost" style="margin:0" data-a="tutstart">${L('Show me the tour','Ver el recorrido')}</button></div>
   <div class="card"><h3>Language</h3><div class="seg">${[['en','English'],['es','Español']].map(([v,l])=>`<label><input type="radio" name="langsel" value="${v}" ${LANG()===v?'checked':''}><span>${l}</span></label>`).join('')}</div></div>
   <div class="card" data-notr="1"><label class="ebrow" style="border:0;margin-top:0;padding-top:0"><span><b>👆 ${L('Swipe between tabs','Deslizar entre pestañas')}</b><span class="muted small">${L('Swipe left or right anywhere on the screen to go to the next or previous tab.','Desliza a la izquierda o derecha en la pantalla para ir a la pestaña siguiente o anterior.')}</span></span><button class="tog ${S.settings.swipeOff?'':'on'}" data-a="swipetog" aria-label="Swipe between tabs"><i></i></button></label></div>
   ${injuryCard()}
@@ -5523,6 +5745,9 @@ document.addEventListener('click',e=>{
     case'wshare':{const w=S.workouts.find(x=>x.id===b.dataset.id);if(!w)break;const items=tplFrom(w.exercises);if(!items.length){toast(L('Nothing to share in this workout','No hay nada que compartir en este entrenamiento'));break;}shareAsk({name:(typeof w.title==='string'&&w.title)||tr(FOCUS_NAME[w.focus]||'')||L('My workout','Mi entrenamiento'),unit:w.unit||U(),items:items.map((x,k)=>{const e=w.exercises.filter(q=>EX(q.exId))[k];return e?{...x,sets:e.sets.map(q=>({w:q.w,r:q.r}))}:x;})});break;}
     case'sharego':{const t=window._shareT;if(!t)break;closeModal();tplShare(b.dataset.w==='1'?t:{name:t.name,items:t.items.map(({sets,...x})=>x)});break;}
     case'tplpaste':tplPaste();break;
+    case'impopen':impForm();break;
+    case'impgo':impGo();break;
+    case'imppaste':navigator.clipboard.readText().then(t=>{const el=$('#imptxt');if(el&&t)el.value=t;}).catch(()=>toast(L('Tap and hold the box, then Paste','Mantén presionado el cuadro y toca Pegar')));break;
     case'tplcopyapp':{const link=location.origin+location.pathname+'#w='+b.dataset.code,done=()=>tplCopiedStep();Promise.resolve().then(()=>navigator.clipboard.writeText(link)).then(done).catch(()=>{const ta=$('#tplcodeout');if(ta){ta.value=link;ta.classList.remove('hidden');ta.focus();ta.select();toast(L('Copy the highlighted link, then open Forge','Copia el enlace resaltado y luego abre Forge'));}});break;}
     case'tplimport':tplImportForm();break;
     case'tplimportgo':{const d=tplDecode(($('#tplcode')||{}).value);if(!d){toast(L('That code didn\'t work. Copy the whole link and try again.','Ese código no funcionó. Copia el enlace completo e inténtalo de nuevo.'));break;}tplPreview(d,'');break;}
@@ -5613,6 +5838,30 @@ document.addEventListener('click',e=>{
       save();closeModal();render();toast('Saved');break;}
     case'editfood':{if(e.target.closest('[data-a="delfood"]'))break;const it=S.food.find(f=>f.id===b.dataset.id);if(it){scanThumb='';foodForm(it);}break;}
     case'delfood':{const it=S.food.find(f=>f.id===b.dataset.id);if(it&&ask('Remove '+(it.name||'this food')+'?')){S.food=S.food.filter(f=>f!==it);save();render();}break;}
+    case'restopen':restOpen();break;
+    case'rcptopen':rcptOpen();break;
+    case'rcgo':rcptGo();break;
+    case'rclog':rcptLog();break;
+    case'rcedit':rcptRead();RCT.rows=null;rcptForm();break;
+    case'restcat':RCAT=b.dataset.k;restDraw();break;
+    case'restchain':RCH=b.dataset.c;restDraw();$('#sheet').scrollTop=0;break;
+    case'restback':RCH=null;restDraw();break;
+    case'restlog':{const c=REST&&REST.chains.find(x=>x.id===b.dataset.c),it=c&&c.items[+b.dataset.k];if(!it)break;
+      S.food.push({id:uid(),d:foodDay,t:Date.now(),name:c.n+' · '+it[0],sv:1,cal:it[1],p:it[2],c:it[3],f:it[4],rest:1});save();render();
+      toast(L(`Logged ${it[0]} (${it[1]} kcal). Keep adding, or close when done.`,`Se registró ${it[0]} (${it[1]} kcal). Sigue agregando o cierra cuando termines.`));break;}
+    case'rcpnew':RCP={id:uid(),name:'',serv:1,items:[]};rcpForm();break;
+    case'rcpedit':{const r=(S.recipes||[]).find(x=>x.id===b.dataset.id);if(r){RCP=JSON.parse(JSON.stringify(r));rcpForm();}break;}
+    case'rcplib':rcpRead();rcpForm('lib');break;
+    case'rcpman':rcpRead();rcpForm('man');break;
+    case'rcpaddf':{rcpRead();const f=S.food.find(x=>x.id===b.dataset.id);if(f)RCP.items.push({name:f.name,sv:+f.sv||1,cal:+f.cal||0,p:+f.p||0,c:+f.c||0,f:+f.f||0});rcpForm('lib');toast(L('Added '+f.name,'Agregado: '+f.name));break;}
+    case'rcpdone':rcpRead();rcpForm();break;
+    case'rcpaddm':{rcpRead();const g=k=>parseFloat((($('#ri_'+k)||{}).value||'').replace(',','.'))||0,n=(($('#ri_n')||{}).value||'').trim();
+      if(!n||!(g('cal')||g('p'))){toast(L('Enter a name and at least the calories','Ingresa un nombre y al menos las calorías'));break;}
+      RCP.items.push({name:n,sv:g('sv')||1,cal:g('cal'),p:g('p'),c:g('c'),f:g('f')});rcpForm();break;}
+    case'rcprm':rcpRead();RCP.items.splice(+b.dataset.k,1);rcpForm();break;
+    case'rcpsave':{rcpRead();if(!RCP.items.length)break;RCP.name=(RCP.name||'').trim()||L('My recipe','Mi receta');S.recipes=S.recipes||[];const i=S.recipes.findIndex(x=>x.id===RCP.id);if(i>=0)S.recipes[i]=RCP;else S.recipes.push(RCP);save();closeModal();render();toast(L(`Saved "${RCP.name}". Tap it to log a serving.`,`"${RCP.name}" guardada. Tócala para registrar una porción.`));break;}
+    case'rcpdel':if(ask(L('Delete this recipe? Food you already logged stays.','¿Borrar esta receta? Lo que ya registraste se queda.'))){S.recipes=(S.recipes||[]).filter(x=>x.id!==RCP.id);save();closeModal();render();}break;
+    case'rcplog':{const r=(S.recipes||[]).find(x=>x.id===b.dataset.id);if(!r)break;const q=rcpPer(r);S.food.push({id:uid(),d:foodDay,t:Date.now(),name:r.name,sv:1,cal:q.cal,p:q.p,c:q.c,f:q.f,rcp:r.id});save();render();toast(L(`Logged 1 serving of ${r.name} (${q.cal} kcal). Tap it in the list to change servings.`,`Se registró 1 porción de ${r.name} (${q.cal} kcal). Tócala en la lista para cambiar porciones.`));break;}
     case'readd':{const it=S.food.find(f=>f.id===b.dataset.id);if(it){S.food.push({id:uid(),d:foodDay,t:Date.now(),name:it.name,sv:it.sv,cal:it.cal,p:it.p,c:it.c,f:it.f});save();render();toast('Added '+it.name);}break;}
     case'logw':weightForm();break;
     case'idea':ideaForm();break;
@@ -5646,8 +5895,12 @@ document.addEventListener('click',e=>{
     case'legalback':{const bk=window._legalBack;modalLocked=false;if(bk==='onb')onboarding();else if(bk==='agree')termsAsk();else{closeModal();if(bk==='page'){try{location.hash='';}catch(e){}startFlow();}}break;}
     case'agreeok':{if(!($('#agreechk')||{}).checked){toast(L('Check the box to agree first','Primero marca la casilla para aceptar'));break;}S.settings.termsV=TERMS_V;save();modalLocked=false;closeModal();render();if(sharedW)tplPreview(sharedW,sharedCode);break;}
     case'onboarded':{const a=$('[data-s="age"]');if(a)a.dispatchEvent(new Event('change',{bubbles:true}));if(!profileDone()){toast('Add your sex and age');break;}if(!S.settings.branch){toast(L('Pick your military branch, or None / civilian','Elige tu rama militar, o Ninguna / civil'));break;}if(!($('#agreechk')||{}).checked){toast(L('Please read and agree to the Terms of Use first','Primero lee y acepta los Términos de uso'));break;}S.settings.termsV=TERMS_V;S.settings.onboarded=true;S.settings.askedProfile=true;modalLocked=false;save();closeModal();render();break;}
-    case'profiledone':{const a=$('[data-s="age"]');if(a)a.dispatchEvent(new Event('change',{bubbles:true}));if(!profileDone()){toast('Add your sex and age');break;}S.settings.askedProfile=true;save();closeModal();render();toast('Saved');break;}
-    case'profileskip':S.settings.askedProfile=true;save();closeModal();break;
+    case'profiledone':{const a=$('[data-s="age"]');if(a)a.dispatchEvent(new Event('change',{bubbles:true}));if(!profileDone()){toast('Add your sex and age');break;}S.settings.askedProfile=true;save();closeModal();render();toast('Saved');setTimeout(maybeTut,600);break;}
+    case'profileskip':S.settings.askedProfile=true;save();closeModal();setTimeout(maybeTut,300);break;
+    case'tutstart':tutStart();break;
+    case'tutnext':TUTI=Math.min(TUTS.length-1,TUTI+1);tutShow();break;
+    case'tutback':TUTI=Math.max(1,TUTI-1);tutShow();break;
+    case'tutskip':tutEnd();break;
   }
 });
 document.addEventListener('input',e=>{
@@ -5694,6 +5947,9 @@ document.addEventListener('change',e=>{
   if(t.closest&&t.closest('#dexaform')){dexaCheck(true);return;}
   if(t.id==='dexafile'){const f=t.files[0];t.value='';if(f)scanDexa(f);return;}
   if(t.id==='scanfile'){const f=t.files[0];t.value='';if(f)scanLabel(f);return;}
+  if(t.id==='rcfile'){const f=t.files[0];t.value='';if(f)rcptPhoto(f);return;}
+  if(t.id==='rcch'&&RCT.rows){rcptRead();RCT.rows=null;rcptGo();return;}
+  if(t.dataset&&(t.dataset.rcon!=null||t.dataset.rcpk!=null||t.dataset.rcq!=null)){rcptRead();setTimeout(()=>{if(!RCT.rows)return;const y=$('#sheet').scrollTop;rcptForm();$('#sheet').scrollTop=y;},0);return;}
   if(t.dataset.goal){const v=parseFloat(t.value);S.settings.goals=Object.assign(goals(),{[t.dataset.goal]:v>0?Math.round(v):GOALS_DEF[t.dataset.goal]});if(S.settings.nut)S.settings.nut.auto=false;save();render();return;}
   if(t.closest&&t.closest('#sheet')&&/^n_/.test(t.id||t.name)){nutPreview();return;}
   if(t.dataset.s==='sex'||t.dataset.s==='age'){let v=t.value;if(t.dataset.s==='age'){v=parseInt(v,10);v=v>=13&&v<=110?v:'';if(t.value&&v===''){toast('Enter an age between 13 and 110');}}
@@ -5717,8 +5973,42 @@ const sharedCode=(location.hash.match(SHARE_RE)||[])[1],sharedW=sharedCode&&tplD
 if(sharedCode)try{location.hash='';}catch(e){}
 if(!S.settings.langChosen||!S.settings.onboarded){if(sharedW&&tplAddShared(sharedW))render();}
 window.addEventListener('hashchange',()=>{const c=(location.hash.match(SHARE_RE)||[])[1];if(!c)return;try{location.hash='';}catch(e){}const d=tplDecode(c);if(d)tplPreview(d,c);else toast(L('That shared workout link is broken or incomplete.','Ese enlace de entrenamiento está dañado o incompleto.'));});
+
+// ---------- tutorial: a guided tour that points at the real buttons; offered once to new users, replayable from Settings ----------
+const TUT=[
+ {t:['👋 Welcome to Forge!','👋 ¡Bienvenido a Forge!'],b:['Want a quick tour of the app? It takes about a minute.','¿Quieres un recorrido rápido por la app? Toma como un minuto.'],first:1},
+ {sel:'[data-a=gen]',t:['Generate workout','Generar entrenamiento'],b:['Tap this for a workout built for you. Forge picks exercises for your equipment and your most rested muscles, and suggests the weight and reps for every set.','Tócalo para un entrenamiento hecho para ti. Forge elige ejercicios según tu equipo y tus músculos más descansados, y sugiere el peso y las reps de cada serie.']},
+ {sel:'#focus',t:['Focus','Enfoque'],b:['Leave it on Auto, or pick push, pull, legs, cardio, or a fitness test to train for.','Déjalo en Auto o elige empuje, jalón, piernas, cardio o una prueba física para la cual entrenar.']},
+ {sel:'[data-a=progbrowse]',t:['Training programs','Programas de entrenamiento'],b:['Multi-week plans for goals like more pull-ups, a faster run or a 12-mile ruck. They adjust to what you can do.','Planes de varias semanas para metas como más dominadas, correr más rápido o marchar 12 millas. Se ajustan a lo que puedes hacer.']},
+ {sel:'[data-a=library]',t:['Exercise library','Biblioteca de ejercicios'],b:['270+ exercises with photos, how-to steps and the muscles they work. You can also plan a workout for later here.','Más de 270 ejercicios con fotos, pasos y los músculos que trabajan. Aquí también puedes planear un entrenamiento para después.']},
+ {sel:'[data-a=itv]',t:['Interval timer','Temporizador de intervalos'],b:['Tabata, EMOM, AMRAP or your own work and rest rounds, with beeps.','Tabata, EMOM, AMRAP o tus propias rondas de trabajo y descanso, con pitidos.']},
+ {t:['During a workout','Durante un entrenamiento'],b:['<b>✓</b> logs a set and starts your rest timer<br><b>ⓘ</b> shows how to do the exercise<br><b>⇄</b> swaps it for another one<br><b>⬇ Too hard?</b> gives you an easier version<br><b>Finish</b> saves it and updates your ranks','<b>✓</b> registra una serie e inicia tu descanso<br><b>ⓘ</b> muestra cómo hacer el ejercicio<br><b>⇄</b> lo cambia por otro<br><b>⬇ ¿Muy difícil?</b> te da una versión más fácil<br><b>Terminar</b> lo guarda y actualiza tus rangos']},
+ {sel:'#tabs [data-t=food]',t:['Food','Comida'],b:['Log meals and water and see your calories and protein for the day.','Registra comidas y agua y ve tus calorías y proteína del día.']},
+ {sel:'#tabs [data-t=recovery]',t:['Recovery','Recuperación'],b:['See which muscles are rested and ready, plus stretches and mobility routines.','Ve qué músculos están descansados y listos, más estiramientos y rutinas de movilidad.']},
+ {sel:'#tabs [data-t=ranks]',t:['Ranks','Rangos'],b:['Every muscle earns a rank from Bronze to Godlike as you get stronger.','Cada músculo gana un rango de Bronce a Divino mientras te haces más fuerte.']},
+ {sel:'#tabs [data-t=history]',t:['History','Historial'],b:['Every workout you\'ve done. Tap one to see it or do it again.','Todos tus entrenamientos. Toca uno para verlo o repetirlo.']},
+ {sel:'#tabs [data-t=progress]',t:['Progress','Progreso'],b:['Your lifts over time, body weight, measurements, records and badges.','Tus levantamientos con el tiempo, peso corporal, medidas, récords e insignias.']},
+ {sel:'#tabs [data-t=settings]',t:['Settings','Ajustes'],b:['Your equipment, goals, language and backups. You can replay this tour from here anytime.','Tu equipo, metas, idioma y respaldos. Aquí puedes repetir este recorrido cuando quieras.']},
+ {t:["You're all set! 💪",'¡Todo listo! 💪'],b:['Tap <b>Generate workout</b> to start your first one.','Toca <b>Generar entrenamiento</b> para empezar el primero.'],last:1}];
+let TUTI=0,TUTS=null;
+function tutStart(){S.settings.tutSeen=1;save();closeModal();tab='workout';render();window.scrollTo(0,0);
+  TUTS=TUT.filter(x=>!x.sel||document.querySelector(x.sel));TUTI=0;
+  let o=$('#tut');if(!o){o=document.createElement('div');o.id='tut';o.setAttribute('data-notr','1');document.body.appendChild(o);}tutShow();}
+function tutEnd(){const o=$('#tut');if(o)o.remove();TUTS=null;window.scrollTo(0,0);}
+function tutShow(){const o=$('#tut');if(!o||!TUTS)return;const st=TUTS[TUTI],n=TUTS.length;
+  const el=st.sel&&document.querySelector(st.sel);if(el&&!el.closest('#tabs'))el.scrollIntoView({block:'center'});
+  const r=el?el.getBoundingClientRect():null,pad=6;
+  const spot=r?`<div class="tspot" style="left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px"></div>`:'<div class="tdim"></div>';
+  const below=r&&r.bottom<innerHeight*.55,pos=!r?'top:50%;transform:translateY(-50%)':below?`top:${r.bottom+pad+12}px`:`bottom:${innerHeight-r.top+pad+12}px`;
+  const btns=st.first?`<button class="btn primary" style="margin:0" data-a="tutnext">${L('Show me around','Muéstrame')}</button><button class="btn ghost" style="margin:8px 0 0" data-a="tutskip">${L("I don't need a tutorial",'No necesito tutorial')}</button>`
+    :st.last?`<button class="btn primary" style="margin:0" data-a="tutskip">${L("Let's go",'¡Vamos!')}</button>`
+    :`<div class="row" style="gap:8px;align-items:center"><button class="linkbtn small" style="white-space:nowrap" data-a="tutskip">${L('Skip tour','Saltar')}</button><span class="muted small" style="margin-left:auto">${TUTI}/${n-2}</span>${TUTI>1?`<button class="btn ghost sm" style="margin:0" data-a="tutback">${L('Back','Atrás')}</button>`:''}<button class="btn primary sm" style="margin:0" data-a="tutnext">${L('Next','Siguiente')}</button></div>`;
+  o.innerHTML=`${spot}<div class="tbub" style="${pos}"><b class="tt">${L(...st.t)}</b><p>${L(...st.b)}</p>${btns}</div>`;}
+function maybeTut(){if(S.settings.tutSeen||!S.settings.onboarded||!S.settings.langChosen||(S.settings.termsV||0)<TERMS_V)return;
+  if(S.workouts.length){S.settings.tutSeen=1;save();return;}   // people already using the app don't get it pushed on them (it's in Settings)
+  if(!$('#modal').classList.contains('hidden'))return;tutStart();}
 function startFlow(){if(!S.settings.langChosen)langPicker();else if(!S.settings.onboarded)onboarding();else if((S.settings.termsV||0)<TERMS_V)termsAsk();else if(sharedW)tplPreview(sharedW,sharedCode);else if(sharedCode)toast(L('That shared workout link is broken or incomplete.','Ese enlace de entrenamiento está dañado o incompleto.'));else if(!profileDone()&&!S.settings.askedProfile)profileAsk();}
-{const lk=(location.hash.match(/^#(terms|privacy|credits)$/)||[])[1];if(lk)legalView(lk,'page');else startFlow();}
+{const lk=(location.hash.match(/^#(terms|privacy|credits)$/)||[])[1];if(lk)legalView(lk,'page');else{startFlow();setTimeout(()=>{try{maybeTut();}catch(e){}},700);}}
 
 // ---------- Military branch birthdays: big banner + confetti the first time the app is opened on that day, every year ----------
 // n = how the banner names the branch, y = founding year (birthday number = this year - y), c = [dark, main, border/accent]
