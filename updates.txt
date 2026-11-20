@@ -3,6 +3,15 @@ One post per day: put the newest day at the TOP, right below this note, and add 
 Start a post with ## and a title. Use - at the start of a line for a bullet point. Plain lines show as normal text.
 For Spanish, add " || " then the Spanish text on the same line (English || Español).
 
+## Nov 20 updates || Novedades del 20 nov
+Improvements || Mejoras
+- 🏆 Ranks: each exercise's rank list now shows the 1-rep max under every target, so it matches the numbers in How ranks work. Before, one screen showed the weight for your usual reps and the other showed the 1-rep max, which looked like two different targets || 🏆 Rangos: la lista de rangos de cada ejercicio ahora muestra el máximo a 1 repetición debajo de cada meta, para que coincida con Cómo funcionan los rangos. Antes una pantalla mostraba el peso para tus reps habituales y la otra el máximo a 1 repetición, y parecían dos metas distintas
+
+## Nov 18 updates || Novedades del 18 nov
+New features || Funciones nuevas
+- 🦵 10 new leg press and squat machine variations, each with how-to steps: Single-Leg Leg Press, Narrow-Stance and Wide-Stance Leg Press, Smith Machine Leg Press, Narrow-Stance Hack Squat, Reverse Hack Squat, Single-Leg Hack Squat, Barbell Hack Squat, Pendulum Squat and Belt Squat || 🦵 10 variaciones nuevas de prensa y sentadilla en máquina, con pasos: prensa a una pierna, prensa con pies juntos y con pies abiertos, prensa en máquina Smith, hack con pies juntos, hack inversa, hack a una pierna, hack con barra, sentadilla péndulo y sentadilla con cinturón
+- 🌯 Taco Bell: added the Fritos Flamin' Hot Grilled Cheese Burrito, and the Chalupa Supreme now comes in beef, chicken or steak. On receipts, Forge picks the right meat when your order lists it || 🌯 Taco Bell: se agregó el Fritos Flamin' Hot Grilled Cheese Burrito, y la Chalupa Supreme ahora viene de res, pollo o bistec. En los recibos, Forge elige la carne correcta cuando tu pedido la indica
+
 ## Nov 16 updates || Novedades del 16 nov
 New features || Funciones nuevas
 - ⌚ Import from Garmin: export a workout from Garmin Connect and bring it into Forge. Strength workouts come in with every set, rep and weight, and they count toward your records, ranks and streak. Find it on the Workout tab under My workouts || ⌚ Importar de Garmin: exporta un entrenamiento de Garmin Connect y tráelo a Forge. Los de fuerza llegan con cada serie, repetición y peso, y cuentan para tus récords, rangos y racha. Está en la pestaña Entrenar, en Mis entrenamientos
