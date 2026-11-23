@@ -3,6 +3,14 @@ One post per day: put the newest day at the TOP, right below this note, and add 
 Start a post with ## and a title. Use - at the start of a line for a bullet point. Plain lines show as normal text.
 For Spanish, add " || " then the Spanish text on the same line (English || Español).
 
+## Nov 22 updates || Novedades del 22 nov
+New features || Funciones nuevas
+- 🧠 Adaptive coaching: Forge now adapts to what you can lift right now || 🧠 Entrenamiento adaptativo: Forge ahora se adapta a lo que puedes levantar hoy
+- First-time weights: the first time you do an exercise, Forge estimates a starting weight from your other lifts (a 225 lb bench suggests about 72.5 lb dumbbells) instead of leaving it blank || Pesos de primera vez: la primera vez que haces un ejercicio, Forge calcula un peso inicial con tus otros ejercicios (un press de banca de 225 lb sugiere mancuernas de unas 72.5 lb) en vez de dejarlo vacío
+- How did that feel? After your last set, tap Easy, Just right or Hard. Easy means a bigger jump next time; Hard means Forge holds the weight so you can own it || ¿Cómo se sintió? Después de la última serie, toca Fácil, Justo o Difícil. Fácil significa un salto mayor la próxima vez; Difícil significa que Forge mantiene el peso para que lo domines
+- Plateau breaker: if a lift is still stuck after a deload, Forge switches it to a new rep range for 4 weeks, then switches back || Rompe-estancamientos: si un ejercicio sigue estancado después de una descarga, Forge lo cambia a un nuevo rango de reps por 4 semanas y luego regresa
+- Sets per muscle: each week Forge adds a set for muscles that have stalled and takes one away from muscles whose sets keep feeling hard. See it in Progress → How Forge is adapting. You can turn all of this off in Settings → Workout tab || Series por músculo: cada semana Forge agrega una serie a los músculos estancados y quita una a los que se sienten difíciles. Míralo en Progreso → Cómo se adapta Forge. Puedes apagar todo esto en Ajustes → Pestaña Entrenar
+
 ## Nov 20 updates || Novedades del 20 nov
 Improvements || Mejoras
 - 🏆 Ranks: each exercise's rank list now shows the 1-rep max under every target, so it matches the numbers in How ranks work. Before, one screen showed the weight for your usual reps and the other showed the 1-rep max, which looked like two different targets || 🏆 Rangos: la lista de rangos de cada ejercicio ahora muestra el máximo a 1 repetición debajo de cada meta, para que coincida con Cómo funcionan los rangos. Antes una pantalla mostraba el peso para tus reps habituales y la otra el máximo a 1 repetición, y parecían dos metas distintas

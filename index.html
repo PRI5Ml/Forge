@@ -146,6 +146,7 @@ nav.tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2
 .w8chip{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:14px;padding:11px 14px;margin:0 0 12px;font-family:inherit;font-size:15px;cursor:pointer}
 .htimgs{display:flex;gap:8px;margin:0 0 12px}
 .waistsvg{width:100%;max-width:340px;display:block;margin:0 auto 10px;background:var(--card2);border-radius:12px}
+.feelrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}.feelrow>span{flex-basis:100%}.feelbtn{flex:1;background:var(--card2,rgba(255,255,255,.06));border:1px solid var(--line);color:inherit;border-radius:10px;padding:8px 4px;font:inherit;font-size:13px;cursor:pointer}.feelbtn.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 22%,transparent);font-weight:700}
 .easybtn{display:block;background:none;border:0;color:var(--muted);font:inherit;font-size:13px;padding:2px 0 6px;text-align:left;cursor:pointer}.easybtn b{color:var(--acc);font-weight:600}.proglv{display:flex;gap:6px;flex-wrap:wrap}.proglv label{cursor:pointer}.proglv label.lchip.on{border-color:var(--line)}.proglv label.lchip:has(input:checked){border-color:var(--acc)}.easyrow{display:flex;flex-wrap:wrap;gap:4px 14px}
 .exmap{background:var(--card2);border-radius:12px;padding:10px 10px 2px;margin:0 0 12px}.exmaph{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;font-size:14px}.exleg{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}.exleg i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-left:6px}.exmap .bodymap>div{max-width:130px}
 .demo{position:relative;aspect-ratio:3/2;border-radius:12px;overflow:hidden;background:#fff;margin:0 0 12px;cursor:pointer}.demo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.demo .d1{animation:dfade 2.8s ease-in-out infinite}.demo .dlbl{position:absolute;left:8px;bottom:8px;display:grid}.demo .dlbl b{grid-area:1/1;font-size:12px;padding:3px 8px;border-radius:999px;background:rgba(0,0,0,.65);color:#fff}.demo .de{animation:dfade 2.8s ease-in-out infinite}.demo .ds{animation:dfade 2.8s ease-in-out infinite reverse}.demo .dpp{position:absolute;right:8px;bottom:8px;font-size:11px;padding:3px 8px;border-radius:999px;background:rgba(0,0,0,.55);color:#fff;opacity:0;transition:opacity .2s}.demo.paused .dpp{opacity:1}.demo.paused *{animation-play-state:paused!important}@keyframes dfade{0%,28%{opacity:0}45%,78%{opacity:1}95%,100%{opacity:0}}
@@ -738,7 +739,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.11.20a';
+const APP_VERSION='2026.11.22a';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false,branch:''},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],templates:[],water:{},scores:[],active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(!('branch' in (d.settings||{})))st.branch=st.onboarded?'usmc':'';if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[],templates:d.templates||[],water:d.water||{},scores:d.scores||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -1543,7 +1544,7 @@ function showHowto(id){
   ${im?'<p class="muted small" style="margin-bottom:0">Photos: free-exercise-db (public domain). Needs internet to load.</p>':''}
   ${window._libBack?`<button class="btn primary" data-a="bldaddid" data-id="${esc(id)}" data-notr="1">＋ ${L('Add to a planned workout','Agregar a un entrenamiento planeado')}</button><button class="btn ghost" data-a="library">‹ Back to library</button>`:''}${window._bldBack?`<button class="btn ghost" data-a="bldopen" data-notr="1">‹ ${L('Back to plan','Volver al plan')}</button>`:''}${window._bldPrev?`<button class="btn primary" data-a="bldpick" data-id="${esc(id)}" data-notr="1">＋ ${L('Add to plan','Agregar al plan')}</button><button class="btn ghost" data-a="bldadd" data-notr="1">‹ ${L('Back to the list','Volver a la lista')}</button>`:''}`);window._libBack=false;window._bldBack=false;window._bldPrev=false;window._pickPrev=false;
 }
-function scheme(ex){
+function scheme(ex,noAdapt){
   if(ex.inc==='run')return{sets:DIST.has(ex.id)?1:3,lo:0,hi:0};
   if(ex.inc==='cardio')return{sets:1,lo:S.settings.exp==='beginner'?10:S.settings.exp==='advanced'?25:20,hi:0};
   const g=S.settings.goal,x=S.settings.exp;let sets,lo,hi;
@@ -1555,9 +1556,12 @@ function scheme(ex){
   else{if(ex.c){sets=4;lo=6;hi=10;}else{sets=3;lo=10;hi=15;}}
   if(x==='beginner'&&sets>3)sets--;
   if(x==='advanced'&&ex.c)sets++;
-  return{sets,lo,hi};
+  if(noAdapt)return{sets,lo,hi};
+  const ra=rrActive(ex.id);if(ra){lo=ra.lo;hi=ra.hi;}
+  const vd=S.settings.adaptOff?0:volDelta(ex);if(vd)sets=Math.max(2,Math.min(6,sets+vd));
+  return{sets,lo,hi,vd,rr:!!ra};
 }
-function history(exId){const out=[];for(const w of S.workouts)for(const e of w.exercises)if(e.exId===exId)out.push({date:w.end,unit:w.unit,sets:e.sets,vest:e.vest,elev:e.elev});return out;}
+function history(exId){const out=[];for(const w of S.workouts)for(const e of w.exercises)if(e.exId===exId)out.push({date:w.end,unit:w.unit,sets:e.sets,vest:e.vest,elev:e.elev,feel:e.feel,dl:e.dl});return out;}
 function lastSets(exId){const h=history(exId);if(!h.length)return null;const l=h[h.length-1],ns=l.sets.filter(x=>!x.drop);return ns.length&&ns.length<l.sets.length?Object.assign({},l,{sets:ns}):l;}   // drop sets don't steer the next suggestion
 // Favorites get picked a bit more often; "never suggest" keeps an exercise out of generated workouts and swap suggestions (you can still add it by hand).
 const favSet=()=>new Set(S.settings.favEx||[]),noSet=()=>new Set(S.settings.noEx||[]);
@@ -1697,6 +1701,48 @@ function unlocked(ex){
   if(!ADV.has(ex.id)||S.settings.exp==='advanced'||history(ex.id).length)return true;
   return Object.keys(NEXT_VAR).filter(k=>NEXT_VAR[k]===ex.id).some(k=>{const p=EX(k),l=lastSets(k);if(!p||!l)return false;return Math.max(...l.sets.map(s=>+s.r||0))>=scheme(p).hi;});
 }
+// ---------- adaptive coaching ----------
+// 1) first-time weights estimated from your other lifts  2) "how did that feel?" steers the next jump
+// 3) a lift that stalls again after a deload switches rep range for 4 weeks  4) weekly sets per muscle adjust to progress and how hard it feels
+const ADA=()=>S.adapt=S.adapt||{};
+const eqTier=ex=>ex.eq.includes('barbell')?'bb':ex.eq.includes('dumbbell')?'db':ex.eq.includes('cable')?'cb':ex.eq.includes('machine')?'m':ex.eq.includes('kettlebell')?'kb':'o';
+const bestE1=(ex,days)=>{const now=Date.now();let b=0,bs=null;for(const h of history(ex.id)){if(days&&now-(h.date||now)>days*864e5)continue;for(const s of h.sets){if(s.drop)continue;const w=+conv(s.w,h.unit)||0,r=Math.min(12,+s.r||0);const e=w*(1+r/30);if(e>b){b=e;bs={w,r};}}}return b?{e:b,set:bs}:null;};
+function estFirst(ex){if(!isLoad(ex)||ex.inc==='sec')return null;const el=eliteOf(ex);if(!el)return null;const m=ex.p[0],t=eqTier(ex);
+  const c=[];for(const x of allEx()){if(x.id===ex.id||!isLoad(x)||x.inc==='sec'||!x.p.includes(m))continue;const ex2=eliteOf(x);if(!ex2)continue;const b=bestE1(x,180);if(!b)continue;
+    const sim=(x.p[0]===m?2:0)+(eqTier(x)===t?1:0)+(x.c===ex.c?1:0);c.push({x,b,sim,est:b.e*el/ex2});}
+  if(!c.length)return null;const top=Math.max(...c.map(z=>z.sim)),pool=c.filter(z=>z.sim===top).sort((a,b)=>a.est-b.est),pick=pool[Math.floor((pool.length-1)/2)];
+  const safe=pick.sim>=3?.85:.8,sc=scheme(ex),r=Math.round((sc.lo+sc.hi)/2),w=rnd(pick.est*safe/(1+(r+2)/30));if(!(w>0))return null;
+  return{w,r,from:pick.x,set:pick.b.set};}
+const FEEL={e:['😌','Easy','Fácil'],r:['👍','Just right','Justo'],h:['🥵','Hard','Difícil']};
+function feelRow(e,i,ex){if(!e.sets.length||!e.sets.every(s=>s.done)||!(isLoad(ex)||ex.inc==='bw'||ex.inc==='sec'))return'';
+  return`<div class="feelrow" data-notr="1"><span class="small muted">${L('How did that feel?','¿Cómo se sintió?')}</span>${Object.entries(FEEL).map(([k,v])=>`<button class="feelbtn${e.feel===k?' on':''}" data-a="feel" data-i="${i}" data-v="${k}">${v[0]} ${L(v[1],v[2])}</button>`).join('')}</div>`;}
+// rep range switch while active (set when a lift stalls again after a deload)
+function rrActive(id){const a=S.adapt&&S.adapt.rr&&S.adapt.rr[id];return a&&a.until>Date.now()?a:null;}
+// weekly volume per muscle: +1 set when a muscle stalls but isn't struggling, -1 when its sets keep feeling hard
+const wkKey=()=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d.getTime();};
+function volPlan(){const A=ADA(),k=wkKey();if(A.vol&&A.vol.wk===k&&A.vol.n===S.workouts.filter(w=>w.end<k).length)return A.vol;
+  const now=k,d={},why={},byM={};
+  for(const w of S.workouts){if(w.end>=now||now-w.end>28*864e5)continue;for(const e of w.exercises){const ex=EX(e.exId);if(!ex||!(isLoad(ex)||ex.inc==='bw'))continue;const m=ex.p[0];(byM[m]=byM[m]||[]).push({w,e,ex});}}
+  for(const m in byM){const L0=byM[m],feels=L0.filter(z=>now-z.w.end<=14*864e5&&z.e.feel).map(z=>z.e.feel),hard=feels.filter(f=>f==='h').length,easy=feels.filter(f=>f==='e').length;
+    if(feels.length>=2&&hard/feels.length>=.6){d[m]=-1;why[m]='hard';continue;}
+    // stalled: trained 3+ times in 4 weeks and no lift for this muscle beat its earlier best
+    const sess=new Set(L0.map(z=>z.w.id||z.w.end)).size;if(sess<3)continue;
+    let grew=false;for(const id of new Set(L0.map(z=>z.e.exId))){const ex=EX(id),H=history(id).filter(h=>(h.date||0)<now);if(H.length<2)continue;
+      const m1=h=>Math.max(0,...h.sets.filter(s=>!s.drop).map(s=>metric(ex,+conv(s.w,h.unit)||0,+s.r||0)));
+      const old=H.filter(h=>now-(h.date||0)>28*864e5),rec=H.filter(h=>now-(h.date||0)<=28*864e5);
+      const base=old.length?Math.max(...old.map(m1)):m1(rec[0]),peak=Math.max(...rec.slice(old.length?0:1).map(m1),0);if(peak>base*1.005){grew=true;break;}}
+    if(!grew&&!(feels.length&&hard/feels.length>=.4)){d[m]=1;why[m]='stall';}
+    else if(grew&&easy>=2&&easy/feels.length>=.6){/* growing and easy: weight jumps handle it */}}
+  A.vol={wk:k,n:S.workouts.filter(w=>w.end<k).length,d,why};return A.vol;}
+const volDelta=ex=>{const v=volPlan();return(v.d&&v.d[ex.p[0]])||0;};
+function adaptCard(){if(!S.workouts.length)return'';const v=volPlan(),rr=Object.entries((S.adapt&&S.adapt.rr)||{}).filter(([,a])=>a.until>Date.now());
+  const fd=t=>new Date(t).toLocaleDateString(LANG()==='es'?'es':'en-US',{month:'short',day:'numeric'});
+  const vl=Object.keys(v.d||{}).map(m=>`<div class="strow"><span>${esc(tr(MUSCLES[m]))}</span><b>${v.d[m]>0?L('+1 set per exercise','+1 serie por ejercicio'):L('−1 set per exercise','−1 serie por ejercicio')}<span class="muted small" style="display:block;font-weight:400">${v.why[m]==='hard'?L('Your sets have been feeling hard','Tus series se han sentido difíciles'):L('No new best in 4 weeks','Sin nueva marca en 4 semanas')}</span></b></div>`).join('');
+  const rl=rr.map(([id,a])=>EX(id)?`<div class="strow"><span>${esc(tr(EX(id).name))}</span><b>${a.lo}–${a.hi} reps<span class="muted small" style="display:block;font-weight:400">${L(`until ${fd(a.until)}, then back to ${a.from[0]}–${a.from[1]}`,`hasta ${fd(a.until)}, luego vuelve a ${a.from[0]}–${a.from[1]}`)}</span></b></div>`:'').join('');
+  return`<div class="card" data-notr="1"><h3 style="margin:0 0 4px">🧠 ${L('How Forge is adapting','Cómo se adapta Forge')}</h3>
+  <p class="muted small" style="margin:0 0 8px">${L('Forge adjusts your weights, reps and sets to how you\'re progressing. Rate how each exercise felt after your last set to help it.','Forge ajusta tus pesos, reps y series según cómo progresas. Califica cómo se sintió cada ejercicio después de la última serie para ayudarlo.')}</p>
+  ${vl?`<div class="lsub">${L('Sets this week','Series esta semana')}</div>${vl}`:''}${rl?`<div class="lsub" style="margin-top:8px">${L('New rep ranges (to break a plateau)','Nuevos rangos de reps (para romper un estancamiento)')}</div>${rl}`:''}
+  ${vl||rl?'':`<p class="small" style="margin:0">${L('Everything is on track, so no changes this week.','Todo va bien, así que no hay cambios esta semana.')}</p>`}</div>`;}
 function suggest0(ex){
   const sc=scheme(ex),last=lastSets(ex.id);
   if(ex.inc==='cardio'){const lm=last?Math.max(0,...last.sets.map(x=>+x.r||0)):0;return{w:'',r:lm||sc.lo,note:lm?'Last time: '+lm+' min. Go a little longer or a little harder':'Go at a pace where talking is possible but hard'};}
@@ -1707,18 +1753,27 @@ function suggest0(ex){
   if(!last){
     if(ex.inc==='sec')return{w:'',r:sc.lo,note:'First time — hold as long as you can with good form'};
     if(ex.inc==='bw')return{w:'',r:sc.lo,note:'First time — do as many clean reps as you can'};
+    const est=S.settings.adaptOff?null:estFirst(ex);
+    if(est)return{w:est.w,r:est.r,est:1,note:L(`First time: estimated from your ${est.from.name} (${fmtN(est.set.w)} × ${est.set.r}). It's a starting guess, so if it's too light or heavy, change it and Forge learns from there`,`Primera vez: calculado con tu ${tr(est.from.name)} (${fmtN(est.set.w)} × ${est.set.r}). Es un punto de partida; si es muy ligero o pesado, cámbialo y Forge aprende de ahí`)};
     return{w:'',r:Math.round((sc.lo+sc.hi)/2),note:'First time — pick a weight you could lift for ~2 more reps'};
   }
   const sets=last.sets.map(s=>({w:+conv(s.w,last.unit)||0,r:+s.r||0}));
   const top=Math.max(...sets.map(s=>s.w));
   const atTop=sets.filter(s=>s.w===top);
   const minR=Math.min(...atTop.map(s=>s.r)),maxR=Math.max(...atTop.map(s=>s.r));
-  if(ex.inc==='sec')return{w:top||'',r:maxR+5,note:'Aim for 5 seconds longer than last time'};
+  const fl=S.settings.adaptOff?'':last.feel;
+  if(ex.inc==='sec'){if(fl==='e')return{w:top||'',r:maxR+10,note:L('Felt easy last time: aim for 10 seconds longer','Se sintió fácil: busca 10 segundos más')};if(fl==='h')return{w:top||'',r:maxR,note:L('Felt hard last time: match your time with good form','Se sintió difícil: iguala tu tiempo con buena forma')};return{w:top||'',r:maxR+5,note:'Aim for 5 seconds longer than last time'};}
   if(ex.inc==='bw'){
     if(minR>=sc.hi){const nx=EX(NEXT_VAR[ex.id]);return{w:top||'',r:minR+1,note:nx?'You hit '+sc.hi+'+ reps — try '+nx.name+' next':'You hit '+sc.hi+'+ reps — try adding weight or a harder variation'};}
+    if(fl==='e')return{w:top||'',r:minR+2,note:L('Felt easy last time: two more reps per set','Se sintió fácil: dos reps más por serie')};
+    if(fl==='h')return{w:top||'',r:minR,note:L('Felt hard last time: same reps, cleaner form','Se sintió difícil: mismas reps, mejor forma')};
     return{w:top||'',r:minR+1,note:'One more rep per set than last time'};
   }
   const inc=incr(ex);
+  if(fl==='e'&&minR>=sc.hi)return{w:rnd(top+2*inc),r:sc.lo,note:L(`Hit ${sc.hi} reps and it felt easy: up ${2*inc} ${U()}`,`Llegaste a ${sc.hi} reps y se sintió fácil: sube ${2*inc} ${U()}`)};
+  if(fl==='e'&&minR>=sc.lo)return{w:rnd(top+inc),r:Math.max(sc.lo,minR-2),note:L(`Felt easy last time: up ${inc} ${U()}`,`Se sintió fácil: sube ${inc} ${U()}`)};
+  if(fl==='h'&&minR>=sc.hi)return{w:top,r:sc.hi,note:L(`You hit the reps but it felt hard: same weight once more to own it`,`Lograste las reps pero se sintió difícil: mismo peso una vez más para dominarlo`)};
+  if(fl==='h'&&minR>=sc.lo)return{w:top,r:minR,note:L('Felt hard last time: same weight and reps, focus on clean form','Se sintió difícil: mismo peso y reps, enfócate en la forma')};
   if(minR>=sc.hi)return{w:rnd(top+inc),r:sc.lo,note:'You hit '+sc.hi+' reps on every set — up '+inc+' '+U()};
   if(minR>=sc.lo)return{w:top,r:Math.min(sc.hi,minR+1),note:'Same weight — aim for one more rep'};
   if(minR>=sc.lo-1)return{w:top,r:sc.lo,note:'Same weight — get every set to '+sc.lo+' reps'};
@@ -1743,7 +1798,12 @@ function suggest(ex){
     // automatic deload: 3 sessions in a row at about the same weight with no new best (over 2+ weeks) -> one lighter session to recover
     const e1=h=>Math.max(0,...h.sets.filter(x=>!x.drop).map(x=>(+conv(x.w,h.unit)||0)*(1+(+x.r||0)/30))),R=H.slice(-4);
     if(R.length===4&&now-(R[1].date||now)>=14*864e5&&now-(R[0].date||now)<=70*864e5){const ref=R[0],rt=topW(ref),re=e1(ref);
-      if(rt>0&&R.slice(1).every(h=>topW(h)>=rt*.97&&e1(h)<=re*1.005)){sg.w=rnd(lt*.9);sg.deload=1;
+      if(rt>0&&R.slice(1).every(h=>topW(h)>=rt*.97&&e1(h)<=re*1.005)){
+        const ra0=rrActive(ex.id),fresh=ra0&&ra0.at>(R[3].date||0);
+        if(!S.settings.adaptOff&&(fresh||!ra0&&H.some(h=>h.dl&&now-(h.date||now)<=70*864e5))){const b=scheme(ex,true),lo=fresh?ra0.lo:b.lo>=8?Math.max(4,b.lo-4):b.lo+4,hi=fresh?ra0.hi:b.lo>=8?Math.max(lo+2,b.hi-5):b.hi+5,be=Math.max(...R.map(e1));
+          if(!fresh){ADA().rr=S.adapt.rr||{};S.adapt.rr[ex.id]={lo,hi,until:now+28*864e5,from:[b.lo,b.hi],at:now};save();}
+          sg.w=rnd(be/(1+(lo+2)/30));sg.r=lo;sg.rr=1;sg.note=L(`Still stuck after a deload, so for the next 4 weeks this lift switches to ${lo}–${hi} reps. A new rep range is one of the best ways to break a plateau`,`Sigues estancado después de una descarga, así que las próximas 4 semanas este ejercicio cambia a ${lo}–${hi} reps. Un rango nuevo es de las mejores formas de romper un estancamiento`);return sg;}
+        sg.w=rnd(lt*.9);sg.deload=1;
         sg.note=L(`Deload: no new best in your last 3 sessions, so this one is lighter (90%) to let you recover. Expect to come back stronger.`,`Descarga: sin nueva marca en tus últimas 3 sesiones, así que esta es más ligera (90%) para recuperarte. Deberías volver más fuerte.`);return sg;}}
     const recent=H.filter(h=>now-(h.date||now)<=90*864e5),best=Math.max(0,...recent.map(topW));
     // rebuild: last time was lighter than your recent best and you hit your reps -> step back up faster (5%), never past the old best
@@ -1762,7 +1822,7 @@ function estLeft(a){let t=0;for(const e of (a&&a.exercises)||[]){const ex=EX(e.e
 function lastVest(kind){let best=null;for(const w of S.workouts)for(const e of w.exercises)if(DIST.has(e.exId)&&e.vest>0&&(kind?e.exId===kind:e.exId!=='ruck'&&e.exId!=='hike'))best={v:e.vest,u:w.unit};return best?+conv(best.v,best.u):'';}
 const elevTxt=(v,u)=>{if(!(v>0))return'';const ft=u==='kg'?v*3.28084:v,n=Math.round(U()==='kg'?ft/3.28084:ft);return` · ↑ ${n.toLocaleString()} ${U()==='kg'?'m':'ft'}`;};
 const vestTxt=(v,u,id)=>{if(!(v>0))return'';const n=r1(+conv(v,u));return id==='ruck'||id==='hike'?L(` · ${n} ${U()} pack`,` · mochila de ${n} ${U()}`):L(` · ${n} ${U()} vest`,` · chaleco de ${n} ${U()}`);};
-function newEntry(ex){const sc=scheme(ex),sg=suggest(ex);return{exId:ex.id,note:sg.note,...(DIST.has(ex.id)&&(ex.eq.includes('armor')||ex.eq.includes('ruck')||ex.id==='hike')?{vest:lastVest(ex.id==='ruck'||ex.id==='hike'?ex.id:'')}:{}),sets:Array.from({length:sc.sets},()=>({w:sg.w,r:sg.r,done:false}))};}
+function newEntry(ex){const sc=scheme(ex),sg=suggest(ex);return{exId:ex.id,note:sg.note,...(sg.deload?{dl:1}:{}),...(DIST.has(ex.id)&&(ex.eq.includes('armor')||ex.eq.includes('ruck')||ex.id==='hike')?{vest:lastVest(ex.id==='ruck'||ex.id==='hike'?ex.id:'')}:{}),sets:Array.from({length:sc.sets},()=>({w:sg.w,r:sg.r,done:false}))};}
 
 const TAU=30; // hours; fatigue decays exponentially
 function fatigue(){
@@ -3763,7 +3823,7 @@ function generate(focus){
     if(ex.c&&k<Math.ceil(chosen.length/2))out.push(["big compound lift, done early while you're fresh",'ejercicio compuesto grande, temprano mientras estás fresco']);
     else if(V==='mix'&&!HC[ex.id])out.push(['new for you, for variety','nuevo para ti, para variar']);
     else if(V==='fav'&&(HC[ex.id]||0)>=3)out.push(['one of your regular lifts','uno de tus ejercicios de siempre']);
-    const t=out.slice(0,2);why[ex.id]=[t.map(x=>x[0]).join(' · '),t.map(x=>x[1]).join(' · ')];});
+    const t=out.slice(0,2),sv=scheme(ex);if(sv.vd)t.push(sv.vd>0?[`+1 set this week (${mn} stalled)`,`+1 serie esta semana (${tr(mn)} estancado)`]:[`1 less set this week (${mn} sets felt hard)`,`1 serie menos esta semana (${tr(mn)} se sintió difícil)`]);why[ex.id]=[t.map(x=>x[0]).join(' · '),t.map(x=>x[1]).join(' · ')];});
   return{focus:f,list:chosen,skipped,why};
 }
 
@@ -4204,7 +4264,7 @@ function vActive(){
     ${ex.inc==='bw'&&ex.id!=='ammo_press'&&ex.id!=='hamr'?'<div class="bwnote small">Bodyweight exercise: your body weight is already counted. Only enter extra weight (dip belt, vest), or leave it blank.</div>':''}
     ${warmHtml(e,ex)}<div class="sethead"><span>Set</span><span>${wh}</span><span>${rh}</span><span></span></div>${rows}
     ${isBarbell(ex)&&isLoad(ex)?`<button class="plateline small" data-a="plates" data-i="${i}" data-notr="1">${plateLine(i)}</button>`:''}
-    <div class="row"><button class="btn ghost sm" data-a="addset" data-i="${i}">+ Set</button>${isLoad(ex)&&ex.inc!=='sec'&&ex.inc!=='run'&&ex.inc!=='cardio'?`<button class="btn ghost sm" data-a="dropset" data-i="${i}" data-notr="1">↓ ${L('Drop set','Descendente')}</button>`:''}<button class="btn ghost sm" data-a="rmset" data-i="${i}">− Set</button></div></div>`;
+    <div class="row"><button class="btn ghost sm" data-a="addset" data-i="${i}">+ Set</button>${isLoad(ex)&&ex.inc!=='sec'&&ex.inc!=='run'&&ex.inc!=='cardio'?`<button class="btn ghost sm" data-a="dropset" data-i="${i}" data-notr="1">↓ ${L('Drop set','Descendente')}</button>`:''}<button class="btn ghost sm" data-a="rmset" data-i="${i}">− Set</button></div>${feelRow(e,i,ex)}</div>`;
   }).join('');
   return`<div class="topbar"><div><div class="muted small">${esc(FOCUS_NAME[a.focus]||'Workout')}${a.title?`<span data-notr="1"> · ${esc(Array.isArray(a.title)?L(a.title[0],a.title[1]):a.title)}</span>`:''}</div><div class="elapsed" id="elapsed">${fmtDur(Date.now()-a.start)}</div>${(()=>{const m=estLeft(a);return m>0?`<div class="muted small" data-notr="1">⏳ ${L(`About ${m} min left`,`Quedan unos ${m} min`)}</div>`:'';})()}</div><button class="btn primary" data-a="finish">Finish</button></div>
   ${cards||'<div class="card"><p class="muted" style="margin:0">No exercises yet — add one below.</p></div>'}
@@ -5473,7 +5533,7 @@ function parseDexa(text){
   if(dm){let y=+dm[3];if(y<100)y+=2000;const m=+dm[1],d=+dm[2];if(m>=1&&m<=12&&d>=1&&d<=31&&y>=2000){const iso=y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');if(iso<=dk(Date.now()))out.d=iso;}}
   return out;
 }
-function vProgress(){return'<h1>Progress</h1>'+recapCard()+recordsCard()+weightCard()+(S.settings.branch==='usmc'?waistCard():'')+measCard()+dexaCard()+'<h2 style="font-size:20px;margin:18px 0 10px">Lifts</h2>'+vLifts();}
+function vProgress(){return'<h1>Progress</h1>'+recapCard()+(S.settings.adaptOff?'':adaptCard())+recordsCard()+weightCard()+(S.settings.branch==='usmc'?waistCard():'')+measCard()+dexaCard()+'<h2 style="font-size:20px;margin:18px 0 10px">Lifts</h2>'+vLifts();}
 function recapCard(){if(!S.workouts.length)return'';const o=recapDefault(),now=new Date(),m=new Date(now.getFullYear(),now.getMonth()+o,1),r=recapStats(m.getFullYear(),m.getMonth());
   return`<button class="card recapcard" data-a="recapopen" data-o="${o}" data-notr="1"><div style="flex:1;text-align:left"><b>📊 ${L(`${monthName(m.getFullYear(),m.getMonth())} recap`,`Resumen de ${monthIn(m.getFullYear(),m.getMonth())}`)}</b><div class="muted small">${L(`${r.n} workouts · ${fmtVol(r.vol)} ${U()} lifted · ${r.prs} new records`,`${r.n} entrenamientos · ${fmtVol(r.vol)} ${U()} levantados · ${r.prs} récords`)}</div></div><span class="muted" style="font-size:22px">›</span></button>`;}
 function vLifts(){
@@ -5532,7 +5592,7 @@ function vSettings(){
   ${injuryCard()}
   <div class="card">${prefsForm()}</div>
   <div class="card"><h3>Custom exercises</h3>${cust||'<p class="muted small">Add exercises the built-in list is missing.</p>'}<button class="btn ghost" data-a="newcustom">+ Add custom exercise</button></div>
-  <div class="card" data-notr="1"><h3>${L('Workout tab','Pestaña Entrenar')}</h3><label class="ebrow" style="border:0;margin-top:0;padding-top:0"><span><b>${L('Weekly summary','Resumen semanal')}</b><span class="muted small">${L('A recap of last week at the start of each week.','Un resumen de la semana pasada al inicio de cada semana.')}</span></span><button class="tog ${S.settings.weekSumOff?'':'on'}" data-a="weeksumtog" aria-label="Weekly summary"><i></i></button></label><label class="ebrow"><span><b>🔥 ${L('Warm-up sets','Series de calentamiento')}</b><span class="muted small">${L('Suggests lighter ramp-up sets before heavy barbell lifts like squat, bench and deadlift.','Sugiere series más ligeras antes de levantamientos pesados con barra como sentadilla, press de banca y peso muerto.')}</span></span><button class="tog ${S.settings.wuOff?'':'on'}" data-a="wutog" aria-label="Warm-up sets"><i></i></button></label><label class="ebrow"><span><b>😴 ${L('Daily check-in','Chequeo diario')}</b><span class="muted small">${L('Before your first generated workout each day, answer 3 quick questions (sleep, soreness, energy) and Forge adjusts the workout.','Antes de tu primer entrenamiento generado del día, responde 3 preguntas rápidas (sueño, dolor, energía) y Forge ajusta el entrenamiento.')}</span></span><button class="tog ${S.settings.ckOff?'':'on'}" data-a="cktog" aria-label="Daily check-in"><i></i></button></label><label class="ebrow"><span><b>🎮 ${L('Game mode','Modo juego')}</b><span class="muted small">${L('Daily quests, XP and promotions through your branch\'s ranks. Unlock new accent colors, banners, backgrounds, card borders and effects.','Misiones diarias, XP y ascensos por los rangos de tu rama. Desbloquea colores, banners, fondos, bordes y efectos.')}</span></span><button class="tog ${S.settings.gameOn?'on':''}" data-a="gametog" aria-label="Game mode"><i></i></button></label>${S.settings.gameOn&&gIsCiv()?`<label class="ebrow"><span><b>🎖️ ${L('Rank branch','Rama de rangos')}</b><span class="muted small">${L('Pick whose ranks you climb in game mode. This only changes the rank names and badges.','Elige los rangos de qué rama subes en el modo juego. Solo cambia los nombres e insignias de los rangos.')}</span></span><select data-s="gameBranch" style="width:auto;max-width:150px">${BRANCHES.filter(b=>!['none','ng'].includes(b[0])).map(b=>`<option value="${b[0]}" ${(S.settings.gameBranch||'usmc')===b[0]?'selected':''}>${esc(L(b[1],b[2]))}</option>`).join('')}</select></label>`:''}${S.settings.gameOn?`<label class="ebrow"><span><b>🎞 ${L('Animated looks','Estilos animados')}</b><span class="muted small">${L('Play fire borders, RGB and other animated rewards even when Reduce Motion is on in your iPhone settings.','Mostrar bordes de fuego, RGB y otras recompensas animadas aunque Reducir movimiento esté activado en tu iPhone.')}${sysReduce()?' <b>'+L('Reduce Motion is on right now.','Reducir movimiento está activado ahora.')+'</b>':''}</span></span><button class="tog ${S.settings.motionAlways?'on':''}" data-a="motiontog" aria-label="Animated looks"><i></i></button></label>`:''}</div>
+  <div class="card" data-notr="1"><h3>${L('Workout tab','Pestaña Entrenar')}</h3><label class="ebrow" style="border:0;margin-top:0;padding-top:0"><span><b>${L('Weekly summary','Resumen semanal')}</b><span class="muted small">${L('A recap of last week at the start of each week.','Un resumen de la semana pasada al inicio de cada semana.')}</span></span><button class="tog ${S.settings.weekSumOff?'':'on'}" data-a="weeksumtog" aria-label="Weekly summary"><i></i></button></label><label class="ebrow"><span><b>🧠 ${L('Adaptive coaching','Entrenamiento adaptativo')}</b><span class="muted small">${L('Estimates first-time weights from your other lifts, uses how sets felt, changes rep ranges to break plateaus and adjusts weekly sets per muscle.','Calcula pesos de primera vez con tus otros ejercicios, usa cómo se sintieron las series, cambia rangos de reps para romper estancamientos y ajusta las series semanales por músculo.')}</span></span><button class="tog ${S.settings.adaptOff?'':'on'}" data-a="adapttog" aria-label="Adaptive coaching"><i></i></button></label><label class="ebrow"><span><b>🔥 ${L('Warm-up sets','Series de calentamiento')}</b><span class="muted small">${L('Suggests lighter ramp-up sets before heavy barbell lifts like squat, bench and deadlift.','Sugiere series más ligeras antes de levantamientos pesados con barra como sentadilla, press de banca y peso muerto.')}</span></span><button class="tog ${S.settings.wuOff?'':'on'}" data-a="wutog" aria-label="Warm-up sets"><i></i></button></label><label class="ebrow"><span><b>😴 ${L('Daily check-in','Chequeo diario')}</b><span class="muted small">${L('Before your first generated workout each day, answer 3 quick questions (sleep, soreness, energy) and Forge adjusts the workout.','Antes de tu primer entrenamiento generado del día, responde 3 preguntas rápidas (sueño, dolor, energía) y Forge ajusta el entrenamiento.')}</span></span><button class="tog ${S.settings.ckOff?'':'on'}" data-a="cktog" aria-label="Daily check-in"><i></i></button></label><label class="ebrow"><span><b>🎮 ${L('Game mode','Modo juego')}</b><span class="muted small">${L('Daily quests, XP and promotions through your branch\'s ranks. Unlock new accent colors, banners, backgrounds, card borders and effects.','Misiones diarias, XP y ascensos por los rangos de tu rama. Desbloquea colores, banners, fondos, bordes y efectos.')}</span></span><button class="tog ${S.settings.gameOn?'on':''}" data-a="gametog" aria-label="Game mode"><i></i></button></label>${S.settings.gameOn&&gIsCiv()?`<label class="ebrow"><span><b>🎖️ ${L('Rank branch','Rama de rangos')}</b><span class="muted small">${L('Pick whose ranks you climb in game mode. This only changes the rank names and badges.','Elige los rangos de qué rama subes en el modo juego. Solo cambia los nombres e insignias de los rangos.')}</span></span><select data-s="gameBranch" style="width:auto;max-width:150px">${BRANCHES.filter(b=>!['none','ng'].includes(b[0])).map(b=>`<option value="${b[0]}" ${(S.settings.gameBranch||'usmc')===b[0]?'selected':''}>${esc(L(b[1],b[2]))}</option>`).join('')}</select></label>`:''}${S.settings.gameOn?`<label class="ebrow"><span><b>🎞 ${L('Animated looks','Estilos animados')}</b><span class="muted small">${L('Play fire borders, RGB and other animated rewards even when Reduce Motion is on in your iPhone settings.','Mostrar bordes de fuego, RGB y otras recompensas animadas aunque Reducir movimiento esté activado en tu iPhone.')}${sysReduce()?' <b>'+L('Reduce Motion is on right now.','Reducir movimiento está activado ahora.')+'</b>':''}</span></span><button class="tog ${S.settings.motionAlways?'on':''}" data-a="motiontog" aria-label="Animated looks"><i></i></button></label>`:''}</div>
   <div class="card" data-notr="1"><h3>${L('Privacy','Privacidad')}</h3><label class="ebrow" style="border:0;margin-top:0;padding-top:0"><span><b>${L('Send anonymous usage counts','Enviar conteos de uso anónimos')}</b><span class="muted small">${VL('Counts installs, app opens, your language and military branch, and which features get used (each at most once a day), to help improve Forge. Only the feature name is sent. No names, workouts, food, weight, injuries or health data are ever sent, and Field / vacation mode only counts that it was used, never its dates.','Cuenta instalaciones, aperturas, tu idioma y rama militar, y qué funciones se usan (cada una como máximo una vez al día), para mejorar Forge. Solo se envía el nombre de la función. Nunca se envían nombres, entrenamientos, comida, peso, lesiones ni datos de salud, y del Modo campo / vacaciones solo se cuenta que se usó, nunca sus fechas.','Counts installs, app opens, your language and military branch, and which features get used (each at most once a day), to help improve Forge. Only the feature name is sent. No names, workouts, food, weight, injuries or health data are ever sent, and Vacation mode only counts that it was used, never its dates.','Cuenta instalaciones, aperturas, tu idioma y rama militar, y qué funciones se usan (cada una como máximo una vez al día), para mejorar Forge. Solo se envía el nombre de la función. Nunca se envían nombres, entrenamientos, comida, peso, lesiones ni datos de salud, y del Modo vacaciones solo se cuenta que se usó, nunca sus fechas.')}</span></span><button class="tog ${S.settings.noStats?'':'on'}" data-a="statstog" aria-label="Send anonymous usage counts"><i></i></button></label></div>
   <div class="card" data-notr="1"><h3>${L('Backup','Respaldo')}</h3><p class="muted small" style="margin-top:0">${L('Your data lives only on this phone. Removing the app from your Home Screen deletes it.','Tus datos viven solo en este teléfono. Quitar la app de tu pantalla de inicio los borra.')}</p>
   <div class="lsub">💾 ${L('Backup file','Archivo de respaldo')}</div><p class="muted small" style="margin:2px 0 0">${L('Everything in one file: workouts, ranks, badges, looks, food, saved workouts and settings.','Todo en un archivo: entrenamientos, rangos, insignias, estilos, comida, entrenamientos guardados y ajustes.')}</p>
@@ -5861,7 +5921,7 @@ function tick(){
 // ---------- actions ----------
 function finish(){
   const a=S.active;
-  const exs=a.exercises.map((e,k)=>({exId:e.exId,...(ssPos(a.exercises,k)?{ss:e.ss}:{}),...(DIST.has(e.exId)&&parseFloat(e.vest)>0?{vest:parseFloat(String(e.vest).replace(',','.'))}:{}),...(e.exId==='hike'&&parseFloat(e.elev)>0?{elev:Math.round(parseFloat(e.elev))}:{}),...(e.orig?{orig:e.orig}:{}),...(e.tgt?{tgt:e.tgt}:{}),...(e.added?{added:1}:{}),sets:e.sets.filter(s=>s.done).map(s=>({w:s.w===''||s.w==null?'':(parseFloat(s.w)||0),r:(EX(e.exId)||{}).inc==='run'?fmtT(longT(e.exId,s.r,s.w,a.unit)):(parseInt(s.r,10)||0)}))})).filter(e=>e.sets.length);
+  const exs=a.exercises.map((e,k)=>({exId:e.exId,...(ssPos(a.exercises,k)?{ss:e.ss}:{}),...(DIST.has(e.exId)&&parseFloat(e.vest)>0?{vest:parseFloat(String(e.vest).replace(',','.'))}:{}),...(e.exId==='hike'&&parseFloat(e.elev)>0?{elev:Math.round(parseFloat(e.elev))}:{}),...(e.orig?{orig:e.orig}:{}),...(e.tgt?{tgt:e.tgt}:{}),...(e.added?{added:1}:{}),...(e.feel?{feel:e.feel}:{}),...(e.dl?{dl:1}:{}),sets:e.sets.filter(s=>s.done).map(s=>({w:s.w===''||s.w==null?'':(parseFloat(s.w)||0),r:(EX(e.exId)||{}).inc==='run'?fmtT(longT(e.exId,s.r,s.w,a.unit)):(parseInt(s.r,10)||0)}))})).filter(e=>e.sets.length);
   if(!exs.length){if(ask('No sets are checked off. Discard this workout?')){S.active=null;stopRest();save();render();}return;}
   const prs=[],before=muscleRanks(),stkBefore=streakInfo().cur.len,bBefore=new Set(badgesEarned().filter(x=>x.ok).map(x=>x.id));
   for(const e of exs){
@@ -6060,6 +6120,7 @@ document.addEventListener('click',e=>{
     case'stretchmus':{const m=b.dataset.m,ids=Object.keys(STRETCH_MUS).filter(id=>!OLD_STRETCH.has(id)&&EX(id)),pr=ids.filter(id=>STRETCH_MUS[id][0].split(' ').includes(m)),sc=ids.filter(id=>!pr.includes(id)&&STRETCH_MUS[id][1].split(' ').includes(m));
       const row=id=>{const ex=EX(id),inj=injuryFor(ex);return`<button class="pitem" data-a="howto" data-id="${id}"><b>${esc(tr(ex.name))}</b><span class="muted small">🧘 ${STRETCH_MUS[id][0].split(' ').map(x=>tr(musN(x))).join(', ')}</span>${inj?`<span class="small warn">⚠️ ${L('May aggravate','Puede agravar')}: ${esc(tr(INJ_AREAS[inj.area]))}</span>`:''}</button>`;};
       showModal(`<div data-notr="1"><div class="sheethead"><h3>🧘 ${L('Stretches for','Estiramientos para')} ${esc(tr(musN(m)))}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div><p class="muted small" style="margin-top:0">${L('Hold each one 20–45 seconds and breathe. A stretch should feel like a pull, never sharp pain.','Sostén cada uno 20–45 segundos y respira. Un estiramiento se siente como un jalón, nunca como dolor agudo.')}</p>${pr.map(row).join('')}${sc.length?`<div class="lsub" style="margin-top:10px">${L('Also stretches','También estira')} ${esc(tr(musN(m)))}</div>${sc.map(row).join('')}`:''}</div>`);break;}
+    case'feel':{const A3=S.active;const en=A3&&A3.exercises[+b.dataset.i];if(en){en.feel=en.feel===b.dataset.v?'':b.dataset.v;save();render();}break;}
     case'easier':{const A2=S.active;if(!A2)break;const i=+b.dataset.i,en=A2.exercises[i],ex=en&&EX(en.exId),ez=ex&&easierOf(ex);if(!ez)break;
       const nw=newEntry(ez);const nr=easyR(ex.id,+en.tgt||+((en.sets[0]||{}).r)||0);nw.sets=en.sets.map(q=>({...q,r:nr&&EASY_REPS[ex.id]?String(nr):q.r,w:isLoad(ez)||ez.inc==='bw'?'':q.w,done:false}));if(ez.inc==='cardio'||ez.inc==='run')nw.sets=nw.sets.slice(0,1).map(q=>({...q,r:ez.inc==='cardio'?q.r:''}));
       ['ss','ssAdd','plan','tgt'].forEach(k=>{if(en[k]!=null)nw[k]=en[k];});if(nw.tgt&&EASY_REPS[ex.id])nw.tgt=easyR(ex.id,+nw.tgt);if(ez.inc!==ex.inc){nw.sets.forEach(q=>q.r='');delete nw.tgt;}if(nw.plan&&ez.id!==ex.id)nw.plan=null;nw.orig=en.orig||en.exId;
@@ -6184,6 +6245,7 @@ document.addEventListener('click',e=>{
     case'gequip':{G()[b.dataset.k]=b.dataset.id;save();gApplyLook();const inL=!!b.closest('.lgrid');render();if(b.dataset.k==='fx')gEffect(b.dataset.id,true);if(inL)gLocker();else toast(L('Equipped ✓','Equipado ✓'));break;}
     case'motiontog':S.settings.motionAlways=!S.settings.motionAlways;save();render();if(document.querySelector('#modal:not(.hidden) .lgrid'))gLocker();break;
     case'granks':gRanksInfo();break;
+    case'adapttog':S.settings.adaptOff=!S.settings.adaptOff;save();render();break;
     case'weeksumtog':S.settings.weekSumOff=!S.settings.weekSumOff;save();render();break;
     case'weekseen':S.settings.weekSeen=b.dataset.k;save();render();break;
     case'backuplater':S.settings.backupSnooze=Date.now();save();render();break;
@@ -6386,7 +6448,7 @@ const TUT=[
  {ch:'demo',demo:1,tab:'workout',sel:'.topbar',t:['Here\'s a workout','Así se ve un entrenamiento'],b:['This is a sample so you can see the buttons. It won\'t be saved. The top shows how long you\'ve been going and about how much is left. <b>Finish</b> saves the workout.','Esto es un ejemplo para que veas los botones. No se guardará. Arriba ves cuánto llevas y cuánto falta aprox. <b>Terminar</b> guarda el entrenamiento.']},
  {ch:'demo',demo:1,tab:'workout',sel:'#view .card .exhead',t:['Each exercise','Cada ejercicio'],b:['The name, the sets and reps to aim for, and the muscles it works.<br><b>ⓘ</b> shows photos and how to do it<br><b>⇄</b> swaps it for a similar exercise<br><b>SS</b> pairs it with the next one as a superset<br><b>✕</b> removes it','El nombre, las series y reps a buscar y los músculos que trabaja.<br><b>ⓘ</b> muestra fotos y cómo hacerlo<br><b>⇄</b> lo cambia por uno parecido<br><b>SS</b> lo junta con el siguiente como superserie<br><b>✕</b> lo quita']},
  {ch:'demo',demo:1,tab:'workout',sel:'#view .card .why',t:['Why this exercise?','¿Por qué este ejercicio?'],b:['Forge tells you why it picked each exercise, like which muscles are rested.','Forge te dice por qué eligió cada ejercicio, por ejemplo qué músculos están descansados.']},
- {ch:'demo',demo:1,tab:'workout',sel:'#view .card .set',t:['Log your sets','Registra tus series'],b:['Forge fills in the reps to aim for, and after your first time it suggests the weight too. Type what you actually did, then tap <b>✓</b>. That logs the set and starts your rest timer.','Forge llena las reps a buscar, y después de la primera vez también sugiere el peso. Escribe lo que hiciste y toca <b>✓</b>. Eso registra la serie e inicia tu descanso.']},
+ {ch:'demo',demo:1,tab:'workout',sel:'#view .card .set',t:['Log your sets','Registra tus series'],b:['Forge fills in the reps to aim for, and after your first time it suggests the weight too. Type what you actually did, then tap <b>✓</b>. That logs the set and starts your rest timer. After the last set, tap how it felt (Easy, Just right or Hard) so Forge can adjust next time.','Forge llena las reps a buscar, y después de la primera vez también sugiere el peso. Escribe lo que hiciste y toca <b>✓</b>. Eso registra la serie e inicia tu descanso. Después de la última serie, toca cómo se sintió (Fácil, Justo o Difícil) para que Forge se ajuste la próxima vez.']},
  {ch:'demo',demo:1,tab:'workout',sel:'#view .card [data-a=plates]',t:['Plate math','Discos'],b:['For barbell lifts, this shows which plates to put on each side.','En ejercicios con barra, esto muestra qué discos poner de cada lado.']},
  {ch:'demo',demo:1,tab:'workout',sel:'#view .card [data-a=addset]',box:'.row',t:['More or fewer sets','Más o menos series'],b:['<b>+ Set</b> adds a set, <b>− Set</b> removes one, and <b>↓ Drop set</b> adds a lighter set right after.','<b>+ Serie</b> agrega una serie, <b>− Serie</b> quita una y <b>↓ Descendente</b> agrega una serie más ligera justo después.']},
  {ch:'demo',demo:1,tab:'workout',sel:'#view .easyrow',t:['Too hard or too easy?','¿Muy difícil o muy fácil?'],b:['One tap swaps the exercise for an easier or harder version, like knee push-ups or banded pull-ups.','Con un toque cambias el ejercicio por una versión más fácil o más difícil, como lagartijas de rodillas o dominadas con banda.']},
