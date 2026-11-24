@@ -760,7 +760,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.11.24g';
+const APP_VERSION='2026.11.24h';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false,branch:''},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],templates:[],water:{},scores:[],active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(!('branch' in (d.settings||{})))st.branch=st.onboarded?'usmc':'';if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[],templates:d.templates||[],water:d.water||{},scores:d.scores||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -4314,13 +4314,33 @@ function addImpSheet(){const r=(a,ic,t,d)=>`<button class="mrow" data-a="${a}"><
   <div class="grp" style="margin-top:4px">${L('Make one','Crear uno')}</div><div class="mlist">${r('bldopen','📝',L('Plan a workout for later','Planear un entrenamiento para después'),L('Pick the exercises now, do them later','Elige los ejercicios ahora y hazlos después'))}${r('impopen','✍️',L('Import a workout from text','Importar un entrenamiento de texto'),L('Paste or type it, like "Bench 3x8 at 185"','Pégalo o escríbelo, como "Press de banca 3x8 a 185"'))}</div>
   <div class="grp">${L('From a friend','De un amigo')}</div><div class="mlist">${r('tplpaste','📋',L('Paste shared workout','Pegar entrenamiento compartido'),L('Copy their link first, then tap here','Copia su enlace primero y toca aquí'))}${r('tplimport','🔗',L('Type a link','Escribir enlace'),L('If pasting doesn\'t work','Si pegar no funciona'))}</div>
   <div class="grp">${L('From another app','De otra app')}</div><div class="mlist">${r('fitopen','📥',L('Garmin, Nike Run Club, Fitbod, Strong, Hevy','Garmin, Nike Run Club, Fitbod, Strong, Hevy'),L('Bring in workouts, runs or your whole history','Trae entrenamientos, carreras o todo tu historial'))}</div></div>`);}
+function wkHead(){return`<div class="hdr"><h1>Workout</h1><div class="hbtns"><button class="bell" data-a="idea" aria-label="Suggest an idea"><svg viewBox="0 0 24 24">${BUBBLE}</svg></button><button class="bell" data-a="tab" data-t="updates" aria-label="Updates"><svg viewBox="0 0 24 24">${BELL}</svg>${hasNewNews()?'<i class="dot"></i>':''}</button></div></div>`;}
+function streakSum(){const s=streakInfo(),c=s.cur,wd=weekDays(),days=new Set(workoutDays()),goal=+S.settings.weekGoal||4,done=wd.filter(x=>days.has(x.n)).length;
+  const m=!c.len?L("today's workout starts a new one","el entrenamiento de hoy empieza una nueva"):c.field?L('paused while you\'re away','en pausa mientras no estás'):c.rest===0?L('trained today ✓','entrenaste hoy ✓'):c.rest===1&&!c.back?L('rest day used','día de descanso usado'):L('work out today to keep it','entrena hoy para mantenerla');
+  return L(`${done} / ${goal} this week · ${m}`,`${done} / ${goal} esta semana · ${m}`);}
+function vWorkoutSimple(rec,auto,tired,lw){const c=streakInfo().cur,p=progOn(),inj=activeInjuries().length;
+  const foc=`<div class="card">${gyms().length>1?gymChips():''}<label class="lbl">Focus</label><select id="focus" data-notr="1">${Object.entries(FOCUS).filter(([k])=>focusOk(k)).map(([k,l])=>`<option value="${k}" ${k===focusSel?'selected':''}>${k==='auto'?L(`Auto: ${FOCUS[auto]} (most recovered)`,`Auto: ${tr(FOCUS[auto])} (más recuperado)`):tr(l)}</option>`).join('')}</select>
+  ${inj?injuryChip():''}
+  <button class="btn primary big" data-a="gen">Generate workout</button>
+  <div class="row" style="gap:8px" data-notr="1"><button class="btn ghost" style="margin:0" data-a="empty">${L('Start empty','Empezar vacío')}</button><button class="btn ghost" style="margin:0" data-a="library">📖 ${L('Library','Biblioteca')}</button></div></div>`;
+  const test=TESTS.has(focusSel)?(focusSel==='aft'?aftCard():focusSel==='pfra'?afCard():focusSel==='prt'?nvCardHtml():usmcCard(focusSel)):'';
+  return wkHead()+gameCard()+questCard()
+  +(S.workouts.length?fold('streak',`🔥 ${c.len} ${L(c.len===1?'day streak':'day streak','días de racha')}`,streakSum(),streakCard()):heroCard())
+  +recapBanner()+ruckCard()+backupNag()+foc+test
+  +fold('week','📊 '+L('Last week','Semana pasada'),lastWeekSum(),weekSummary())
+  +fold('tpl','📁 '+L('My workouts','Mis entrenamientos'),tplSum(),tplCard())
+  +(p?progCard():fold('prog','📋 '+L('Training programs','Programas de entrenamiento'),L('Pull-ups, six-pack, run, ruck, fitness tests…','Dominadas, six-pack, correr, marcha, pruebas físicas…'),progCard()))
+  +fold('rec','💪 '+L('Recovery','Recuperación'),tired.length?L(`Still recovering: ${tired.map(m=>tr(MUSCLES[m])).join(', ')}`,`Aún en recuperación: ${tired.map(m=>tr(MUSCLES[m])).join(', ')}`):L('Everything is fully recovered','Todo está recuperado'),`<div class="card"><h3>Still recovering</h3>${tired.length?tired.map(m=>bar(m,rec[m])).join(''):'<p class="muted" style="margin:0">Everything is fully recovered.</p>'}${lw?`<p class="muted small" style="margin:10px 0 0">${L('Last workout','Último entrenamiento')}: ${fmtDate(lw.end)} · ${esc(FOCUS_NAME[lw.focus]||'Workout')}</p>`:''}</div>`)
+  +fold('tools','⏱ '+L('Interval timer','Temporizador de intervalos'),L('Tabata, EMOM, AMRAP, custom · heat guide','Tabata, EMOM, AMRAP, personalizado · guía de calor'),`<div class="card" data-notr="1"><h3>⏱ ${L('Timer & heat guide','Temporizador y guía de calor')}</h3><button class="btn ghost" style="margin-top:0" data-a="itv">⏱ ${L('Interval timer','Temporizador de intervalos')}</button><button class="btn ghost" data-a="heat">🌡️ ${L('Training in the heat? Work/rest & water guide','¿Entrenas con calor? Guía de trabajo/descanso y agua')}</button></div>`)
+  +`<button class="linkbtn small" data-notr="1" style="display:block;margin:4px auto 0" data-a="simpletog">${L('Show everything (turn off Simple mode)','Mostrar todo (apagar el Modo simple)')}</button>`;}
 function vWorkout(){
   if(S.active)return vActive();
   if(!focusOk(focusSel))focusSel='auto';
   const rec=recovery(),auto=pickAuto(rec);
   const tired=Object.keys(MUSCLES).filter(m=>rec[m]<85).sort((a,b)=>rec[a]-rec[b]).slice(0,5);
   const lw=S.workouts[S.workouts.length-1];
-  return`<div class="hdr"><h1>Workout</h1><div class="hbtns"><button class="bell" data-a="idea" aria-label="Suggest an idea"><svg viewBox="0 0 24 24">${BUBBLE}</svg></button><button class="bell" data-a="tab" data-t="updates" aria-label="Updates"><svg viewBox="0 0 24 24">${BELL}</svg>${hasNewNews()?'<i class="dot"></i>':''}</button></div></div>
+  if(simple())return vWorkoutSimple(rec,auto,tired,lw);
+  return`${wkHead()}
   ${gameCard()}${simple()&&!S.workouts.length?heroCard():streakCard()}${progCard()}${questCard()}${recapBanner()}${fold('week','📊 '+L('Last week','Semana pasada'),lastWeekSum(),weekSummary())}${ruckCard()}${backupNag()}
   <div class="card">${gyms().length>1?gymChips():''}<label class="lbl">Focus</label><select id="focus">${Object.entries(FOCUS).filter(([k])=>focusOk(k)).map(([k,l])=>`<option value="${k}" ${k===focusSel?'selected':''}>${l}</option>`).join('')}</select>
   <p class="muted small">Auto picks <b>${FOCUS[auto]}</b> today — those muscles are the most recovered.</p>
@@ -6713,7 +6733,7 @@ function tutDemo(){const ids=['bench','pushup','db_curl'].filter(id=>EX(id));
   if(ents[0])ents[0].why=['Your chest is fully rested and it\'s been a while since you trained it','Tu pecho está descansado y hace tiempo que no lo entrenas'];
   return{start:Date.now()-6*60e3,focus:'push',unit:U(),exercises:ents,demo:1};}
 function tutStart(){S.settings.tutSeen=1;save();closeModal();TUT_TAB=tab;TUT_PREV=S.active;
-  TUTS=TUT.slice();TUTI=0;
+  TUTS=TUT.slice();TUTI=0;if(!S.active)render();
   let o=$('#tut');if(!o){o=document.createElement('div');o.id='tut';o.setAttribute('data-notr','1');document.body.appendChild(o);}tutShow(1);}
 function tutEnd(){const o=$('#tut');if(o)o.remove();TUTS=null;Object.assign(SUB,{food:'today',rec:'status',set:''});
   if(S.active&&S.active.demo){S.active=TUT_PREV||null;}TUT_PREV=undefined;tab=S.active?'workout':'workout';render();window.scrollTo(0,0);}
