@@ -3,6 +3,14 @@ One post per day: put the newest day at the TOP, right below this note, and add 
 Start a post with ## and a title. Use - at the start of a line for a bullet point. Plain lines show as normal text.
 For Spanish, add " || " then the Spanish text on the same line (English || Español).
 
+## Nov 24 updates || Novedades del 24 nov
+New features || Funciones nuevas
+- 🪖 Chow hall food: Restaurants now has a Chow hall section with about 460 dining facility items (breakfast, entrees, grab-and-go sandwiches, sides, soups, salads, desserts, salad bar, fruit and drinks) using the standard military recipe portions || 🪖 Comida del comedor militar: Restaurantes ahora tiene una sección de comedor militar con unos 460 platillos (desayunos, platos fuertes, sándwiches para llevar, guarniciones, sopas, ensaladas, postres, barra de ensaladas, fruta y bebidas) con las porciones estándar de las recetas militares
+- 🪜 Ladders: tap Ladder on any rep exercise (pull-ups, push-ups, dips and more). Do 1 rep, then 2, then 3. Each rung is its own set, and the next one appears when you tap ✓, with a short rest. End it when you can't finish a rung. Your total and top rung count toward your records, and next time Forge sets your reps from your top rung || 🪜 Escaleras: toca Escalera en cualquier ejercicio de repeticiones (dominadas, lagartijas, fondos y más). Haz 1 rep, luego 2, luego 3. Cada escalón es su propia serie y el siguiente aparece al tocar ✓, con un descanso corto. Termínala cuando no completes un escalón. Tu total y tu escalón más alto cuentan para tus récords, y la próxima vez Forge fija tus reps según tu escalón más alto
+- 🎯 Goal weight for Build muscle: set the weight you want to build up to in Settings. Your food targets add a small surplus to gain about 0.35% of your body weight a week (less fat than a big bulk), protein is based on your goal weight, and the Food tab tracks your progress toward it, under Daily goals || 🎯 Peso meta para Ganar músculo: pon en Ajustes el peso al que quieres llegar. Tus metas de comida agregan un pequeño superávit para subir cerca de 0.35% de tu peso por semana (menos grasa que un volumen grande), la proteína se basa en tu peso meta y la pestaña Comida sigue tu avance, debajo de Metas diarias
+Improvements || Mejoras
+- 🧹 The goal weight card moved from the Workout tab to the bottom of the Food tab, under Daily goals, to keep the Workout tab cleaner || 🧹 La tarjeta de peso meta pasó de la pestaña Entrenar al final de la pestaña Comida, debajo de Metas diarias, para que Entrenar se vea más limpia
+
 ## Nov 22 updates || Novedades del 22 nov
 New features || Funciones nuevas
 - 🧠 Adaptive coaching: Forge now adapts to what you can lift right now || 🧠 Entrenamiento adaptativo: Forge ahora se adapta a lo que puedes levantar hoy

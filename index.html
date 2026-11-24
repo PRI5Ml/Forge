@@ -739,7 +739,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.11.22a';
+const APP_VERSION='2026.11.24d';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false,branch:''},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],templates:[],water:{},scores:[],active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(!('branch' in (d.settings||{})))st.branch=st.onboarded?'usmc':'';if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[],templates:d.templates||[],water:d.water||{},scores:d.scores||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -1561,7 +1561,7 @@ function scheme(ex,noAdapt){
   const vd=S.settings.adaptOff?0:volDelta(ex);if(vd)sets=Math.max(2,Math.min(6,sets+vd));
   return{sets,lo,hi,vd,rr:!!ra};
 }
-function history(exId){const out=[];for(const w of S.workouts)for(const e of w.exercises)if(e.exId===exId)out.push({date:w.end,unit:w.unit,sets:e.sets,vest:e.vest,elev:e.elev,feel:e.feel,dl:e.dl});return out;}
+function history(exId){const out=[];for(const w of S.workouts)for(const e of w.exercises)if(e.exId===exId)out.push({date:w.end,unit:w.unit,sets:e.sets,vest:e.vest,elev:e.elev,feel:e.feel,dl:e.dl,lad:e.lad});return out;}
 function lastSets(exId){const h=history(exId);if(!h.length)return null;const l=h[h.length-1],ns=l.sets.filter(x=>!x.drop);return ns.length&&ns.length<l.sets.length?Object.assign({},l,{sets:ns}):l;}   // drop sets don't steer the next suggestion
 // Favorites get picked a bit more often; "never suggest" keeps an exercise out of generated workouts and swap suggestions (you can still add it by hand).
 const favSet=()=>new Set(S.settings.favEx||[]),noSet=()=>new Set(S.settings.noEx||[]);
@@ -1713,6 +1713,11 @@ function estFirst(ex){if(!isLoad(ex)||ex.inc==='sec')return null;const el=eliteO
   if(!c.length)return null;const top=Math.max(...c.map(z=>z.sim)),pool=c.filter(z=>z.sim===top).sort((a,b)=>a.est-b.est),pick=pool[Math.floor((pool.length-1)/2)];
   const safe=pick.sim>=3?.85:.8,sc=scheme(ex),r=Math.round((sc.lo+sc.hi)/2),w=rnd(pick.est*safe/(1+(r+2)/30));if(!(w>0))return null;
   return{w,r,from:pick.x,set:pick.b.set};}
+const ladOK=ex=>ex&&(ex.inc==='bw'||isLoad(ex))&&ex.inc!=='sec'&&ex.inc!=='run'&&ex.inc!=='cardio'&&!DIST.has(ex.id);
+function ladRow(e,i){const done=e.sets.filter(s=>s.done),tot=done.reduce((a,s)=>a+(+s.r||0),0),top=Math.max(0,...done.map(s=>+s.r||0));
+  return`<div class="calcbox" data-notr="1" style="margin:10px 0 0"><b>🪜 ${L('Ladder','Escalera')}</b><div class="small" style="margin:4px 0 8px">${L('Do 1 rep, then 2, then 3, and keep climbing. Tap ✓ after each rung and the next one appears, with a short rest that grows as the rungs get bigger. When you can\'t finish a rung, type the reps you got, tap ✓, then End ladder.','Haz 1 rep, luego 2, luego 3 y sigue subiendo. Toca ✓ después de cada escalón y aparece el siguiente, con un descanso corto que crece con cada escalón. Cuando no termines un escalón, escribe las reps que lograste, toca ✓ y luego Terminar escalera.')}</div>
+  ${done.length?`<div class="small" style="margin-bottom:8px">${L(`Top rung: <b>${top}</b> · Total: <b>${tot} reps</b> in ${done.length} sets`,`Escalón más alto: <b>${top}</b> · Total: <b>${tot} reps</b> en ${done.length} series`)}</div>`:''}
+  <button class="btn primary sm" style="margin:0" data-a="ladend" data-i="${i}">${L('End ladder','Terminar escalera')}</button></div>`;}
 const FEEL={e:['😌','Easy','Fácil'],r:['👍','Just right','Justo'],h:['🥵','Hard','Difícil']};
 function feelRow(e,i,ex){if(!e.sets.length||!e.sets.every(s=>s.done)||!(isLoad(ex)||ex.inc==='bw'||ex.inc==='sec'))return'';
   return`<div class="feelrow" data-notr="1"><span class="small muted">${L('How did that feel?','¿Cómo se sintió?')}</span>${Object.entries(FEEL).map(([k,v])=>`<button class="feelbtn${e.feel===k?' on':''}" data-a="feel" data-i="${i}" data-v="${k}">${v[0]} ${L(v[1],v[2])}</button>`).join('')}</div>`;}
@@ -1762,6 +1767,7 @@ function suggest0(ex){
   const atTop=sets.filter(s=>s.w===top);
   const minR=Math.min(...atTop.map(s=>s.r)),maxR=Math.max(...atTop.map(s=>s.r));
   const fl=S.settings.adaptOff?'':last.feel;
+  if(last.lad&&ex.inc!=='sec'){const r=Math.max(1,Math.min(sc.hi,Math.round(maxR*.75)));return{w:top||'',r,note:L(`Based on your ladder last time (top rung ${maxR}): ${r} reps per set. Or tap 🪜 Ladder to climb again and beat ${maxR}`,`Según tu escalera anterior (escalón más alto ${maxR}): ${r} reps por serie. O toca 🪜 Escalera para subir otra vez y superar ${maxR}`)};}
   if(ex.inc==='sec'){if(fl==='e')return{w:top||'',r:maxR+10,note:L('Felt easy last time: aim for 10 seconds longer','Se sintió fácil: busca 10 segundos más')};if(fl==='h')return{w:top||'',r:maxR,note:L('Felt hard last time: match your time with good form','Se sintió difícil: iguala tu tiempo con buena forma')};return{w:top||'',r:maxR+5,note:'Aim for 5 seconds longer than last time'};}
   if(ex.inc==='bw'){
     if(minR>=sc.hi){const nx=EX(NEXT_VAR[ex.id]);return{w:top||'',r:minR+1,note:nx?'You hit '+sc.hi+'+ reps — try '+nx.name+' next':'You hit '+sc.hi+'+ reps — try adding weight or a harder variation'};}
@@ -3247,15 +3253,15 @@ function generateCardio(){
 }
 function goalCard(){
   const u=U(),i=wlInfo();
-  if(!goalW())return`<div class="card" data-notr="1"><h3>🎯 ${L('Goal weight','Peso meta')}</h3><p class="muted small" style="margin-top:0">${L('Set a goal weight so your workouts and food targets work toward it.','Pon un peso meta para que tus entrenamientos y metas de comida trabajen hacia él.')}</p><button class="btn ghost" style="margin:0" data-a="tab" data-t="settings">${L('Set goal weight','Poner peso meta')}</button></div>`;
+  if(!goalW())return`<div class="card" data-notr="1"><h3>🎯 ${L('Goal weight','Peso meta')}</h3><p class="muted small" style="margin-top:0">${L('Set a goal weight so your workouts and food targets work toward it.','Pon un peso meta para que tus entrenamientos y metas de comida trabajen hacia él.')}</p><button class="btn ghost" style="margin:0" data-a="nutform">${L('Set goal weight','Poner peso meta')}</button></div>`;
   if(!i)return`<div class="card" data-notr="1"><h3>🎯 ${L('Goal','Meta')}: ${r1(goalW())} ${u}</h3><p class="muted small" style="margin-top:0">${L('Log your weight so the app can track your progress.','Registra tu peso para que la app siga tu progreso.')}</p><button class="btn ghost" style="margin:0" data-a="logw">${L("Log today's weight","Registrar el peso de hoy")}</button></div>`;
   if(i.reached)return`<div class="card" data-notr="1"><h3>🎉 ${L('You reached your goal weight!','¡Llegaste a tu peso meta!')}</h3><p class="muted small" style="margin-top:0">${L(`${r1(i.bw)} ${u} (goal ${r1(i.gw)} ${u}). Switch to maintaining so you keep it.`,`${r1(i.bw)} ${u} (meta ${r1(i.gw)} ${u}). Cambia a mantener para conservarlo.`)}</p><button class="btn primary" style="margin:0" data-a="goalmaint">${L('Switch to Maintain','Cambiar a Mantener')}</button></div>`;
-  const tot=Math.max(i.start-i.gw,i.left),pct=tot>0?Math.max(0,Math.min(100,Math.round((tot-i.left)/tot*100))):0,fin=finisherPlan();
-  const rate=i.rate==null?L('Log your weight most mornings to see your weekly trend.','Registra tu peso casi cada mañana para ver tu tendencia semanal.'):i.weeks?L(`Losing ${r1(-i.rate)} ${u}/week · about ${i.weeks} weeks to go`,`Bajando ${r1(-i.rate)} ${u}/semana · unas ${i.weeks} semanas más`):L('Your weight is holding about steady. If it stays this way for 2–3 weeks, eat 100–200 fewer calories a day.','Tu peso se mantiene casi igual. Si sigue así 2–3 semanas, come 100–200 calorías menos al día.');
+  const tot=Math.max(i.up?i.gw-i.start:i.start-i.gw,i.left),pct=tot>0?Math.max(0,Math.min(100,Math.round((tot-i.left)/tot*100))):0,fin=finisherPlan();
+  const rate=i.rate==null?L('Log your weight most mornings to see your weekly trend.','Registra tu peso casi cada mañana para ver tu tendencia semanal.'):i.weeks?(i.up?L(`Gaining ${r1(i.rate)} ${u}/week · about ${i.weeks} weeks to go`,`Subiendo ${r1(i.rate)} ${u}/semana · unas ${i.weeks} semanas más`):L(`Losing ${r1(-i.rate)} ${u}/week · about ${i.weeks} weeks to go`,`Bajando ${r1(-i.rate)} ${u}/semana · unas ${i.weeks} semanas más`)):i.up?L('Your weight is holding about steady. If it stays this way for 2–3 weeks, eat 150–200 more calories a day.','Tu peso se mantiene casi igual. Si sigue así 2–3 semanas, come 150–200 calorías más al día.'):L('Your weight is holding about steady. If it stays this way for 2–3 weeks, eat 100–200 fewer calories a day.','Tu peso se mantiene casi igual. Si sigue así 2–3 semanas, come 100–200 calorías menos al día.');
   return`<div class="card" data-notr="1"><h3>🎯 ${L('Goal weight','Peso meta')}: ${r1(i.gw)} ${u}</h3>
   <div class="calrow"><div><div class="big">${r1(i.left)} <span class="muted small" style="font-weight:400">${u}</span></div><div class="muted small">${L('to go','faltan')}</div></div><div style="text-align:right"><div class="big" style="font-size:20px">${r1(i.bw)} ${u}</div><div class="muted small">${L('now','ahora')}</div></div></div>
   <div class="track" style="height:10px;margin:10px 0"><div class="fill good" style="width:${pct}%"></div></div>
-  <p class="small" style="margin:0">${rate}</p><p class="muted small" style="margin:6px 0 0">${L(`Cardio finisher today: ${fin.min} min. ${fin.why[0]}`,`Cardio final de hoy: ${fin.min} min. ${fin.why[1]}`)}</p></div>`;
+  <p class="small" style="margin:0">${rate}</p>${i.up?`<p class="muted small" style="margin:6px 0 0">${L('Aim to gain about 0.25–0.5% of your body weight a week. Faster than that is mostly fat.','Busca subir cerca de 0.25–0.5% de tu peso por semana. Más rápido que eso es mayormente grasa.')}</p>`:`<p class="muted small" style="margin:6px 0 0">${L(`Cardio finisher today: ${fin.min} min. ${fin.why[0]}`,`Cardio final de hoy: ${fin.min} min. ${fin.why[1]}`)}</p>`}</div>`;
 }
 // ---------- My workouts: save any workout and reuse it ----------
 function tplFrom(exs){exs=exs.filter(e=>EX(e.exId));return exs.map((e,k)=>({id:e.exId,n:Math.max(1,e.sets.length),...(ssPos(exs,k)?{ss:e.ss}:{})}));}
@@ -4184,7 +4190,7 @@ function vWorkout(){
   <button class="btn ghost" data-a="library">📖 Exercise library</button>
   <button class="btn ghost" data-a="itv" data-notr="1">⏱ ${L('Interval timer','Temporizador de intervalos')}</button>
   <button class="linkbtn small" data-notr="1" style="margin-top:8px" data-a="heat">🌡️ ${L('Training in the heat? Work/rest & water guide','¿Entrenas con calor? Guía de trabajo/descanso y agua')}</button></div>
-  ${tplCard()}${TESTS.has(focusSel)?(focusSel==='aft'?aftCard():focusSel==='pfra'?afCard():focusSel==='prt'?nvCardHtml():usmcCard(focusSel)):''}${S.settings.goal==='fatloss'?goalCard():''}
+  ${tplCard()}${TESTS.has(focusSel)?(focusSel==='aft'?aftCard():focusSel==='pfra'?afCard():focusSel==='prt'?nvCardHtml():usmcCard(focusSel)):''}
   <div class="card"><h3>Still recovering</h3>${tired.length?tired.map(m=>bar(m,rec[m])).join(''):'<p class="muted" style="margin:0">Everything is fully recovered.</p>'}</div>
   ${lw?`<div class="card"><h3>Last workout</h3><p class="muted" style="margin:0">${fmtDate(lw.end)} · ${esc(FOCUS_NAME[lw.focus]||'Workout')} · ${lw.exercises.length} exercises</p></div>`:''}`;
 }
@@ -4264,7 +4270,7 @@ function vActive(){
     ${ex.inc==='bw'&&ex.id!=='ammo_press'&&ex.id!=='hamr'?'<div class="bwnote small">Bodyweight exercise: your body weight is already counted. Only enter extra weight (dip belt, vest), or leave it blank.</div>':''}
     ${warmHtml(e,ex)}<div class="sethead"><span>Set</span><span>${wh}</span><span>${rh}</span><span></span></div>${rows}
     ${isBarbell(ex)&&isLoad(ex)?`<button class="plateline small" data-a="plates" data-i="${i}" data-notr="1">${plateLine(i)}</button>`:''}
-    <div class="row"><button class="btn ghost sm" data-a="addset" data-i="${i}">+ Set</button>${isLoad(ex)&&ex.inc!=='sec'&&ex.inc!=='run'&&ex.inc!=='cardio'?`<button class="btn ghost sm" data-a="dropset" data-i="${i}" data-notr="1">↓ ${L('Drop set','Descendente')}</button>`:''}<button class="btn ghost sm" data-a="rmset" data-i="${i}">− Set</button></div>${feelRow(e,i,ex)}</div>`;
+    <div class="row"><button class="btn ghost sm" data-a="addset" data-i="${i}">+ Set</button>${isLoad(ex)&&ex.inc!=='sec'&&ex.inc!=='run'&&ex.inc!=='cardio'?`<button class="btn ghost sm" data-a="dropset" data-i="${i}" data-notr="1">↓ ${L('Drop set','Descendente')}</button>`:''}<button class="btn ghost sm" data-a="rmset" data-i="${i}">− Set</button>${ladOK(ex)&&!e.ladder?`<button class="btn ghost sm" data-a="ladder" data-i="${i}" data-notr="1">🪜 ${L('Ladder','Escalera')}</button>`:''}</div>${e.ladder?ladRow(e,i):''}${feelRow(e,i,ex)}</div>`;
   }).join('');
   return`<div class="topbar"><div><div class="muted small">${esc(FOCUS_NAME[a.focus]||'Workout')}${a.title?`<span data-notr="1"> · ${esc(Array.isArray(a.title)?L(a.title[0],a.title[1]):a.title)}</span>`:''}</div><div class="elapsed" id="elapsed">${fmtDur(Date.now()-a.start)}</div>${(()=>{const m=estLeft(a);return m>0?`<div class="muted small" data-notr="1">⏳ ${L(`About ${m} min left`,`Quedan unos ${m} min`)}</div>`:'';})()}</div><button class="btn primary" data-a="finish">Finish</button></div>
   ${cards||'<div class="card"><p class="muted" style="margin:0">No exercises yet — add one below.</p></div>'}
@@ -4283,9 +4289,11 @@ const ACT=[[1.2,'Mostly sitting','Desk job, little exercise'],[1.375,'Lightly ac
 // goal weight, in the user's current units (0 = none)
 const goalW=()=>{const g=+S.settings.goalW;return g>0?+conv(g,S.settings.goalWU||U()):0;};
 const toU=lb=>U()==='lb'?lb:lb*0.45359237;
-function wlInfo(){const bw=bodyW(),gw=goalW();if(!bw||!gw)return null;const{rate,pts}=weightTrend(),left=bw-gw;
+const gainGoal=()=>S.settings.goal==='hypertrophy';
+function wlInfo(){const bw=bodyW(),gw=goalW();if(!bw||!gw)return null;const{rate,pts}=weightTrend(),up=gainGoal(),left=up?gw-bw:bw-gw;
   const span=pts.length>1?dayNum(pts[pts.length-1].d)-dayNum(pts[0].d):0;
-  return{bw,gw,left,reached:left<=0,rate,span,weeks:rate!=null&&rate<-(U()==='lb'?.25:.1)&&left>0?Math.ceil(left/-rate):null,start:+S.settings.goalStart>0?+conv(S.settings.goalStart,S.settings.goalWU||U()):bw};}
+  const mv=rate==null?0:up?rate:-rate;
+  return{bw,gw,left,up,reached:left<=0,rate,span,weeks:mv>(U()==='lb'?(up?.1:.25):(up?.05:.1))&&left>0?Math.ceil(left/mv):null,start:+S.settings.goalStart>0?+conv(S.settings.goalStart,S.settings.goalWU||U()):bw};}
 function calcTargets(n,bwOverride){
   if(!n)return null;const bw=bwOverride!=null?bwOverride:bodyW();
   const kg=U()==='lb'?bw*0.45359237:bw,cm=+n.cm,age=+n.age;
@@ -4294,14 +4302,16 @@ function calcTargets(n,bwOverride){
   const bmr=lbmKg?370+21.6*lbmKg:10*kg+6.25*cm-5*age+(n.sex==='f'?-161:5),tdee=bmr*(+n.act||1.375);
   const lbs=kg/0.45359237,floor=n.sex==='f'?1200:1500;
   // Lose fat: a deficit sized to lose ~0.75% of body weight a week (0.5% in the last 5 lb), never more than 25% of maintenance.
-  const gwu=n.gw!=null?+n.gw:goalW(),glbs=gwu>0?(U()==='lb'?gwu:gwu/0.45359237):0,left=glbs?lbs-glbs:null;
+  const gwu=n.gw!=null?+n.gw:goalW(),glbs=gwu>0?(U()==='lb'?gwu:gwu/0.45359237):0,left=glbs?(n.goal==='gain'?glbs-lbs:lbs-glbs):null;
   let cal,deficit=0,pace=0;
   if(n.goal==='lose'){pace=left!=null&&left<=0?0:left!=null&&left<=5?.005:.0075;deficit=Math.min(lbs*pace*3500/7,tdee*.25);cal=tdee-deficit;}
+  // Build muscle with a goal weight: a surplus sized to gain ~0.35% of body weight a week (0.25% in the last 5 lb), at most 15% over maintenance; at the goal, maintenance
+  else if(n.goal==='gain'&&left!=null){pace=left<=0?0:left<=5?.0025:.0035;deficit=-Math.min(lbs*pace*3500/7,tdee*.15);cal=tdee-deficit;}
   else cal=tdee*({maintain:1,gain:1.1}[n.goal]||1);
   const floored=cal<floor;cal=Math.round(Math.max(cal,floor)/10)*10;
-  const pBase=n.goal==='lose'&&glbs>0&&glbs<lbs?glbs:lbs,p=Math.round(pBase*({lose:1,maintain:.8,gain:.9}[n.goal]||.8));
+  const pBase=(n.goal==='lose'&&glbs>0&&glbs<lbs)||(n.goal==='gain'&&glbs>lbs)?glbs:lbs,p=Math.round(pBase*({lose:1,maintain:.8,gain:.9}[n.goal]||.8));
   const f=Math.round(cal*(n.goal==='maintain'?.3:.25)/9),c=Math.max(50,Math.round((cal-4*p-9*f)/4));
-  const wk=n.goal==='lose'?Math.max(0,(tdee-cal)*7/3500):0;// lb per week
+  const wk=n.goal==='lose'?Math.max(0,(tdee-cal)*7/3500):n.goal==='gain'&&left!=null?Math.max(0,(cal-tdee)*7/3500):0;// lb per week
   return{cal,p,c,f,bmr,bmrSrc:lbmKg?'dexa':'msj',lbmKg,dexaBf:sc&&sc.bf,tdee:Math.round(tdee/10)*10,deficit:Math.round(tdee-cal),floored,wkLb:wk,leftLb:left,pBase:Math.round(pBase),goalLb:glbs};
 }
 const goals=()=>{const n=S.settings.nut;if(n&&n.auto){const t=calcTargets(n);if(t)return t;}return Object.assign({},GOALS_DEF,S.settings.goals||{});};
@@ -4312,9 +4322,10 @@ function nutHelp(){
     mine=`<h3 style="margin-top:16px">${L('Your numbers','Tus números')}</h3><div class="calcbox">
     <div>${L('Resting burn (BMR)','Gasto en reposo (TMB)')}: ${t.bmrSrc==='dexa'?`370 + 21.6×${r1(t.lbmKg)} kg ${L('lean mass','masa magra')} <span class="muted">(DEXA ${t.dexaBf}% ${L('body fat','grasa')})</span>`:`10×${r1(kg)} kg + 6.25×${n.cm} cm − 5×${n.age} ${n.sex==='f'?'− 161':'+ 5'}`} = <b>${f(bmr)}</b> kcal</div>
     <div>${L('Maintenance','Mantenimiento')}: ${f(bmr)} × ${n.act} = <b>${f(t.tdee)}</b> kcal</div>
-    <div>${L('Goal','Meta')}: ${n.goal==='lose'?`${f(t.tdee)} − ${f(t.deficit)} ${L('deficit','de déficit')}`:`${f(t.tdee)} × ${mult}`} = <b>${f(t.cal)}</b> kcal${t.floored?L(' (minimum)',' (mínimo)'):''}</div>
+    <div>${L('Goal','Meta')}: ${n.goal==='lose'?`${f(t.tdee)} − ${f(t.deficit)} ${L('deficit','de déficit')}`:n.goal==='gain'&&t.leftLb!=null?`${f(t.tdee)} + ${f(-t.deficit)} ${L('surplus','de superávit')}`:`${f(t.tdee)} × ${mult}`} = <b>${f(t.cal)}</b> kcal${t.floored?L(' (minimum)',' (mínimo)'):''}</div>
+    ${n.goal==='gain'&&t.wkLb?`<div>${L('Expected gain','Aumento esperado')}: ≈ <b>${r1(toU(t.wkLb))} ${u}/${L('week','semana')}</b>${t.leftLb>0?` · ${L('about','unas')} ${Math.ceil(t.leftLb/t.wkLb)} ${L('weeks to your goal','semanas para tu meta')}`:''}</div>`:''}
     ${n.goal==='lose'&&t.wkLb?`<div>${L('Expected loss','Pérdida esperada')}: ≈ <b>${r1(toU(t.wkLb))} ${u}/${L('week','semana')}</b>${t.leftLb>0?` · ${L('about','unas')} ${Math.ceil(t.leftLb/t.wkLb)} ${L('weeks to your goal','semanas para tu meta')}`:''}</div>`:''}
-    <div>${L('Protein','Proteína')}: ${t.pBase} lb${n.goal==='lose'&&t.goalLb&&t.goalLb<kg/0.45359237?L(' (goal weight)',' (peso meta)'):''} × ${pg} g = <b>${t.p} g</b> (${f(t.p*4)} kcal)</div>
+    <div>${L('Protein','Proteína')}: ${t.pBase} lb${t.goalLb&&t.pBase===Math.round(t.goalLb)?L(' (goal weight)',' (peso meta)'):''} × ${pg} g = <b>${t.p} g</b> (${f(t.p*4)} kcal)</div>
     <div>${L('Fat','Grasa')}: ${fs}% × ${f(t.cal)} ÷ 9 = <b>${t.f} g</b> (${f(t.f*9)} kcal)</div>
     <div>${L('Carbs','Carbohidratos')}: (${f(t.cal)} − ${f(t.p*4)} − ${f(t.f*9)}) ÷ 4 = <b>${t.c} g</b></div></div>`;}
   else if(n&&!n.auto)mine=`<p class="muted small">${L('You set your own numbers, so these formulas aren\'t being used right now. Tap "Recalculate from my goal" to use them again.','Fijaste tus propios números, así que estas fórmulas no se están usando ahora. Toca "Recalcular desde mi objetivo" para volver a usarlas.')}</p>`;
@@ -4323,8 +4334,8 @@ function nutHelp(){
   <ol class="htsteps">
   <li>${L('<b>Resting burn (BMR)</b>, the Mifflin-St Jeor formula dietitians use: 10 × weight (kg) + 6.25 × height (cm) − 5 × age, then +5 for men or −161 for women.','<b>Gasto en reposo (TMB)</b>, con la fórmula Mifflin-St Jeor que usan los nutriólogos: 10 × peso (kg) + 6.25 × estatura (cm) − 5 × edad, luego +5 para hombres o −161 para mujeres.')}${dexaRecent()?' '+L('<b>You have a recent DEXA scan</b>, so the app uses the more accurate Katch-McArdle formula instead: 370 + 21.6 × lean mass (kg).','<b>Tienes un escaneo DEXA reciente</b>, así que la app usa la fórmula Katch-McArdle, más precisa: 370 + 21.6 × masa magra (kg).'):''}</li>
   <li>${L('<b>Maintenance calories</b> = BMR × activity level: mostly sitting 1.2, lightly active 1.375, active 1.55, very active 1.725, athlete 1.9.','<b>Calorías de mantenimiento</b> = TMB × nivel de actividad: mayormente sentado 1.2, poco activo 1.375, activo 1.55, muy activo 1.725, atleta 1.9.')}</li>
-  <li>${L('<b>Your goal</b>: lose fat = a daily deficit to lose about 0.75% of your body weight a week (0.5% in your last 5 lb), never more than 25% below maintenance. Maintain = 100%, build muscle = 110%. Never below 1,200 kcal for women or 1,500 for men.','<b>Tu objetivo</b>: perder grasa = un déficit diario para bajar cerca de 0.75% de tu peso por semana (0.5% en tus últimas 5 lb), nunca más de 25% por debajo del mantenimiento. Mantener = 100%, ganar músculo = 110%. Nunca menos de 1,200 kcal para mujeres o 1,500 para hombres.')}</li>
-  <li>${L('<b>Protein</b> per pound: 1 g when losing fat (of your goal weight, if you set one, which protects muscle), 0.9 g of body weight when building, 0.8 g when maintaining.','<b>Proteína</b> por libra: 1 g al perder grasa (de tu peso meta, si pusiste uno; protege el músculo), 0.9 g de tu peso al ganar, 0.8 g al mantener.')}</li>
+  <li>${L('<b>Your goal</b>: lose fat = a daily deficit to lose about 0.75% of your body weight a week (0.5% in your last 5 lb), never more than 25% below maintenance. Maintain = 100%. Build muscle = 110%, or with a goal weight, a surplus to gain about 0.35% of your body weight a week (0.25% in your last 5 lb), at most 15% over maintenance. Never below 1,200 kcal for women or 1,500 for men.','<b>Tu objetivo</b>: perder grasa = un déficit diario para bajar cerca de 0.75% de tu peso por semana (0.5% en tus últimas 5 lb), nunca más de 25% por debajo del mantenimiento. Mantener = 100%. Ganar músculo = 110%, o con peso meta, un superávit para subir cerca de 0.35% de tu peso por semana (0.25% en tus últimas 5 lb), máximo 15% sobre el mantenimiento. Nunca menos de 1,200 kcal para mujeres o 1,500 para hombres.')}</li>
+  <li>${L('<b>Protein</b> per pound: 1 g when losing fat (of your goal weight, if you set one, which protects muscle), 0.9 g when building (of your goal weight, if you set one), 0.8 g when maintaining.','<b>Proteína</b> por libra: 1 g al perder grasa (de tu peso meta, si pusiste uno; protege el músculo), 0.9 g al ganar (de tu peso meta, si pusiste uno), 0.8 g al mantener.')}</li>
   <li>${L('<b>Fat</b>: 25% of calories (30% when maintaining). 1 g of fat = 9 kcal.','<b>Grasa</b>: 25% de las calorías (30% al mantener). 1 g de grasa = 9 kcal.')}</li>
   <li>${L('<b>Carbs</b> fill the rest of your calories (at least 50 g). 1 g of protein or carbs = 4 kcal.','<b>Carbohidratos</b> completan el resto de tus calorías (mínimo 50 g). 1 g de proteína o carbohidratos = 4 kcal.')}</li>
   <li>${L('<b>Calories burned</b> only raise that day\'s goal if "Add calories burned to my goal" is on.','<b>Las calorías quemadas</b> solo suben la meta de ese día si "Sumar calorías quemadas a mi meta" está activado.')}</li>
@@ -4337,7 +4348,7 @@ function nutForm(){
   const opt=(v,l,cur)=>`<option value="${v}" ${String(v)===String(cur)?'selected':''}>${l}</option>`;
   showModal(`<div class="sheethead"><h3>Your daily targets</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div>
   <div class="field"><label class="lbl">Your goal</label><div class="seg">${Object.entries(NGOAL).map(([k,l])=>`<label><input type="radio" name="n_goal" id="n_goal_${k}" value="${k}" ${n.goal===k?'checked':''}><span>${l}</span></label>`).join('')}</div></div>
-  <div class="field" id="n_gwrow" ${n.goal==='lose'?'':'hidden'}><label class="lbl">Goal weight (${U()})</label><input type="text" inputmode="decimal" id="n_gw" value="${goalW()?r1(goalW()):''}" placeholder="${U()}"></div>
+  <div class="field" id="n_gwrow" ${n.goal==='lose'||n.goal==='gain'?'':'hidden'}><label class="lbl">Goal weight (${U()})${n.goal==='gain'?' (optional)':''}</label><input type="text" inputmode="decimal" id="n_gw" value="${goalW()?r1(goalW()):''}" placeholder="${U()}"></div>
   <div class="grid2"><div class="field"><label class="lbl">Sex</label><select id="n_sex">${opt('m','Male',n.sex)}${opt('f','Female',n.sex)}</select></div>
   <div class="field"><label class="lbl">Age</label><input type="text" inputmode="numeric" id="n_age" value="${n.age}" placeholder="years"></div></div>
   <div class="grid2">${lb?`<div class="field"><label class="lbl">Height</label><div class="svrow"><input type="text" inputmode="numeric" id="n_ft" value="${ft}" placeholder="5"><span class="muted">ft</span><input type="text" inputmode="numeric" id="n_in" value="${inch}" placeholder="10"><span class="muted">in</span></div></div>`:`<div class="field"><label class="lbl">Height (cm)</label><input type="text" inputmode="numeric" id="n_cm" value="${n.cm?Math.round(n.cm):''}" placeholder="cm"></div>`}
@@ -4354,8 +4365,8 @@ function readNut(){
   const cm=U()==='lb'?(num('n_ft')*12+num('n_in'))*2.54:num('n_cm');
   return{goal:g?g.value:'maintain',sex:$('#n_sex').value,age:num('n_age'),cm:Math.round(cm),act:+$('#n_act').value,bw:num('n_bw'),gw:num('n_gw')};
 }
-function nutPreview(){const el=$('#n_res');if(!el)return;const x=readNut(),t=calcTargets(x,x.bw),gr=$('#n_gwrow');if(gr)gr.hidden=x.goal!=='lose';
-  el.innerHTML=t?`<div class="muted small">Maintenance ≈ ${t.tdee.toLocaleString()} kcal/day</div><div class="big" style="margin:4px 0 8px">${t.cal.toLocaleString()} <span class="muted small" style="font-weight:400">kcal/day</span></div><div class="nutmac"><span><b>${t.p}g</b> protein</span><span><b>${t.c}g</b> carbs</span><span><b>${t.f}g</b> fat</span></div>${x.goal==='lose'&&t.wkLb?`<div class="muted small" data-notr="1" style="margin-top:8px">${L(`About ${r1(toU(t.wkLb))} ${U()} a week`,`Unas ${r1(toU(t.wkLb))} ${U()} por semana`)}${t.leftLb>0?L(`, roughly ${Math.ceil(t.leftLb/t.wkLb)} weeks to your goal`,`, unas ${Math.ceil(t.leftLb/t.wkLb)} semanas para tu meta`):''}.</div>`:''}`:'<p class="muted small" style="margin:0">Fill in your age, height and body weight to see your targets.</p>';}
+function nutPreview(){const el=$('#n_res');if(!el)return;const x=readNut(),t=calcTargets(x,x.bw),gr=$('#n_gwrow');if(gr)gr.hidden=x.goal!=='lose'&&x.goal!=='gain';
+  el.innerHTML=t?`<div class="muted small">Maintenance ≈ ${t.tdee.toLocaleString()} kcal/day</div><div class="big" style="margin:4px 0 8px">${t.cal.toLocaleString()} <span class="muted small" style="font-weight:400">kcal/day</span></div><div class="nutmac"><span><b>${t.p}g</b> protein</span><span><b>${t.c}g</b> carbs</span><span><b>${t.f}g</b> fat</span></div>${x.goal==='gain'&&t.wkLb?`<div class="muted small" data-notr="1" style="margin-top:8px">${L(`About +${r1(toU(t.wkLb))} ${U()} a week${t.leftLb>0?`, about ${Math.ceil(t.leftLb/t.wkLb)} weeks to your goal`:''}`,`Unas +${r1(toU(t.wkLb))} ${U()} por semana${t.leftLb>0?`, unas ${Math.ceil(t.leftLb/t.wkLb)} semanas para tu meta`:''}`)}</div>`:''}${x.goal==='lose'&&t.wkLb?`<div class="muted small" data-notr="1" style="margin-top:8px">${L(`About ${r1(toU(t.wkLb))} ${U()} a week`,`Unas ${r1(toU(t.wkLb))} ${U()} por semana`)}${t.leftLb>0?L(`, roughly ${Math.ceil(t.leftLb/t.wkLb)} weeks to your goal`,`, unas ${Math.ceil(t.leftLb/t.wkLb)} semanas para tu meta`):''}.</div>`:''}`:'<p class="muted small" style="margin:0">Fill in your age, height and body weight to see your targets.</p>';}
 const dk=t=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
 let foodDay=dk(Date.now()),foodEdit=null,scanThumb='';
 const r1=v=>Math.round(v*10)/10;
@@ -4410,7 +4421,7 @@ function vFood(){
     return`<div class="nutsum"><div><b>${NGOAL[n.goal]}</b><div class="muted small">${n.auto&&calcTargets(n)?'Targets update with your body weight':'Using your own numbers'}</div></div><button class="btn ghost sm" style="width:auto" data-a="nutform">Edit</button></div>${!n.auto?'<button class="btn ghost sm" style="margin:0 0 12px" data-a="nutauto">Recalculate from my goal</button>':''}`;})()}
   <div class="grid2">
   ${[['cal','Calories','kcal'],['p','Protein','g'],['c','Carbs','g'],['f','Fat','g']].map(([k,l,u])=>`<div class="field"><label class="lbl">${l} (${u})</label><input type="text" inputmode="numeric" data-goal="${k}" value="${g0[k]}"></div>`).join('')}</div><p class="muted small" style="margin:0">Change any number to set it yourself.</p>
-  <label class="ebrow"><span><b>Add calories burned to my goal</b><span class="muted small">On: burn 400 and you get 400 more to eat that day. Off: it's just shown.</span></span><button class="tog ${S.settings.eatBack?'on':''}" data-a="eatback" aria-label="Add calories burned to my goal"><i></i></button></label></div>`;
+  <label class="ebrow"><span><b>Add calories burned to my goal</b><span class="muted small">On: burn 400 and you get 400 more to eat that day. Off: it's just shown.</span></span><button class="tog ${S.settings.eatBack?'on':''}" data-a="eatback" aria-label="Add calories burned to my goal"><i></i></button></label></div>${S.settings.goal==='fatloss'||gainGoal()&&goalW()?goalCard():''}`;
 }
 
 // ---------- recipes: build once from foods you've logged (or ingredients you type in), then log a serving in one tap ----------
@@ -4441,7 +4452,7 @@ function rcpForm(mode){const r=RCP,per=rcpPer(r),tot=rcpTot(r);
 
 // ---------- restaurants: popular items from ~40 chains (restaurants.json, cached for offline). Tap an item to log it. ----------
 let REST=null,RQ='',RCAT='all',RCH=null;
-const RCATS=[['all','All','Todos'],['fast','Fast food','Comida rápida'],['pizza','Pizza','Pizza'],['subs','Subs','Sándwiches'],['sit','Sit-down','Restaurantes'],['coffee','Coffee','Café']];
+const RCATS=[['all','All','Todos'],['dfac','Chow hall','Comedor militar'],['fast','Fast food','Comida rápida'],['pizza','Pizza','Pizza'],['subs','Subs','Sándwiches'],['sit','Sit-down','Restaurantes'],['coffee','Coffee','Café']];
 function restLoad(){if(REST)return Promise.resolve(REST);return fetch('restaurants.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>REST=d);}
 function restOpen(){RQ='';RCAT='all';RCH=null;showModal(`<div data-notr="1"><div class="sheethead"><h3>🍔 ${L('Restaurants','Restaurantes')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div><p class="muted small">${L('Loading…','Cargando…')}</p></div>`);
   restLoad().then(()=>restDraw(true)).catch(()=>{$('#sheet').innerHTML=`<div data-notr="1"><div class="sheethead"><h3>🍔 ${L('Restaurants','Restaurantes')}</h3><button class="icon" data-a="close" aria-label="Close">✕</button></div><p>${L("Couldn't load the restaurant list. Connect to the internet once and it will work offline after that.",'No se pudo cargar la lista de restaurantes. Conéctate a internet una vez y después funcionará sin conexión.')}</p></div>`;});}
@@ -5561,7 +5572,7 @@ function branchField(){const b=S.settings.branch||'';
   return`<div class="field" data-notr="1"><label class="lbl">${L('Military branch','Rama militar')}</label><select data-s="branch">${b?'':`<option value="" selected disabled>${L('Choose','Elige')}</option>`}${BRANCHES.map(([v,en,es])=>`<option value="${v}" ${b===v?'selected':''}>${L(en,es)}</option>`).join('')}</select>
   <p class="muted small" style="margin:6px 0 0">${b==='usmc'?L('Adds PFT and CFT prep workouts and score calculators to the Focus list.','Agrega entrenamientos de preparación y calculadoras de PFT y CFT a la lista de Enfoque.'):b==='army'?L('Adds AFT prep workouts and the AFT score calculator to the Focus list.','Agrega entrenamientos de preparación y la calculadora del AFT a la lista de Enfoque.'):b==='ng'?L('Guard soldiers take the Army AFT: adds AFT prep workouts and the AFT score calculator to the Focus list.','Los soldados de la Guardia hacen el AFT del Ejército: agrega entrenamientos de preparación y la calculadora del AFT a la lista de Enfoque.'):b==='af'?L('Adds PFRA prep workouts and the PFRA score calculator to the Focus list.','Agrega entrenamientos de preparación y la calculadora del PFRA a la lista de Enfoque.'):b==='navy'?L('Adds PRT prep workouts and the PRT and body composition calculator to the Focus list.','Agrega entrenamientos de preparación y la calculadora del PRT y composición corporal a la lista de Enfoque.'):L('Pick your branch to add its fitness test prep.','Elige tu rama para agregar la preparación de su prueba física.')}</p></div>`;}
 function sel(key,opts){return`<select data-s="${key}">${opts.map(([v,l])=>`<option value="${v}" ${String(S.settings[key])===String(v)?'selected':''}>${l}</option>`).join('')}</select>`;}
-function setGoalW(v){S.settings.goalW=+v;S.settings.goalWU=U();S.settings.goalStart=bodyW()||'';const n=S.settings.nut;if(n&&n.goal==='lose')n.auto=true;}
+function setGoalW(v){S.settings.goalW=+v;S.settings.goalWU=U();S.settings.goalStart=bodyW()||'';const n=S.settings.nut;if(n&&(n.goal==='lose'||n.goal==='gain'))n.auto=true;}
 function profileFields(){
   return`<div class="grid2"><div class="field"><label class="lbl">Sex</label><select data-s="sex">${[['','Choose'],['m','Male'],['f','Female']].map(([v,l])=>`<option value="${v}" ${(S.settings.sex||'')===v?'selected':''} ${v===''?'disabled':''}>${l}</option>`).join('')}</select></div>
   <div class="field"><label class="lbl">Age</label><input type="text" inputmode="numeric" data-s="age" value="${S.settings.age||''}" placeholder="years"></div></div>`;
@@ -5574,7 +5585,7 @@ function prefsForm(){
   ${S.settings.onboarded&&((S.settings.favEx||[]).length||(S.settings.noEx||[]).length||(S.settings.autoEx||[]).length)?`<div class="calcbox" data-notr="1" style="margin:-4px 0 14px"><b>⭐ ${L('Favorite, never-suggested & auto-added exercises','Ejercicios favoritos, nunca sugeridos y automáticos')}</b><div class="muted small" style="margin:4px 0 8px">${L('⭐ and 🚫 are set from any exercise\'s ⓘ page. 🔁 are added to every generated workout. Tap ✕ to remove.','⭐ y 🚫 se marcan desde la página ⓘ de cualquier ejercicio. 🔁 se agregan a cada entrenamiento generado. Toca ✕ para quitar.')}</div>${[['favEx','⭐'],['noEx','🚫'],['autoEx','🔁']].map(([k,ic])=>(S.settings[k]||[]).filter(id=>EX(id)).map(id=>`<span class="chip" style="margin:0 6px 6px 0">${ic} ${esc(tr(EX(id).name))} <button class="icon" style="width:22px;height:22px;font-size:12px" data-a="exlistrm" data-k="${k}" data-id="${esc(id)}" aria-label="${L('Remove','Quitar')}">✕</button></span>`).join('')).join('')}</div>`:''}
   ${fieldOK()&&S.settings.onboarded?`<div class="calcbox" data-notr="1" style="margin:-4px 0 14px"><b>${gIsCiv()?'🏖':'🏕'} ${VL('Field / vacation mode','Modo campo / vacaciones','Vacation mode','Modo vacaciones')}</b><div class="muted small" style="margin:4px 0 8px">${fieldStatus()}</div><button class="btn ghost" style="margin:0" data-a="fieldform">${fieldPlan()?VL('Change dates','Cambiar fechas','Change vacation dates','Cambiar fechas'):VL('Plan field / vacation time','Planear campo / vacaciones','Plan a vacation','Planear vacaciones')}</button></div>`:''}
   <div class="field"><label class="lbl">Goal</label>${sel('goal',[['strength','Strength — heavy, low reps'],['hypertrophy','Build muscle'],['endurance','Endurance — lighter, more reps'],['fatloss','Lose weight — strength + cardio']])}</div>
-  ${S.settings.goal==='fatloss'?`<div class="field"><label class="lbl">Goal weight (${U()})</label><input type="text" inputmode="decimal" data-s="goalW" value="${goalW()?r1(goalW()):''}" placeholder="${U()}"><p class="muted small" style="margin:6px 0 0">Workouts and food targets work toward this.</p></div>`:''}
+  ${S.settings.goal==='fatloss'||gainGoal()?`<div class="field"><label class="lbl">Goal weight (${U()})${gainGoal()?' (optional)':''}</label><input type="text" inputmode="decimal" data-s="goalW" value="${goalW()?r1(goalW()):''}" placeholder="${U()}"><p class="muted small" style="margin:6px 0 0">${gainGoal()?'The weight you want to build up to. Your food targets add a small surplus to get there without much fat.':''}Workouts and food targets work toward this.</p></div>`:''}
   <div class="field"><label class="lbl">Experience</label>${sel('exp',[['beginner','Beginner'],['intermediate','Intermediate'],['advanced','Advanced']])}</div>
   <div class="field"><label class="lbl">Body weight (for strength ranks)</label><input type="text" inputmode="decimal" data-s="bw" value="${bodyW()||''}" placeholder="${U()}"></div>
   <div class="grid2"><div class="field"><label class="lbl">Units</label>${sel('unit',[['lb','lb'],['kg','kg']])}</div><div class="field"><label class="lbl">Exercises</label>${sel('count',[3,4,5,6,7,8,9,10,11,12].map(n=>[n,n+' per workout']))}</div></div>
@@ -5921,7 +5932,7 @@ function tick(){
 // ---------- actions ----------
 function finish(){
   const a=S.active;
-  const exs=a.exercises.map((e,k)=>({exId:e.exId,...(ssPos(a.exercises,k)?{ss:e.ss}:{}),...(DIST.has(e.exId)&&parseFloat(e.vest)>0?{vest:parseFloat(String(e.vest).replace(',','.'))}:{}),...(e.exId==='hike'&&parseFloat(e.elev)>0?{elev:Math.round(parseFloat(e.elev))}:{}),...(e.orig?{orig:e.orig}:{}),...(e.tgt?{tgt:e.tgt}:{}),...(e.added?{added:1}:{}),...(e.feel?{feel:e.feel}:{}),...(e.dl?{dl:1}:{}),sets:e.sets.filter(s=>s.done).map(s=>({w:s.w===''||s.w==null?'':(parseFloat(s.w)||0),r:(EX(e.exId)||{}).inc==='run'?fmtT(longT(e.exId,s.r,s.w,a.unit)):(parseInt(s.r,10)||0)}))})).filter(e=>e.sets.length);
+  const exs=a.exercises.map((e,k)=>({exId:e.exId,...(ssPos(a.exercises,k)?{ss:e.ss}:{}),...(DIST.has(e.exId)&&parseFloat(e.vest)>0?{vest:parseFloat(String(e.vest).replace(',','.'))}:{}),...(e.exId==='hike'&&parseFloat(e.elev)>0?{elev:Math.round(parseFloat(e.elev))}:{}),...(e.orig?{orig:e.orig}:{}),...(e.tgt?{tgt:e.tgt}:{}),...(e.added?{added:1}:{}),...(e.feel?{feel:e.feel}:{}),...(e.dl?{dl:1}:{}),...(e.lad?{lad:1}:{}),sets:e.sets.filter(s=>s.done).map(s=>({w:s.w===''||s.w==null?'':(parseFloat(s.w)||0),r:(EX(e.exId)||{}).inc==='run'?fmtT(longT(e.exId,s.r,s.w,a.unit)):(parseInt(s.r,10)||0)}))})).filter(e=>e.sets.length);
   if(!exs.length){if(ask('No sets are checked off. Discard this workout?')){S.active=null;stopRest();save();render();}return;}
   const prs=[],before=muscleRanks(),stkBefore=streakInfo().cur.len,bBefore=new Set(badgesEarned().filter(x=>x.ok).map(x=>x.id));
   for(const e of exs){
@@ -6060,10 +6071,14 @@ document.addEventListener('click',e=>{
       if(ckA&&ckPlan(ckA)!=='normal')setTimeout(()=>toast(ckPlan(ckA)==='great'?L('💪 Strong day: extra sets added','💪 Día fuerte: series extra agregadas'):L('😌 Lighter day: workout adjusted','😌 Día más ligero: entrenamiento ajustado')),300);break;}
     case'empty':S.active={start:Date.now(),focus:'custom',unit:U(),exercises:[]};save();render();openPicker('add');break;
     case'tick':{const en=A.exercises[i],s=en.sets[j];s.done=!s.done;
+      if(en.ladder&&s.done&&j===en.sets.length-1)en.sets.push({w:s.w,r:String((+s.r||0)+1),done:false});
       const sp=ssPos(A.exercises,i),mt=sp?A.exercises[sp===1?i+1:i-1]:null,next=mt&&mt.sets.find(x=>!x.done);
       if(s.done&&sp===1&&next){toast(L(`🔗 No rest. Go: ${(EX(mt.exId)||{}).name}`,`🔗 Sin descanso. Sigue: ${tr((EX(mt.exId)||{}).name||'')}`));}
+      else if(s.done&&en.ladder&&en.rest!==0)startRest(Math.min(90,15+10*(+s.r||1)));
       else if(s.done&&en.rest!==0)startRest(sp&&mt?Math.max(en.rest||0,mt.rest||0)||en.rest:en.rest);save();render();break;}
     case'addset':{const sets=A.exercises[i].sets,l=sets[sets.length-1]||{w:'',r:''};sets.push({w:l.w,r:l.r,done:false});save();render();break;}
+    case'ladder':{const en=A.exercises[i];const kept=en.sets.filter(x=>x.done),l=en.sets[en.sets.length-1]||{w:'',r:''};en.sets=kept.concat([{w:l.w,r:'1',done:false}]);en.ladder=1;en.lad=1;save();render();break;}
+    case'ladend':{const en=A.exercises[i];while(en.sets.length>1&&!en.sets[en.sets.length-1].done)en.sets.pop();delete en.ladder;save();render();const d=en.sets.filter(x=>x.done);if(d.length)toast(L(`Ladder done: ${d.reduce((a,x)=>a+(+x.r||0),0)} reps, top rung ${Math.max(...d.map(x=>+x.r||0))}`,`Escalera terminada: ${d.reduce((a,x)=>a+(+x.r||0),0)} reps, escalón más alto ${Math.max(...d.map(x=>+x.r||0))}`));break;}
     case'rmset':{const sets=A.exercises[i].sets;if(sets.length>1){sets.pop();save();render();}break;}
     case'rmex':{const sp=ssPos(A.exercises,i);if(sp){const o=A.exercises[sp===1?i+1:i-1];delete o.ss;delete o.ssAdd;}A.exercises.splice(i,1);save();render();break;}
     case'ss':{const L2=A.exercises,sp=ssPos(L2,i);
@@ -6218,7 +6233,7 @@ document.addEventListener('click',e=>{
     case'dexadel':{if(ask('Delete this scan?')){S.scans=S.scans.filter(x=>x.id!==b.dataset.id);save();closeModal();render();}break;}
     case'dexasave':stat('dexa-save',true);dexaSave();break;
     case'dexaplan':dexaApplyPlan();break;
-    case'goalmaint':{S.settings.goal='hypertrophy';const n=S.settings.nut;if(n){n.goal='maintain';n.auto=true;}save();render();toast(L('Switched to maintain. Nice work!','Cambiaste a mantener. ¡Buen trabajo!'));break;}
+    case'goalmaint':{S.settings.goal='hypertrophy';S.settings.goalW='';const n=S.settings.nut;if(n){n.goal='maintain';n.auto=true;}save();render();toast(L('Switched to maintain. Nice work!','Cambiaste a mantener. ¡Buen trabajo!'));break;}
     case'addburn':{const k=+b.dataset.k||0,d=dk(Date.now());S.burn=S.burn||{};S.burn[d]=(+S.burn[d]||0)+k;save();b.disabled=true;b.textContent=L('Added ✓','Agregado ✓');toast(L(`Added ${k} kcal to Food`,`Se sumaron ${k} kcal en Comida`));break;}
     case'rankshare':stat('share-ranks',true);shareRanks();break;
     case'rankcopy':copyRanks();break;
@@ -6334,7 +6349,7 @@ document.addEventListener('click',e=>{
     case'nutform':nutForm();break;
     case'nutauto':if(S.settings.nut){S.settings.nut.auto=true;save();render();toast('Targets recalculated');}break;
     case'savenut':{const x=readNut();if(!calcTargets(x,x.bw)){toast('Fill in your age, height and body weight');break;}
-      logWeight(x.bw);if(x.goal==='lose'&&x.gw>0)setGoalW(x.gw);if(x.sex)S.settings.sex=x.sex;if(x.age>=13)S.settings.age=Math.round(x.age);S.settings.nut={goal:x.goal,sex:x.sex,age:x.age,cm:x.cm,act:x.act,auto:true};save();closeModal();render();toast('Targets set');break;}
+      logWeight(x.bw);if((x.goal==='lose'||x.goal==='gain')&&x.gw>0)setGoalW(x.gw);else if(x.goal==='gain'&&!(x.gw>0)&&gainGoal())S.settings.goalW='';if(x.goal==='gain'&&S.settings.goal==='fatloss')S.settings.goal='hypertrophy';if(x.goal==='lose'&&S.settings.goal!=='fatloss')S.settings.goal='fatloss';if(x.sex)S.settings.sex=x.sex;if(x.age>=13)S.settings.age=Math.round(x.age);S.settings.nut={goal:x.goal,sex:x.sex,age:x.age,cm:x.cm,act:x.act,auto:true};save();closeModal();render();toast('Targets set');break;}
     case'picklang':{const l=b.dataset.l;S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;modalLocked=false;closeModal();render();if(!S.settings.onboarded)onboarding();break;}
     case'legal':legalView(b.dataset.k,b.dataset.b||'');break;
     case'legalback':{const bk=window._legalBack;modalLocked=false;if(bk==='onb')onboarding();else if(bk==='agree')termsAsk();else{closeModal();if(bk==='page'){try{location.hash='';}catch(e){}startFlow();}}break;}
@@ -6406,11 +6421,13 @@ document.addEventListener('change',e=>{
   if(t.dataset.s==='sex'||t.dataset.s==='age'){let v=t.value;if(t.dataset.s==='age'){v=parseInt(v,10);v=v>=13&&v<=110?v:'';if(t.value&&v===''){toast('Enter an age between 13 and 110');}}
     S.settings[t.dataset.s]=v;if(S.settings.nut&&v!==''){S.settings.nut[t.dataset.s]=v;}save();if(tab==='food')render();return;}
   if(t.dataset.s==='bw'){const v=parseFloat(t.value.replace(',','.'));if(v>0)logWeight(v);else S.settings.bw='';save();if(tab==='ranks')render();return;}
-  if(t.dataset.s==='goalW'){const v=parseFloat(t.value.replace(',','.'));if(v>0){setGoalW(v);if(bodyW()&&v>=bodyW())toast('Your goal weight is at or above your current weight');}else{S.settings.goalW='';}save();return;}
+  if(t.dataset.s==='goalW'){const v=parseFloat(t.value.replace(',','.'));if(v>0){setGoalW(v);if(bodyW()&&!gainGoal()&&v>=bodyW())toast('Your goal weight is at or above your current weight');if(bodyW()&&gainGoal()&&v<=bodyW())toast(L('To build muscle, set a goal weight above your current weight','Para ganar músculo, pon un peso meta mayor a tu peso actual'));}else{S.settings.goalW='';}save();return;}
   if(t.dataset.s==='gameBranch'){S.settings.gameBranch=t.value;save();render();return;}
   if(t.dataset.s==='branch'){S.settings.branch=t.value;if(!focusOk(focusSel))focusSel='auto';save();if($('#sheet [data-a="onboarded"]'))onboarding();else render();return;}
   if(t.dataset.s==='goal'){S.settings.goal=t.value;const n=S.settings.nut;
+    const bw0=bodyW(),gw0=goalW();if(gw0&&bw0&&((t.value==='fatloss'&&gw0>bw0)||(t.value==='hypertrophy'&&gw0<bw0)||(t.value!=='fatloss'&&t.value!=='hypertrophy')))S.settings.goalW='';
     if(t.value==='fatloss'){if(n&&n.goal!=='lose'){n.goal='lose';n.auto=true;toast('Food targets switched to Lose fat');}else if(!n)toast('Set your food targets on the Food tab to match');}
+    else if(t.value==='hypertrophy'&&n&&n.goal==='lose'){n.goal='gain';n.auto=true;toast(L('Food targets switched to Build muscle','Metas de comida cambiadas a Ganar músculo'));}
     save();if($('#sheet [data-a="onboarded"]'))onboarding();else render();return;}
   if(t.dataset.s){let v=t.value;if(t.dataset.s==='count'||t.dataset.s==='rest'||t.dataset.s==='weekGoal')v=+v;S.settings[t.dataset.s]=v;save();return;}
   if(t.dataset.eq){const set=new Set(S.settings.equip);t.checked?set.add(t.dataset.eq):set.delete(t.dataset.eq);S.settings.equip=[...set];save();const gb=$('#gymupd');if(gb)gb.classList.toggle('hidden',!gymDirty());}
