@@ -858,7 +858,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.11.25c';
+const APP_VERSION='2026.11.25d';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false,branch:''},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],templates:[],water:{},scores:[],active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(!('branch' in (d.settings||{})))st.branch=st.onboarded?'usmc':'';if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[],templates:d.templates||[],water:d.water||{},scores:d.scores||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -3311,10 +3311,10 @@ function phLoad(){return Promise.all([phGet('ban'),phGet('bg')]).then(([a,b])=>{
 function phRead(file){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const M=1600,sc=Math.min(1,M/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.round(im.naturalWidth*sc),h=Math.round(im.naturalHeight*sc);
     const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(im,0,0,w,h);URL.revokeObjectURL(u);c.toBlob(b=>b?ok(b):no(new Error('blob')),'image/jpeg',.85);};im.onerror=()=>{URL.revokeObjectURL(u);no(new Error('img'));};im.src=u;});}
 let PHE=null;// editor state
-function phPick(k){let inp=document.getElementById('phfile');if(!inp){inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.id='phfile';inp.style.display='none';document.body.appendChild(inp);}
+function phPick(k){let inp=document.getElementById('phfile');if(!inp){inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.id='phfile';inp.setAttribute('aria-hidden','true');inp.tabIndex=-1;inp.style.cssText='position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0';document.body.appendChild(inp);}
   inp.value='';inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f)return;toast(L('Getting your photo ready…','Preparando tu foto…'));
     phRead(f).then(b=>phPut(k+'0',b).then(()=>phEdit(k,b,true))).catch(()=>toast(L("Couldn't open that photo. Try another one.",'No se pudo abrir esa foto. Prueba otra.')));};inp.click();}
-function phOpen(k){phGet(k+'0').then(b=>{if(b)phEdit(k,b,false);else phPick(k);});}
+function phOpen(k){if(!PH[k]){phPick(k);return;}phGet(k+'0').then(b=>b||phGet(k)).then(b=>{if(b)phEdit(k,b,false);else phPick(k);});}
 function phEdit(k,blob,fresh){const g=G(),st=(k==='ban'?g.phban:g.phbg)||{},isBg=k==='bg';
   const bw=isBg?Math.min(200,Math.round(window.innerWidth*.52)):Math.min(window.innerWidth-48,360),bh=isBg?Math.round(bw*window.innerHeight/window.innerWidth):Math.round(bw/3);
   if(PHE&&PHE.url)URL.revokeObjectURL(PHE.url);PHE={k,blob,url:URL.createObjectURL(blob),bw,bh,s:fresh?1:(st.s||1),fx:fresh?0:(st.fx||0),fy:fresh?0:(st.fy||0),dim:st.dim??45,blur:st.blur??4};
