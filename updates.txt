@@ -4,6 +4,14 @@ Start a post with ## and a title. Use - at the start of a line for a bullet poin
 For Spanish, add " || " then the Spanish text on the same line (English || Español).
 To show a screenshot under a bullet, add a line: img: FILE-en.webp || FILE-es.webp (upload the images next to index.html). Tap a picture in the app to see it full size.
 
+## Nov 25 updates || Novedades del 25 nov
+New features || Funciones nuevas
+- 🎮 Gaming looks (game mode): the Locker now has Military and Gaming tabs. Gaming has 8 original themes (Pixel Miner, Storm Rush, Boost, Last Squad, Red Alert, Defuse, Apex Drop and Killstreak), each with its own accent color, accent effect, banner, background, card border and full-screen celebration || 🎮 Estilos de videojuegos (modo juego): el Casillero ahora tiene pestañas Militar y Videojuegos. Videojuegos tiene 8 temas originales (Minero pixel, Furia de tormenta, Turbo, Último escuadrón, Alerta roja, Desactivar, Salto ápice y Racha letal), cada uno con su color de acento, efecto de acento, banner, fondo, borde de tarjetas y celebración a pantalla completa
+- 🔓 Every gaming piece unlocks by level, from level 3 to 21. Rare themes come first, then Epic, then Legendary. Mix and match them with your military looks || 🔓 Cada pieza de videojuegos se desbloquea por nivel, del nivel 3 al 21. Primero los Raros, luego los Épicos y al final los Legendarios. Combínalos con tus estilos militares
+- 📷 Your own photo (game mode): at level 10 you can use a photo from your phone as your banner, and at level 15 as your app background. Drag and zoom to fit, then darken or blur it so everything stays easy to read. The photo stays on your phone and is never uploaded || 📷 Tu propia foto (modo juego): en el nivel 10 puedes usar una foto de tu teléfono como banner, y en el nivel 15 como fondo de la app. Arrastra y haz zoom para ajustarla, y oscurécela o difumínala para que todo se lea fácil. La foto se queda en tu teléfono y nunca se sube
+Improvements || Mejoras
+- 🍽️ The Chow hall section in Restaurants now only shows for service members. If your branch is set to None, you'll see just the restaurant chains || 🍽️ La sección de Comedor militar en Restaurantes ahora solo aparece para miembros del servicio. Si tu rama es Ninguna, solo verás las cadenas de restaurantes
+
 ## Nov 24 updates || Novedades del 24 nov
 New features || Funciones nuevas
 - 🧭 Simple mode (on by default): a cleaner app that's easier to start with. Extra sections fold into one row you tap to open, and the app remembers what you keep open. Food has Today, Eat out, Recipes and Goals tabs, Recovery has Recovery and Stretches, Ranks and History are now inside Progress (5 tabs at the bottom), and Settings is a short menu. Turn it off in Settings to keep everything open with all 7 tabs || 🧭 Modo simple (encendido de inicio): una app más limpia y fácil para empezar. Las secciones extra se pliegan en una fila que tocas para abrir, y la app recuerda lo que dejas abierto. Comida tiene pestañas Hoy, Afuera, Recetas y Metas, Recuperación tiene Recuperación y Estiramientos, Rangos e Historial ahora están dentro de Progreso (5 pestañas abajo) y Ajustes es un menú corto. Apágalo en Ajustes para tener todo abierto con las 7 pestañas
@@ -27,6 +35,8 @@ img: 2026-11-24-maxtest-en.webp || 2026-11-24-maxtest-es.webp
 - 🤝 Compare with a friend (Ranks tab): send your code and paste theirs to see your ranks and maxes side by side, no account needed || 🤝 Compara con un amigo (pestaña Rangos): envía tu código y pega el suyo para ver sus rangos y máximos lado a lado, sin cuenta
 img: 2026-11-24-compare-en.webp || 2026-11-24-compare-es.webp
 Improvements || Mejoras
+- 🎖 Locker (game mode): accent colors, effects, banners, backgrounds, card borders, celebrations, ranks and XP each fold into their own row showing what you're using. Tap one to open it || 🎖 Casillero (modo juego): colores, efectos, banners, fondos, bordes, celebraciones, rangos y XP se pliegan cada uno en su fila con lo que usas. Toca uno para abrirlo
+img: 2026-11-24-locker-en.webp || 2026-11-24-locker-es.webp
 - 📸 Updates now show screenshots of new features. Tap one to see it full size || 📸 Las novedades ahora muestran capturas de las funciones nuevas. Toca una para verla en grande
 - 📊 The workout summary now shows your total reps next to sets and weight lifted || 📊 El resumen del entrenamiento ahora muestra tus reps totales junto a las series y el peso levantado
 - 🧹 The goal weight card moved from the Workout tab to the bottom of the Food tab, under Daily goals, to keep the Workout tab cleaner || 🧹 La tarjeta de peso meta pasó de la pestaña Entrenar al final de la pestaña Comida, debajo de Metas diarias, para que Entrenar se vea más limpia
