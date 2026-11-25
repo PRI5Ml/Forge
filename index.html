@@ -761,7 +761,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.11.24i';
+const APP_VERSION='2026.11.24j';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false,branch:''},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],templates:[],water:{},scores:[],active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(!('branch' in (d.settings||{})))st.branch=st.onboarded?'usmc':'';if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[],templates:d.templates||[],water:d.water||{},scores:d.scores||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -4301,10 +4301,12 @@ function fold(k,title,sum,inner){inner=(inner||'').trim();if(!inner||!simple())r
 function segBar(a,opts,cur,cl){return`<div class="segx${cl?' '+cl:''}" data-notr="1">${opts.map(([k,l])=>`<button class="${k===cur?'on':''}" data-a="${a}" data-${a==='tab'?'t':'k'}="${k}">${l}</button>`).join('')}</div>`;}
 const tabList=()=>simple()?['workout','food','recovery','progress','settings']:Object.keys(ICONS);
 const tabOn=t=>t===tab||(simple()&&t==='progress'&&(tab==='ranks'||tab==='history'));
-const progSeg=()=>segBar('tab',[['progress',L('Overview','Resumen')],['ranks',L('Ranks','Rangos')],['history',L('History','Historial')]],tab,'segtop');
+const progSeg=()=>segBar('tab',[['progress',L('Overview','Resumen')],['ranks',L('Ranks','Rangos')],['history',L('History','Historial')]],tab);
 function renderTabs(){$('#tabs').innerHTML=tabList().map(t=>`<button class="${tabOn(t)?'on':''}" data-a="tab" data-t="${t}"><svg viewBox="0 0 24 24">${ICONS[t]}</svg>${t[0].toUpperCase()+t.slice(1)}</button>`).join('');}
 function render(){gameTick();gApplyLook();if(tab!=='settings'&&!tutOn())SUB.set='';let h={workout:vWorkout,food:vFood,recovery:vRecovery,ranks:vRanks,history:vHistory,progress:vProgress,updates:vUpdates,settings:vSettings}[tab]();
-  if(simple()&&['progress','ranks','history'].includes(tab))h=progSeg()+h;$('#view').innerHTML=h;renderTabs();}
+  $('#view').innerHTML=h;
+  if(simple()&&['progress','ranks','history'].includes(tab)){const v=$('#view'),hd=v.querySelector(':scope > .hdr, :scope > h1');if(hd)hd.insertAdjacentHTML('afterend',progSeg());else v.insertAdjacentHTML('afterbegin',progSeg());}
+  renderTabs();}
 
 function heroCard(){return`<div class="card" data-notr="1" style="text-align:center;padding:20px 16px"><div style="font-size:36px">👋</div><b style="font-size:20px">${L('Welcome to Forge','Bienvenido a Forge')}</b><p class="muted small" style="margin:6px 0 0">${L('Leave the focus on Auto or pick one, then tap Generate workout. Forge picks the exercises and suggests your weights.','Deja el enfoque en Auto o elige uno, y toca Generar entrenamiento. Forge elige los ejercicios y sugiere tus pesos.')}</p></div>`;}
 function lastWeekSum(){const thisW=weekStart(Date.now()),lastW=weekStart(thisW-3*864e5),ws=S.workouts.filter(w=>w.end>=lastW&&w.end<thisW),g=+S.settings.weekGoal||0;
