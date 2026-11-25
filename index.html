@@ -263,6 +263,7 @@ details.card.flash{box-shadow:0 0 0 2px var(--acc)}
 .segx{display:flex;background:var(--card2);border-radius:12px;padding:4px;gap:4px;margin:0 0 14px}
 .segx button{flex:1;min-height:42px;border:0;background:none;color:var(--muted);border-radius:9px;font-weight:600;font-size:15px;font-family:inherit;padding:6px 4px;cursor:pointer}
 .segx button.on{background:var(--acc);color:#fff}
+.segx.segtop{margin-top:12px}.segx.segtop button{min-height:36px;padding:4px}
 .fold{display:flex;align-items:center;gap:12px;width:100%;min-height:62px;padding:12px 16px;text-align:left;color:var(--text);font-family:inherit;font-size:16px;cursor:pointer}
 .fold .tx,.mrow .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .fold .tx>span,.mrow .tx>span{font-size:13px;color:var(--muted)}
@@ -760,7 +761,7 @@ function startTranslator(){
 function setLang(l){S.settings.lang=l;S.settings.langChosen=true;save();document.documentElement.lang=l;
   if(S.settings.onboarded){closeModal();render();}else{onboarding();}}
 
-const APP_VERSION='2026.11.24h';
+const APP_VERSION='2026.11.24i';
 const DEF=()=>({settings:{goal:'hypertrophy',exp:'intermediate',unit:'lb',count:5,rest:90,weekGoal:4,lang:(typeof navigator!=='undefined'&&/^es/i.test(navigator.language||''))?'es':'en',equip:['barbell','rack','bench','dumbbell','cable','machine','pullup','treadmill','bike','rower','elliptical','stairs'],cardioEq:1,onboarded:false,branch:''},workouts:[],custom:[],food:[],weights:[],injuries:[],burn:{},scans:[],waists:[],templates:[],water:{},scores:[],active:null});
 function merge(d){const b=DEF(),st=Object.assign(b.settings,d.settings||{});if(!(d.settings||{}).cardioEq){st.cardioEq=1;if(st.equip&&st.equip.includes('machine'))st.equip=[...new Set([...st.equip,'treadmill','bike','rower','elliptical','stairs'])];}if(!('branch' in (d.settings||{})))st.branch=st.onboarded?'usmc':'';if(st.nut){if(!st.sex&&st.nut.sex)st.sex=st.nut.sex;if(!st.age&&st.nut.age)st.age=st.nut.age;}return Object.assign(b,d,{settings:st,workouts:d.workouts||[],custom:d.custom||[],food:d.food||[],weights:d.weights||[],injuries:d.injuries||[],burn:d.burn||{},scans:d.scans||[],waists:d.waists||[],templates:d.templates||[],water:d.water||{},scores:d.scores||[]});}
 function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.settings)return merge(d);}catch(e){}return DEF();}
@@ -4297,10 +4298,10 @@ const isOpen=k=>tutOn()||!!(S.settings.open||{})[k];
 function fold(k,title,sum,inner){inner=(inner||'').trim();if(!inner||!simple())return inner;
   if(isOpen(k))return tutOn()?inner:inner.replace(/<\/(div|details)>$/,`<button class="foldup" data-a="fold" data-k="${k}" data-notr="1">⌃ ${L('Show less','Mostrar menos')}</button></$1>`);
   return`<button class="card fold" data-a="fold" data-k="${k}" data-notr="1"><span class="tx"><b>${title}</b><span>${sum}</span></span><span class="chev">›</span></button>`;}
-function segBar(a,opts,cur){return`<div class="segx" data-notr="1">${opts.map(([k,l])=>`<button class="${k===cur?'on':''}" data-a="${a}" data-${a==='tab'?'t':'k'}="${k}">${l}</button>`).join('')}</div>`;}
+function segBar(a,opts,cur,cl){return`<div class="segx${cl?' '+cl:''}" data-notr="1">${opts.map(([k,l])=>`<button class="${k===cur?'on':''}" data-a="${a}" data-${a==='tab'?'t':'k'}="${k}">${l}</button>`).join('')}</div>`;}
 const tabList=()=>simple()?['workout','food','recovery','progress','settings']:Object.keys(ICONS);
 const tabOn=t=>t===tab||(simple()&&t==='progress'&&(tab==='ranks'||tab==='history'));
-const progSeg=()=>segBar('tab',[['progress',L('Overview','Resumen')],['ranks',L('Ranks','Rangos')],['history',L('History','Historial')]],tab);
+const progSeg=()=>segBar('tab',[['progress',L('Overview','Resumen')],['ranks',L('Ranks','Rangos')],['history',L('History','Historial')]],tab,'segtop');
 function renderTabs(){$('#tabs').innerHTML=tabList().map(t=>`<button class="${tabOn(t)?'on':''}" data-a="tab" data-t="${t}"><svg viewBox="0 0 24 24">${ICONS[t]}</svg>${t[0].toUpperCase()+t.slice(1)}</button>`).join('');}
 function render(){gameTick();gApplyLook();if(tab!=='settings'&&!tutOn())SUB.set='';let h={workout:vWorkout,food:vFood,recovery:vRecovery,ranks:vRanks,history:vHistory,progress:vProgress,updates:vUpdates,settings:vSettings}[tab]();
   if(simple()&&['progress','ranks','history'].includes(tab))h=progSeg()+h;$('#view').innerHTML=h;renderTabs();}
